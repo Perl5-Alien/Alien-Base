@@ -1,0 +1,4 @@
+Build.PL
+lib/Alien/Base.pm
+MANIFEST			This list of files
+t/version.t
