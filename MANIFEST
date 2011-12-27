@@ -1,4 +1,6 @@
 Build.PL
 lib/Alien/Base.pm
 MANIFEST			This list of files
+README
+t/ftp.t
 t/version.t
