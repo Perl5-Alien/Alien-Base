@@ -87,7 +87,11 @@ sub alien_probe_source_ftp {
   my $self = shift;
 
   my @files;
-  if (scalar @{ $self->{alien_source_ftp}{data}{files} || [] }) {
+  if (scalar keys %{ $self->{alien_source_ftp}{data}{versions} || {} }) {
+
+    return $self->{alien_source_ftp}{data}{versions};
+
+  } elsif (scalar @{ $self->{alien_source_ftp}{data}{files} || [] }) {
 
     @files = @{ $self->{alien_source_ftp}{data}{files} };
 
@@ -103,17 +107,15 @@ sub alien_probe_source_ftp {
   }
 
   my $pattern = $self->{alien_source_ftp}{pattern};
-  unless ($pattern) {
-    return \@files;
-  }
+
+  return \@files unless $pattern;
 
   @files = grep { $_ =~ $pattern } @files;
   carp "Could not find any matching files" unless @files;
   $self->{alien_source_ftp}{data}{files} = \@files;
 
-  unless ( _alien_has_capture_groups($pattern) ) {
-    return \@files;
-  }
+  return \@files
+    unless _alien_has_capture_groups($pattern);
 
   my %versions = 
     map { 
