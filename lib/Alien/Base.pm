@@ -16,11 +16,17 @@ $VERSION = eval $VERSION;
 
 our $Verbose ||= 0;
 
-## Extra parameters in $self (all should start with 'alien_')
+## Extra parameters in $self (all (toplevel) should start with 'alien_')
 # alien_name -- name of library 
 # alien_temp_foler -- folder name or File::Temp object for download/build
 # alien_version_check -- command to execute to check if install/version
 # alien_source_ftp -- hash of information about source repo on ftp
+#   server -- ftp server for source
+#   folder -- ftp folder containing source
+#   ftp  -- holder for Net::FTP object (non-api)
+#   data -- holder for data (non-api)
+#     files -- holder for found files (on ftp server)
+#     versions -- holder for version=>file
 
 sub alien_temp_folder {
   my $self = shift;
@@ -71,6 +77,7 @@ sub alien_ftp_connection {
       or croak "Cannot change working directory ", $ftp->message;
   }
 
+  $ftp->binary();
   $self->{$key}{ftp} = $ftp;
 
   return $ftp;
@@ -104,7 +111,7 @@ sub alien_probe_source_ftp {
   carp "Could not find any matching files" unless @files;
   $self->{alien_source_ftp}{data}{files} = \@files;
 
-  unless ( _has_capture_groups($pattern) ) {
+  unless ( _alien_has_capture_groups($pattern) ) {
     return \@files;
   }
 
@@ -136,7 +143,6 @@ sub alien_get_file_ftp {
   my $tempdir = $self->alien_temp_folder;
 
   local $CWD = "$tempdir";
-  $ftp->binary();
   $ftp->get( $file ) or croak "Download failed: " . $ftp->message();
 
   return 1;
@@ -144,7 +150,7 @@ sub alien_get_file_ftp {
 
 # helper functions
 
-sub _has_capture_groups {
+sub _alien_has_capture_groups {
   my $re = shift;
   "" =~ /|$re/;
   return $#+;
