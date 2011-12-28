@@ -86,12 +86,17 @@ sub alien_ftp_connection {
 sub alien_probe_source_ftp {
   my $self = shift;
 
+  my $pattern = $self->{alien_source_ftp}{pattern};
+
   my @files;
   if (scalar keys %{ $self->{alien_source_ftp}{data}{versions} || {} }) {
 
     return $self->{alien_source_ftp}{data}{versions};
 
   } elsif (scalar @{ $self->{alien_source_ftp}{data}{files} || [] }) {
+
+    return $self->{alien_source_ftp}{data}{files}
+      unless $pattern;
 
     @files = @{ $self->{alien_source_ftp}{data}{files} };
 
@@ -104,11 +109,11 @@ sub alien_probe_source_ftp {
     
     $self->{alien_source_ftp}{data}{files} = \@files;
 
+    return \@files unless $pattern;
+
   }
 
-  my $pattern = $self->{alien_source_ftp}{pattern};
-
-  return \@files unless $pattern;
+  # only get here if $pattern exists
 
   @files = grep { $_ =~ $pattern } @files;
   carp "Could not find any matching files" unless @files;
