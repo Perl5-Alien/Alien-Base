@@ -13,7 +13,8 @@ my $builder = Module::Build->new(
     'perl' => '5.8.1',
     'parent' => 0,
     'Capture::Tiny' => 0,
-    'Sort::Versions' => 0,
+    'File::chdir' => 0,
+    #'Sort::Versions' => 0,
   },
 );
 

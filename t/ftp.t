@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use File::chdir;
+
 use Test::More;
 use_ok( 'Alien::Base' );
 
@@ -15,12 +17,24 @@ my $files = $builder->alien_probe_source_ftp;
 is( ref $files, 'ARRAY', 'without pattern, alien_probe_source_ftp returns arrayref');
 ok( scalar @$files, 'GSL has available files');
 
-my $pattern = qr/^gsl-[\d\.]+\.tar\.gz$/;
+my $pattern = qr/^gsl-[\d\.]+\.tar\.gz\.sig$/;
 $builder->{alien_source_ftp}{pattern} = $pattern;
 $files = $builder->alien_probe_source_ftp;
 my @non_matching = grep{ $_ !~ $pattern } @$files;
 is( ref $files, 'ARRAY', 'with non-capturing pattern, alien_probe_source_ftp returns arrayref');
 ok( ! @non_matching, 'with non-capturing pattern, only matching results are returned' );
+
+my $tempdir = $builder->alien_temp_folder;
+ok( -d "$tempdir", 'Temporary folder exists');
+my $file = $files->[0];
+$builder->alien_get_file_ftp('alien_source_ftp', $file);
+{
+  local $CWD = "$tempdir";
+  ok( -e $file, 'Downloaded file exists');
+}
+
+#reset
+$builder->{alien_source_ftp}{data}{files} = [];
 
 $pattern = qr/^gsl-([\d\.])+\.tar\.gz$/;
 $builder->{alien_source_ftp}{pattern} = $pattern;
