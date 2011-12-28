@@ -4,14 +4,14 @@ use warnings;
 use File::chdir;
 
 use Test::More;
-use_ok( 'Alien::Base' );
+use_ok( 'Alien::Base::ModuleBuild' );
 
 my $builder = bless { 
   alien_source_ftp => { 
     server => 'ftp.gnu.org',
     folder => '/gnu/gsl',
   }
-}, 'Alien::Base';
+}, 'Alien::Base::ModuleBuild';
 
 my $files = $builder->alien_probe_source_ftp;
 is( ref $files, 'ARRAY', 'without pattern, alien_probe_source_ftp returns arrayref');
