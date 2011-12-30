@@ -56,7 +56,7 @@ sub alien_check_installed_version {
   return $version;
 }
 
-sub alien_ftp_connection {
+sub alien_connection_ftp {
   my $self = shift;
   my $key = shift || croak "Must specify what FTP information to use";
 
@@ -83,31 +83,34 @@ sub alien_ftp_connection {
   return $ftp;
 }
 
-sub alien_probe_source_ftp {
+sub alien_probe_ftp {
   my $self = shift;
+  my $type = shift || croak "Must specify the type of FTP repository";
 
-  my $pattern = $self->{alien_source_ftp}{pattern};
+  my $key = "alien_${type}_ftp";
+
+  my $pattern = $self->{$key}{pattern};
 
   my @files;
-  if (scalar keys %{ $self->{alien_source_ftp}{data}{versions} || {} }) {
+  if (scalar keys %{ $self->{$key}{data}{versions} || {} }) {
 
-    return $self->{alien_source_ftp}{data}{versions};
+    return $self->{$key}{data}{versions};
 
-  } elsif (scalar @{ $self->{alien_source_ftp}{data}{files} || [] }) {
+  } elsif (scalar @{ $self->{$key}{data}{files} || [] }) {
 
-    return $self->{alien_source_ftp}{data}{files}
+    return $self->{$key}{data}{files}
       unless $pattern;
 
-    @files = @{ $self->{alien_source_ftp}{data}{files} };
+    @files = @{ $self->{$key}{data}{files} };
 
   } else {
 
     croak "No alien_source_ftp information given"
-      unless scalar keys %{ $self->{alien_source_ftp} || {} };
+      unless scalar keys %{ $self->{$key} || {} };
 
-    @files = $self->alien_ftp_connection('alien_source_ftp')->ls();
+    @files = $self->alien_connection_ftp($key)->ls();
     
-    $self->{alien_source_ftp}{data}{files} = \@files;
+    $self->{$key}{data}{files} = \@files;
 
     return \@files unless $pattern;
 
@@ -117,7 +120,7 @@ sub alien_probe_source_ftp {
 
   @files = grep { $_ =~ $pattern } @files;
   carp "Could not find any matching files" unless @files;
-  $self->{alien_source_ftp}{data}{files} = \@files;
+  $self->{$key}{data}{files} = \@files;
 
   return \@files
     unless _alien_has_capture_groups($pattern);
@@ -133,7 +136,7 @@ sub alien_probe_source_ftp {
     @files;
 
   if (scalar keys %versions) {
-    $self->{alien_source_ftp}{data}{versions} = \%versions;
+    $self->{$key}{data}{versions} = \%versions;
     return \%versions;
   } else {
     return \@files;
@@ -146,7 +149,7 @@ sub alien_get_file_ftp {
   my $key = shift || croak "Must specify what FTP information to use";
   my $file = shift || croak "Must specify file to download";
 
-  my $ftp = $self->alien_ftp_connection($key);
+  my $ftp = $self->alien_connection_ftp($key);
   my $tempdir = $self->alien_temp_folder;
 
   local $CWD = "$tempdir";
