@@ -56,9 +56,15 @@ sub alien_check_installed_version {
   return $version;
 }
 
+###################
+#   FTP Methods   #
+###################
+
 sub alien_connection_ftp {
   my $self = shift;
-  my $key = shift || croak "Must specify what FTP information to use";
+  my $type = shift || croak "Must specify the type of FTP repository";
+
+  my $key = "alien_${type}_ftp";
 
   return $self->{$key}{ftp}
     if defined $self->{$key}{ftp};
@@ -108,7 +114,7 @@ sub alien_probe_ftp {
     croak "No alien_source_ftp information given"
       unless scalar keys %{ $self->{$key} || {} };
 
-    @files = $self->alien_connection_ftp($key)->ls();
+    @files = $self->alien_connection_ftp($type)->ls();
     
     $self->{$key}{data}{files} = \@files;
 
@@ -146,10 +152,11 @@ sub alien_probe_ftp {
 
 sub alien_get_file_ftp {
   my $self = shift;
-  my $key = shift || croak "Must specify what FTP information to use";
+  my $type = shift || croak "Must specify the type of FTP repository";
+  my $key = "alien_${type}_ftp";
   my $file = shift || croak "Must specify file to download";
 
-  my $ftp = $self->alien_connection_ftp($key);
+  my $ftp = $self->alien_connection_ftp($type);
   my $tempdir = $self->alien_temp_folder;
 
   local $CWD = "$tempdir";
@@ -158,7 +165,9 @@ sub alien_get_file_ftp {
   return 1;
 }
 
-# helper functions
+########################
+#   Helper Functions   #
+########################
 
 sub _alien_has_capture_groups {
   my $re = shift;
