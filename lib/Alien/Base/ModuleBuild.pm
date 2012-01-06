@@ -82,13 +82,16 @@ sub alien_build {
 
   my $commands = 
     $self->{alien_build_commands} 
-    || [ $prefix . 'configure --prefix=%s', 'make', 'make install' ];
+    || [ '%pconfigure --prefix=%s', 'make', 'make install' ];
 
   local $CWD = $self->alien_temp_folder;
 
   foreach my $command (@$commands) {
-    # subsitute install location (placeholder: %s)
+    # subsitute:
+    #   install location share_dir (placeholder: %s)
     $command =~ s/\%s/$location/;
+    #   local exec prefix (ph: %p)
+    $command =~ s/\%p/$prefix/;
 
     system( $command );
     if ($?) {
