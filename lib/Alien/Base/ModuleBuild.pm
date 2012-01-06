@@ -18,7 +18,8 @@ our $Verbose ||= 0;
 
 ## Extra parameters in $self (all (toplevel) should start with 'alien_')
 # alien_name -- name of library 
-# alien_temp_foler -- folder name or File::Temp object for download/build
+# alien_temp_folder -- folder name or File::Temp object for download/build
+# alien_build_commands -- arrayref of commands for building
 # alien_version_check -- command to execute to check if install/version
 # alien_source_ftp -- hash of information about source repo on ftp
 #   server -- ftp server for source
@@ -27,6 +28,10 @@ our $Verbose ||= 0;
 #   data -- holder for data (non-api)
 #     files -- holder for found files (on ftp server)
 #     versions -- holder for version=>file
+
+sub alien_exec_prefix {
+  return './';
+}
 
 sub alien_temp_folder {
   my $self = shift;
@@ -54,6 +59,39 @@ sub alien_check_installed_version {
   print "Command `$command` had stderr: $err" if ($Verbose and $err);
 
   return $version;
+}
+
+###################
+#  Build Methods  #
+###################
+
+sub alien_build {
+  my $self = shift;
+  my $prefix = $self->alien_exec_prefix;
+  my $location = do {
+    # for share_dir install get full path to share_dir
+    local $CWD = $self->base_dir();
+    push @CWD, $self->{'share_dir'};
+    "$CWD";    
+  };
+  my $commands = 
+    $self->{alien_build_commands} 
+    || [ $prefix . 'configure --prefix=%s', 'make', 'make install' ];
+
+  local $CWD = $self->alien_temp_folder;
+
+  foreach my $command (@$commands) {
+    # subsitute install location (placeholder: %s)
+    $command =~ s/\%s/$location/;
+
+    system( $command );
+    if ($?) {
+      print "External command ($command) failed!\n";
+      return 0;
+    }
+  }
+
+  return 1;
 }
 
 ###################
