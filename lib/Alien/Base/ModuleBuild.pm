@@ -30,7 +30,11 @@ our $Verbose ||= 0;
 #     versions -- holder for version=>file
 
 sub alien_exec_prefix {
-  return './';
+  if ( $^O eq 'MSWin32' ) {
+    return '';
+  } else {
+    return './';
+  }
 }
 
 sub alien_temp_folder {
@@ -68,12 +72,14 @@ sub alien_check_installed_version {
 sub alien_build {
   my $self = shift;
   my $prefix = $self->alien_exec_prefix;
+
   my $location = do {
     # for share_dir install get full path to share_dir
     local $CWD = $self->base_dir();
     push @CWD, $self->{'share_dir'};
     "$CWD";    
   };
+
   my $commands = 
     $self->{alien_build_commands} 
     || [ $prefix . 'configure --prefix=%s', 'make', 'make install' ];
