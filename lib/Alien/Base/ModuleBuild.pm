@@ -9,6 +9,7 @@ use Capture::Tiny 'capture_stderr';
 use Sort::Versions;
 use Net::FTP;
 use File::chdir;
+use Sort::Versions;
 use Carp;
 
 our $VERSION = 0.01;
@@ -29,12 +30,24 @@ our $Verbose ||= 0;
 #     files -- holder for found files (on ftp server)
 #     versions -- holder for version=>file
 
-sub alien_exec_prefix {
-  if ( $^O eq 'MSWin32' ) {
-    return '';
+sub alien_main_procedure {
+  my $self = shift;
+
+  my $files = $self->alien_probe_ftp('source');
+
+  my @ordered_files;
+  if (ref $file eq 'HASH') {
+    # hash structure is like {version => filename}
+    @ordered_files = 
+      map  { $file->{$_} } 
+      sort { versioncmp($a,$b) }
+      keys %$file;
   } else {
-    return './';
+    @ordered_files = sort { versioncmp($a,$b) } @$files;
   }
+
+  my $file = $ordered_files[-1];
+  $self->alien_get_file_ftp('source', $file);
 }
 
 sub alien_temp_folder {
@@ -215,6 +228,14 @@ sub alien_get_file_ftp {
 ########################
 #   Helper Functions   #
 ########################
+
+sub alien_exec_prefix {
+  if ( $^O eq 'MSWin32' ) {
+    return '';
+  } else {
+    return './';
+  }
+}
 
 sub _alien_has_capture_groups {
   my $re = shift;
