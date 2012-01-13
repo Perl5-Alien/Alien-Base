@@ -7,10 +7,11 @@ use parent 'Module::Build';
 
 use Capture::Tiny 'capture_stderr';
 use Sort::Versions;
-use Net::FTP;
 use File::chdir;
 use Sort::Versions;
 use Carp;
+
+use Alien::Base::ModuleBuild::Repository;
 
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
@@ -22,13 +23,33 @@ our $Verbose ||= 0;
 # alien_temp_folder -- folder name or File::Temp object for download/build
 # alien_build_commands -- arrayref of commands for building
 # alien_version_check -- command to execute to check if install/version
-# alien_source_ftp -- hash of information about source repo on ftp
-#   server -- ftp server for source
+# alien_repository -- hash of information about source repo on ftp
+#   protocol -- ftp or http
+#   host -- ftp server for source
 #   folder -- ftp folder containing source
-#   ftp  -- holder for Net::FTP object (non-api)
-#   data -- holder for data (non-api)
+#   platform -- src or platform
+#     pattern
 #     files -- holder for found files (on ftp server)
 #     versions -- holder for version=>file
+#   connection  -- holder for Net::FTP object (non-api)
+
+sub new {
+  my $class = shift;
+  my $self = $class->SUPER::new(@_);
+
+  my @repos = 
+    (ref $self->{alien_repository})
+      ? @{ $self->{alien_repository}
+      : $self->{alien_repository};
+
+  @repos = 
+    map { Alien::Base::ModuleBuild::Repository->new($_) } 
+    @repos;
+
+  $self->{alien_repository} = \@repos;
+
+  return $self;
+}
 
 sub alien_main_procedure {
   my $self = shift;
@@ -116,115 +137,6 @@ sub alien_build {
   return 1;
 }
 
-###################
-#   FTP Methods   #
-###################
-
-sub alien_connection_ftp {
-  my $self = shift;
-  my $type = shift || croak "Must specify the type of FTP repository";
-
-  my $key = "alien_${type}_ftp";
-
-  return $self->{$key}{ftp}
-    if defined $self->{$key}{ftp};
-
-  my $server = $self->{$key}{server} 
-    or croak "Must specify a server when using ftp service";
-
-  my $ftp = Net::FTP->new($server, Debug => 0)
-    or croak "Cannot connect to $server: $@";
-
-  $ftp->login() 
-    or croak "Cannot login ", $ftp->message;
-
-  if (defined $self->{$key}{folder}) {
-    $ftp->cwd($self->{$key}{folder}) 
-      or croak "Cannot change working directory ", $ftp->message;
-  }
-
-  $ftp->binary();
-  $self->{$key}{ftp} = $ftp;
-
-  return $ftp;
-}
-
-sub alien_probe_ftp {
-  my $self = shift;
-  my $type = shift || croak "Must specify the type of FTP repository";
-
-  my $key = "alien_${type}_ftp";
-
-  my $pattern = $self->{$key}{pattern};
-
-  my @files;
-  if (scalar keys %{ $self->{$key}{data}{versions} || {} }) {
-
-    return $self->{$key}{data}{versions};
-
-  } elsif (scalar @{ $self->{$key}{data}{files} || [] }) {
-
-    return $self->{$key}{data}{files}
-      unless $pattern;
-
-    @files = @{ $self->{$key}{data}{files} };
-
-  } else {
-
-    croak "No alien_source_ftp information given"
-      unless scalar keys %{ $self->{$key} || {} };
-
-    @files = $self->alien_connection_ftp($type)->ls();
-    
-    $self->{$key}{data}{files} = \@files;
-
-    return \@files unless $pattern;
-
-  }
-
-  # only get here if $pattern exists
-
-  @files = grep { $_ =~ $pattern } @files;
-  carp "Could not find any matching files" unless @files;
-  $self->{$key}{data}{files} = \@files;
-
-  return \@files
-    unless _alien_has_capture_groups($pattern);
-
-  my %versions = 
-    map { 
-      if ($_ =~ $pattern and defined $1) { 
-        ( $1 => $_ )
-      } else {
-        ()
-      }
-    } 
-    @files;
-
-  if (scalar keys %versions) {
-    $self->{$key}{data}{versions} = \%versions;
-    return \%versions;
-  } else {
-    return \@files;
-  }
-  
-}
-
-sub alien_get_file_ftp {
-  my $self = shift;
-  my $type = shift || croak "Must specify the type of FTP repository";
-  my $key = "alien_${type}_ftp";
-  my $file = shift || croak "Must specify file to download";
-
-  my $ftp = $self->alien_connection_ftp($type);
-  my $tempdir = $self->alien_temp_folder;
-
-  local $CWD = "$tempdir";
-  $ftp->get( $file ) or croak "Download failed: " . $ftp->message();
-
-  return 1;
-}
-
 ########################
 #   Helper Functions   #
 ########################
@@ -235,12 +147,6 @@ sub alien_exec_prefix {
   } else {
     return './';
   }
-}
-
-sub _alien_has_capture_groups {
-  my $re = shift;
-  "" =~ /|$re/;
-  return $#+;
 }
 
 1;
