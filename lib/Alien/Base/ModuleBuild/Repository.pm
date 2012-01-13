@@ -1,7 +1,7 @@
+package Alien::Base::ModuleBuild::Repository;
+
 use strict;
 use warnings;
-
-package Alien::Base::ModuleBuild::Repository;
 
 use Carp;
 
@@ -41,11 +41,17 @@ sub _has_capture_groups {
 
 package Alien::Base::ModuleBuild::Repository::HTTP;
 
+use strict;
+use warnings;
+
 our @ISA = 'Alien::Base::ModuleBuild::Repository';
 
 
 
 package Alien::Base::ModuleBuild::Repository::FTP;
+
+use strict;
+use warnings;
 
 our @ISA = 'Alien::Base::ModuleBuild::Repository';
 
