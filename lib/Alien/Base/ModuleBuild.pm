@@ -39,7 +39,7 @@ sub new {
 
   my @repos = 
     (ref $self->{alien_repository})
-      ? @{ $self->{alien_repository}
+      ? @{ $self->{alien_repository} }
       : $self->{alien_repository};
 
   @repos = 
@@ -54,21 +54,21 @@ sub new {
 sub alien_main_procedure {
   my $self = shift;
 
-  my $files = $self->alien_probe_ftp('source');
+  #my $files = $self->alien_probe_ftp('source');
 
-  my @ordered_files;
-  if (ref $file eq 'HASH') {
+  #my @ordered_files;
+  #if (ref $files eq 'HASH') {
     # hash structure is like {version => filename}
-    @ordered_files = 
-      map  { $file->{$_} } 
-      sort { versioncmp($a,$b) }
-      keys %$file;
-  } else {
-    @ordered_files = sort { versioncmp($a,$b) } @$files;
-  }
+  #  @ordered_files = 
+  #    map  { $files->{$_} } 
+  #    sort { versioncmp($a,$b) }
+  #    keys %$files;
+  #} else {
+  #  @ordered_files = sort { versioncmp($a,$b) } @$files;
+  #}
 
-  my $file = $ordered_files[-1];
-  $self->alien_get_file_ftp('source', $file);
+  #my $file = $ordered_files[-1];
+  #$self->alien_get_file_ftp('source', $file);
 }
 
 sub alien_temp_folder {
