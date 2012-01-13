@@ -119,15 +119,9 @@ sub probe {
   return \@files
     unless $self->_has_capture_groups($pattern);
 
-  my %versions = 
-    map { 
-      if ($_ =~ $pattern and defined $1) { 
-        ( $1 => $_ )
-      } else {
-        ()
-      }
-    } 
-    @files;
+  my %versions = map { 
+    ($_ =~ $pattern and defined $1) ? ( $1 => $_ ) : ()
+  } @files;
 
   if (scalar keys %versions) {
     $self->{$platform}{versions} = \%versions;
