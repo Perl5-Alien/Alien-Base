@@ -65,10 +65,13 @@ sub connection {
   return $self->{connection}
     if $self->{connection};
 
+  # allow easy use of Net::FTP subclass
+  $self->{connection_class} ||= 'Net::FTP';
+
   my $server = $self->{host} 
     or croak "Must specify a host for FTP service";
 
-  my $ftp = Net::FTP->new($server, Debug => 0)
+  my $ftp = $self->{connection_class}->new($server, Debug => 0)
     or croak "Cannot connect to $server: $@";
 
   $ftp->login() 

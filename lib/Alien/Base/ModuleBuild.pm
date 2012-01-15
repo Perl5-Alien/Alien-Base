@@ -31,7 +31,8 @@ our $Verbose ||= 0;
 #     pattern
 #     files -- holder for found files (on ftp server)
 #     versions -- holder for version=>file
-#   connection  -- holder for Net::FTP object (non-api)
+#   connection  -- holder for Net::FTP-like object (needs cwd, ls, and get methods)
+#   connection_class -- holder for class type (defaults to 'Net::FTP')
 
 sub new {
   my $class = shift;
