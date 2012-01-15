@@ -4,4 +4,5 @@ Initially the target will be Alien::GSL (and probably other Gnu libraries) but i
 
 Special thanks go out to:
 
-Christian Walde (Mithaldu) for productive conversations about component interoperablility
+- Christian Walde (Mithaldu) for productive conversations about component interoperablility,
+- kmx for writing Alien::Tidyp from which I drew many of my initial ideas,
