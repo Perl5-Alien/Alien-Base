@@ -5,6 +5,9 @@ use warnings;
 
 use Carp;
 
+use Alien::Base::ModuleBuild::Repository::HTTP;
+use Alien::Base::ModuleBuild::Repository::FTP;
+
 sub new {
   my $class = shift;
   my ($spec) = @_;
@@ -32,96 +35,6 @@ sub folder {
   return $self->{folder};
 }
 
-sub _has_capture_groups {
-  my $self = shift;
-  my $re = shift;
-  "" =~ /|$re/;
-  return $#+;
-}
-
-package Alien::Base::ModuleBuild::Repository::HTTP;
-
-use strict;
-use warnings;
-
-our @ISA = 'Alien::Base::ModuleBuild::Repository';
-
-sub connection {
-
-  my $self = shift;
-
-  return $self->{connection}
-    if $self->{connection};
-
-  # allow easy use of HTTP::Tiny subclass
-  $self->{connection_class} ||= 'HTTP::Tiny';
-
-  my $http = $self->{connection_class}->new();
-
-  $self->{connection} = $http;
-
-  return $http;
-
-}
-
-sub get_file {
-  my $self = shift;
-  my $file = shift || croak "Must specify file to download";
-  my $folder = shift || die "get_file needs folder";
-
-  my $host = $self->{host};
-  my $from = $self->{folder};
-
-  my $http = $self->connection();
-
-  local $CWD = "$folder";
-
-  my $response = HTTP::Tiny->new->mirror( $host . $from . $file, $file );
-  croak "Download failed: " . $response->{reason} unless $response->{success};
-
-  return 1;
-}
-
-package Alien::Base::ModuleBuild::Repository::FTP;
-
-use strict;
-use warnings;
-
-our @ISA = 'Alien::Base::ModuleBuild::Repository';
-
-use Carp;
-use Net::FTP;
-use File::chdir;
-
-sub connection {
-  my $self = shift;
-
-  return $self->{connection}
-    if $self->{connection};
-
-  # allow easy use of Net::FTP subclass
-  $self->{connection_class} ||= 'Net::FTP';
-
-  my $server = $self->{host} 
-    or croak "Must specify a host for FTP service";
-
-  my $ftp = $self->{connection_class}->new($server, Debug => 0)
-    or croak "Cannot connect to $server: $@";
-
-  $ftp->login() 
-    or croak "Cannot login ", $ftp->message;
-
-  if (defined $self->{folder}) {
-    $ftp->cwd($self->{folder}) 
-      or croak "Cannot change working directory ", $ftp->message;
-  }
-
-  $ftp->binary();
-  $self->{connection} = $ftp;
-
-  return $ftp;
-}
-
 sub probe {
   my $self = shift;
   my $platform = shift || 'src';
@@ -145,7 +58,7 @@ sub probe {
 
   } else {
 
-    @files = $self->connection()->ls();
+    @files = $self->list_files();
     
     $self->{$platform}{files} = \@files;
 
@@ -175,17 +88,11 @@ sub probe {
   
 }
 
-sub get_file {
+sub _has_capture_groups {
   my $self = shift;
-  my $file = shift || croak "Must specify file to download";
-  my $folder = shift || die "get_file needs folder";
-
-  my $ftp = $self->connection();
-
-  local $CWD = "$folder";
-  $ftp->get( $file ) or croak "Download failed: " . $ftp->message();
-
-  return 1;
+  my $re = shift;
+  "" =~ /|$re/;
+  return $#+;
 }
 
 1;

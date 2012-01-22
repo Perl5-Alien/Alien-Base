@@ -43,6 +43,7 @@ sub new {
       ? @{ $self->{alien_repository} }
       : $self->{alien_repository};
 
+  # map repository constructs to A::B::MB::R objects
   @repos = 
     map { Alien::Base::ModuleBuild::Repository->new($_) } 
     @repos;
@@ -55,21 +56,27 @@ sub new {
 sub alien_main_procedure {
   my $self = shift;
 
-  #my $files = $self->alien_probe_ftp('source');
+  #TODO make this work for more that one repo
+  my $repo = $self->{alien_repository}->[0];
 
-  #my @ordered_files;
-  #if (ref $files eq 'HASH') {
-    # hash structure is like {version => filename}
-  #  @ordered_files = 
-  #    map  { $files->{$_} } 
-  #    sort { versioncmp($a,$b) }
-  #    keys %$files;
-  #} else {
-  #  @ordered_files = sort { versioncmp($a,$b) } @$files;
-  #}
+  my $files = $repo->probe();
 
-  #my $file = $ordered_files[-1];
-  #$self->alien_get_file_ftp('source', $file);
+  my @ordered_files;
+  if (ref $files eq 'HASH') {
+    #hash structure is like {version => filename}
+    @ordered_files = 
+      map  { $files->{$_} } 
+      sort { versioncmp($a,$b) }
+      keys %$files;
+  } else {
+    @ordered_files = sort { versioncmp($a,$b) } @$files;
+  }
+
+  #TODO allow for specific version
+  my $file = $ordered_files[-1];
+
+  local $CWD = $self->alien_temp_folder;
+  $repo->get_file($file);
 }
 
 sub alien_temp_folder {

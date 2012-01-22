@@ -28,9 +28,9 @@ ok( ! @non_matching, 'with non-capturing pattern, only matching results are retu
 my $tempdir = File::Temp->newdir();
 ok( -d "$tempdir", 'Temporary folder exists');
 my $file = $files->[0];
-$repo->get_file($file, $tempdir);
 {
   local $CWD = "$tempdir";
+  $repo->get_file($file);
   ok( -e $file, 'Downloaded file exists');
 }
 
