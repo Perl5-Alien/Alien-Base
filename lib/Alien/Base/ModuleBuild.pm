@@ -21,6 +21,7 @@ our $Verbose ||= 0;
 ## Extra parameters in $self (all (toplevel) should start with 'alien_')
 # alien_name -- name of library 
 # alien_temp_folder -- folder name or File::Temp object for download/build
+# alien_share_folder -- full folder name for $self->{share_dir}
 # alien_build_commands -- arrayref of commands for building
 # alien_version_check -- command to execute to check if install/version
 # alien_repository -- hash of information about source repo on ftp
@@ -92,6 +93,22 @@ sub alien_temp_folder {
   return $tempdir;
 }
 
+sub alien_share_folder {
+  my $self = shift;
+
+  return $self->{alien_share_folder}
+    if defined $self->{alien_share_folder};
+
+  my $location = do {
+    # for share_dir install get full path to share_dir
+    local $CWD = $self->base_dir();
+    push @CWD, $self->{'share_dir'};
+    "$CWD";    
+  };
+
+  return $location;
+}
+
 sub alien_check_installed_version {
   my $self = shift;
   my $name = $self->{alien_name};
@@ -107,20 +124,31 @@ sub alien_check_installed_version {
   return $version;
 }
 
+sub alien_interpolate {
+  my $self = shift;
+  my ($string) = @_;
+
+  my $prefix = $self->alien_exec_prefix;
+  my $share  = $self->alien_share_folder;
+
+  # substitute:
+  #   install location share_dir (placeholder: %s)
+  $string =~ s/(?<!\%)\%s/$share/g;
+  #   local exec prefix (ph: %p)
+  $string =~ s/(?<!\%)\%p/$prefix/g;
+
+  #remove escapes
+  $string =~ s/\%(?=\%)//g;
+
+  return $string;
+}
+
 ###################
 #  Build Methods  #
 ###################
 
 sub alien_build {
   my $self = shift;
-  my $prefix = $self->alien_exec_prefix;
-
-  my $location = do {
-    # for share_dir install get full path to share_dir
-    local $CWD = $self->base_dir();
-    push @CWD, $self->{'share_dir'};
-    "$CWD";    
-  };
 
   my $commands = 
     $self->{alien_build_commands} 
@@ -129,11 +157,7 @@ sub alien_build {
   local $CWD = $self->alien_temp_folder;
 
   foreach my $command (@$commands) {
-    # subsitute:
-    #   install location share_dir (placeholder: %s)
-    $command =~ s/\%s/$location/;
-    #   local exec prefix (ph: %p)
-    $command =~ s/\%p/$prefix/;
+    $command = $self->alien_interpolate($command);
 
     system( $command );
     if ($?) {
