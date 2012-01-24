@@ -21,7 +21,6 @@ our $Verbose ||= 0;
 ## Extra parameters in $self (all (toplevel) should start with 'alien_')
 # alien_name -- name of library 
 # alien_temp_folder -- folder name or File::Temp object for download/build
-# alien_share_folder -- full folder name for $self->{share_dir}
 # alien_build_commands -- arrayref of commands for building
 # alien_version_check -- command to execute to check if install/version
 # alien_repository -- hash (or arrayref of hashes) of information about source repo on ftp
@@ -30,10 +29,11 @@ our $Verbose ||= 0;
 #   folder -- ftp folder containing source
 #   platform -- src or platform
 #     pattern
-#     files -- holder for found files (on ftp server)
-#     versions -- holder for version=>file
-#   connection  -- holder for Net::FTP-like object (needs cwd, ls, and get methods)
-#   connection_class -- holder for class type (defaults to 'Net::FTP')
+#     (non-api) files -- holder for found files (on ftp server)
+#     (non-api) versions -- holder for version=>file
+#   (non-api) connection  -- holder for Net::FTP-like object (needs cwd, ls, and get methods)
+#   (non-api) connection_class -- holder for class type (defaults to 'Net::FTP')
+# (non-api, set share_dir) alien_share_folder -- full folder name for $self->{share_dir}
 
 sub new {
   my $class = shift;
