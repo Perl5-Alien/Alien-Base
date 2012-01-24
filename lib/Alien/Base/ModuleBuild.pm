@@ -24,7 +24,7 @@ our $Verbose ||= 0;
 # alien_share_folder -- full folder name for $self->{share_dir}
 # alien_build_commands -- arrayref of commands for building
 # alien_version_check -- command to execute to check if install/version
-# alien_repository -- hash of information about source repo on ftp
+# alien_repository -- hash (or arrayref of hashes) of information about source repo on ftp
 #   protocol -- ftp or http
 #   host -- ftp server for source
 #   folder -- ftp folder containing source
@@ -40,7 +40,7 @@ sub new {
   my $self = $class->SUPER::new(@_);
 
   my @repos = 
-    (ref $self->{alien_repository})
+    ( (ref $self->{alien_repository} || '') eq 'ARRAY')
       ? @{ $self->{alien_repository} }
       : $self->{alien_repository};
 
