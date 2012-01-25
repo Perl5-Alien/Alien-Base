@@ -1,8 +1,8 @@
 use strict;
 use warnings;
 
-use File::chdir;
-use File::Temp ();
+#use File::chdir;
+#use File::Temp ();
 
 use Test::More;
 use_ok( 'Alien::Base::ModuleBuild::Repository' );
@@ -10,23 +10,33 @@ use_ok( 'Alien::Base::ModuleBuild::Repository' );
 END{ done_testing() }
 
 my $repo = Alien::Base::ModuleBuild::Repository->new({ 
-  protocol => 'ftp',
+  protocol => 'test',
   host => 'ftp.gnu.org',
   folder => '/gnu/gsl',
-  src => {},
 });
 
-__END__
-my $files = $repo->probe();
-is( ref $files, 'ARRAY', 'without pattern, probe returns arrayref');
-ok( scalar @$files, 'GSL has available files');
+my @filenames = $repo->list_files;
 
-my $pattern = qr/^gsl-[\d\.]+\.tar\.gz\.sig$/;
+{
+  my @files = $repo->probe();
+
+  is( scalar @files, scalar @filenames, 'without pattern, probe returns an object for each file');
+  isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
+}
+
+my $pattern = qr/^gsl-[\d\.]+\.tar\.gz$/;
 $repo->{src}{pattern} = $pattern;
-$files = $repo->probe();
-my @non_matching = grep{ $_ !~ $pattern } @$files;
-is( ref $files, 'ARRAY', 'with non-capturing pattern, probe returns arrayref');
-ok( ! @non_matching, 'with non-capturing pattern, only matching results are returned' );
+@filenames = grep { $_ =~ $pattern } @filenames;
+
+{
+  my @files = $repo->probe();
+
+  is( scalar @files, scalar @filenames, 'with pattern, probe returns an object for each matching file');
+  isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
+  ok( ! defined $files[0]->version, 'without capture, no version information is available');
+}
+
+__END__
 
 my $tempdir = File::Temp->newdir();
 ok( -d "$tempdir", 'Temporary folder exists');

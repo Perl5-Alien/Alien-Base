@@ -7,6 +7,7 @@ use Carp;
 
 use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
+use Alien::Base::ModuleBuild::Repository::TEST;
 
 use Alien::Base::ModuleBuild::File;
 
@@ -16,7 +17,7 @@ sub new {
 
   my $protocol = $spec->{protocol} = uc $spec->{protocol};
   croak "Unsupported protocol: $protocol" 
-    unless grep {$_ eq $protocol} qw/FTP HTTP/; 
+    unless grep {$_ eq $protocol} qw/FTP HTTP TEST/; 
 
   my $obj = bless $spec, "Alien::Base::ModuleBuild::Repository::$protocol";
 
@@ -39,10 +40,14 @@ sub folder {
 
 sub probe {
   my $self = shift;
-  my $platform = shift || 'src';
+  my $platform = shift;
 
-  croak "Unknown platform $platform"
-    unless exists $self->{$platform};
+  if (defined $platform) {
+    croak "Unknown platform $platform"
+      unless exists $self->{$platform};
+  } else {
+    $platform = 'src';
+  }
 
   my $pattern = $self->{$platform}{pattern};
 
@@ -60,7 +65,7 @@ sub probe {
     filename   => $_,
   } } @files;
 
-  if ($self->_has_capture_groups($pattern)) {
+  if ($pattern and $self->_has_capture_groups($pattern)) {
     foreach my $file (@files) {
       $file->{version} = $1 if $file =~ $pattern;
     }
