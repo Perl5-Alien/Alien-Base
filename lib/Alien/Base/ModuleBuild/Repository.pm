@@ -13,13 +13,13 @@ use Alien::Base::ModuleBuild::File;
 
 sub new {
   my $class = shift;
-  my ($spec) = @_;
+  my $self = ref $_[0] ? shift : { @_ };
 
-  my $protocol = $spec->{protocol} = uc $spec->{protocol};
+  my $protocol = $self->{protocol} = uc $self->{protocol};
   croak "Unsupported protocol: $protocol" 
     unless grep {$_ eq $protocol} qw/FTP HTTP TEST/; 
 
-  my $obj = bless $spec, "Alien::Base::ModuleBuild::Repository::$protocol";
+  my $obj = bless $self, "Alien::Base::ModuleBuild::Repository::$protocol";
 
   return $obj;
 }
