@@ -12,6 +12,11 @@ sub new {
   return $self;
 }
 
+sub has_version {
+  my $self = shift;
+  return defined $self->version;
+}
+
 sub platform   { shift->{platform}   }
 sub repository { shift->{repository} }
 sub version    { shift->{version}    }
