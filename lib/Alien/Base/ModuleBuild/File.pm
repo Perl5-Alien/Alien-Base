@@ -12,6 +12,7 @@ sub new {
   return $self;
 }
 
+sub platform   { shift->{platform}   }
 sub repository { shift->{repository} }
 sub version    { shift->{version}    }
 sub filename   { shift->{filename}   }

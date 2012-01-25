@@ -56,6 +56,7 @@ sub probe {
 
   @files = map { +{ 
     repository => $self,
+    platform   => $platform,
     filename   => $_,
   } } @files;
 
