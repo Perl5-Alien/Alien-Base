@@ -5,12 +5,11 @@ use warnings;
 
 sub new {
   my $class = shift;
-  my ($opts) = ref $_[0] ? shift : @_;
+  my ($self) = ref $_[0] ? shift : { @_ };
 
-  bless $opts, $class;
+  bless $self, $class;
 
-  return $opts;
-
+  return $self;
 }
 
 sub files { shift->{files} }
