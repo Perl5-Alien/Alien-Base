@@ -20,3 +20,6 @@ sub add_files {
   push @{ $self->{files} }, @_;
   return $self->files;
 }
+
+1;
+
