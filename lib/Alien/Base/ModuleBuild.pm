@@ -8,7 +8,6 @@ use parent 'Module::Build';
 use Capture::Tiny 'capture_stderr';
 use Sort::Versions;
 use File::chdir;
-use Sort::Versions;
 use Carp;
 
 use Alien::Base::ModuleBuild::Repository;
@@ -22,6 +21,7 @@ our $Verbose ||= 0;
 ## Extra parameters in $self (all (toplevel) should start with 'alien_')
 # alien_name: name of library 
 # alien_temp_folder: folder name or File::Temp object for download/build
+# alien_selection_method: name of method for selecting file: (todo: newest, manual)
 # alien_build_commands: arrayref of commands for building
 # alien_version_check: command to execute to check if install/version
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
@@ -54,29 +54,22 @@ sub new {
 
   $self->{alien_cabinet} = Alien::Base::ModuleBuild::Cabinet->new();
 
+  if (! defined $self->{alien_selection_method} or $ENV{AUTOMATED_TESTING}) {
+    $self->{alien_selection_method} = 'newest'
+  } 
+
   return $self;
 }
 
 sub alien_main_procedure {
   my $self = shift;
+  my $cabinet = $self->{alien_cabinet};
 
   foreach my $repo (@{ $self->{alien_repository} }) {
-    $self->{alien_cabinet}->add_files( $repo->probe() );
+    $cabinet->add_files( $repo->probe() );
   }
 
-  #my @ordered_files;
-  #if (ref $files eq 'HASH') {
-  #  #hash structure is like {version => filename}
-  #  @ordered_files = 
-  #    map  { $files->{$_} } 
-  #    sort { versioncmp($a,$b) }
-  #    keys %$files;
-  #} else {
-  #  @ordered_files = sort { versioncmp($a,$b) } @$files;
-  #}
-
-  #TODO allow for specific version
-  #my $file = $ordered_files[-1];
+  $cabinet->sort_files;
 
   local $CWD = $self->alien_temp_folder;
   #$repo->get_file($file);
