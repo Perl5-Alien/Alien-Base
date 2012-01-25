@@ -65,9 +65,9 @@ sub probe {
     }
   }
 
-  @files = map {
-    Alien::Base::ModuleBuild::File->new($_)
-  } @files;
+  @files = 
+    map { Alien::Base::ModuleBuild::File->new($_) }
+    @files;
 
   return @files;
 }
