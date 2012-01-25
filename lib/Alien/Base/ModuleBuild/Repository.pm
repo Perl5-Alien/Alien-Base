@@ -67,7 +67,8 @@ sub probe {
 
   if ($pattern and $self->_has_capture_groups($pattern)) {
     foreach my $file (@files) {
-      $file->{version} = $1 if $file =~ $pattern;
+      $file->{version} = $1 
+        if $file->{filename} =~ $pattern;
     }
   }
 
