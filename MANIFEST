@@ -1,6 +1,17 @@
 Build.PL
+examples/Alien-GSL/Build.PL
 lib/Alien/Base.pm
+lib/Alien/Base/ModuleBuild.pm
+lib/Alien/Base/ModuleBuild/Cabinet.pm
+lib/Alien/Base/ModuleBuild/File.pm
+lib/Alien/Base/ModuleBuild/Repository.pm
+lib/Alien/Base/ModuleBuild/Repository/FTP.pm
+lib/Alien/Base/ModuleBuild/Repository/HTTP.pm
+lib/Alien/Base/ModuleBuild/Repository/TEST.pm
 MANIFEST			This list of files
 README
-t/ftp.t
+t/cabinet.t
+t/file.t
+t/interpolate.t
+t/repository.t
 t/version.t
