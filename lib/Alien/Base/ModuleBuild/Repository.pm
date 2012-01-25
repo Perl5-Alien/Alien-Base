@@ -8,6 +8,8 @@ use Carp;
 use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
 
+use Alien::Base::ModuleBuild::File;
+
 sub new {
   my $class = shift;
   my ($spec) = @_;
@@ -44,48 +46,30 @@ sub probe {
 
   my $pattern = $self->{$platform}{pattern};
 
-  my @files;
-  if (scalar keys %{ $self->{$platform}{versions} || {} }) {
+  my @files = $self->list_files();
 
-    return $self->{$platform}{versions};
-
-  } elsif (scalar @{ $self->{$platform}{files} || [] }) {
-
-    return $self->{$platform}{files}
-      unless $pattern;
-
-    @files = @{ $self->{$platform}{files} };
-
-  } else {
-
-    @files = $self->list_files();
-    
-    $self->{$platform}{files} = \@files;
-
-    return \@files unless $pattern;
-
+  if ($pattern) {
+    @files = grep { $_ =~ $pattern } @files;
   }
 
-  # only get here if $pattern exists
-
-  @files = grep { $_ =~ $pattern } @files;
   carp "Could not find any matching files" unless @files;
-  $self->{$platform}{files} = \@files;
 
-  return \@files
-    unless $self->_has_capture_groups($pattern);
+  @files = map { +{ 
+    repository => $self,
+    filename   => $_,
+  } } @files;
 
-  my %versions = map { 
-    ($_ =~ $pattern and defined $1) ? ( $1 => $_ ) : ()
+  if ($self->_has_capture_groups($pattern)) {
+    foreach my $file (@files) {
+      $file->{version} = $1 if $file =~ $pattern;
+    }
+  }
+
+  @files = map {
+    Alien::Base::ModuleBuild::File->new($_)
   } @files;
 
-  if (scalar keys %versions) {
-    $self->{$platform}{versions} = \%versions;
-    return \%versions;
-  } else {
-    return \@files;
-  }
-  
+  return @files;
 }
 
 sub _has_capture_groups {
