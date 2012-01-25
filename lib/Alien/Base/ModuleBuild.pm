@@ -12,6 +12,7 @@ use Sort::Versions;
 use Carp;
 
 use Alien::Base::ModuleBuild::Repository;
+use Alien::Base::ModuleBuild::Cabinet;
 
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
@@ -29,11 +30,10 @@ our $Verbose ||= 0;
 #   folder -- ftp folder containing source
 #   platform -- src or platform
 #     pattern
-#     (non-api) files -- holder for found files (on ftp server)
-#     (non-api) versions -- holder for version=>file
 #   (non-api) connection  -- holder for Net::FTP-like object (needs cwd, ls, and get methods)
 #   (non-api) connection_class -- holder for class type (defaults to 'Net::FTP')
 # (non-api, set share_dir) alien_share_folder -- full folder name for $self->{share_dir}
+# (non-api) alien_cabinet -- holder for A::B::MB::Cabinet object (holds found files)
 
 sub new {
   my $class = shift;
@@ -51,16 +51,17 @@ sub new {
 
   $self->{alien_repository} = \@repos;
 
+  $self->{alien_cabinet} = Alien::Base::ModuleBuild::Cabinet->new();
+
   return $self;
 }
 
 sub alien_main_procedure {
   my $self = shift;
 
-  #TODO make this work for more that one repo
-  my $repo = $self->{alien_repository}->[0];
-
-  my $files = $repo->probe();
+  foreach my $repo (@{ $self->{alien_repository} }) {
+    $self->{alien_cabinet}->add_files( $repo->probe() );
+  }
 
   my @ordered_files;
   if (ref $files eq 'HASH') {
