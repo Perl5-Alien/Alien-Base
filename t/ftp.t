@@ -7,6 +7,8 @@ use File::Temp ();
 use Test::More;
 use_ok( 'Alien::Base::ModuleBuild::Repository' );
 
+END{ done_testing() }
+
 my $repo = Alien::Base::ModuleBuild::Repository->new({ 
   protocol => 'ftp',
   host => 'ftp.gnu.org',
@@ -14,6 +16,7 @@ my $repo = Alien::Base::ModuleBuild::Repository->new({
   src => {},
 });
 
+__END__
 my $files = $repo->probe();
 is( ref $files, 'ARRAY', 'without pattern, probe returns arrayref');
 ok( scalar @$files, 'GSL has available files');

@@ -64,22 +64,22 @@ sub alien_main_procedure {
     $self->{alien_cabinet}->add_files( $repo->probe() );
   }
 
-  my @ordered_files;
-  if (ref $files eq 'HASH') {
-    #hash structure is like {version => filename}
-    @ordered_files = 
-      map  { $files->{$_} } 
-      sort { versioncmp($a,$b) }
-      keys %$files;
-  } else {
-    @ordered_files = sort { versioncmp($a,$b) } @$files;
-  }
+  #my @ordered_files;
+  #if (ref $files eq 'HASH') {
+  #  #hash structure is like {version => filename}
+  #  @ordered_files = 
+  #    map  { $files->{$_} } 
+  #    sort { versioncmp($a,$b) }
+  #    keys %$files;
+  #} else {
+  #  @ordered_files = sort { versioncmp($a,$b) } @$files;
+  #}
 
   #TODO allow for specific version
-  my $file = $ordered_files[-1];
+  #my $file = $ordered_files[-1];
 
   local $CWD = $self->alien_temp_folder;
-  $repo->get_file($file);
+  #$repo->get_file($file);
 }
 
 sub alien_temp_folder {

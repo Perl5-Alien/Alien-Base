@@ -5,7 +5,7 @@ use warnings;
 
 sub new {
   my $class = shift;
-  my ($self) = ref $_[0] ? shift : { @_ };
+  my $self = ref $_[0] ? shift : { @_ };
 
   bless $self, $class;
 
