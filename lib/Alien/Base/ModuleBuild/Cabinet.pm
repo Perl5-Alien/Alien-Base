@@ -25,12 +25,12 @@ sub add_files {
 sub sort_files {
   my $self = shift;
 
-  @{ $self->{$files} } 
+  @{ $self->{files} } 
     = sort { 
       $b->has_version <=> $a->has_version 
       || _versioncmp($b,$a)
     }
-    @{ $self->{$files} };
+    @{ $self->{files} };
 
   return;
 }
