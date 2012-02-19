@@ -12,8 +12,23 @@ use Alien::Base::ModuleBuild::Repository::TEST;
 use Alien::Base::ModuleBuild::File;
 
 sub new {
-  my $class = shift;
-  my $self = ref $_[0] ? shift : { @_ };
+  my $base = shift;
+  my $self;
+
+  # allow building from a base object
+  my $spec = ref $_[0] ? shift : { @_ };
+  if (ref $base) {
+    # if first arg was an object, use it for generics
+    $self = $base;
+    # then override with specifics
+    $self->{$_} = $spec->{$_} for keys %$spec;
+    # default to 'src' platform if not otherwise given
+    $self->{platform} = 'src' unless $self->{platform};
+
+  } else {
+    # if first arg was not an object, only use specific
+    $self = $spec;
+  }
 
   my $protocol = $self->{protocol} = uc $self->{protocol};
   croak "Unsupported protocol: $protocol" 
@@ -40,16 +55,8 @@ sub folder {
 
 sub probe {
   my $self = shift;
-  my $platform = shift;
 
-  if (defined $platform) {
-    croak "Unknown platform $platform"
-      unless exists $self->{$platform};
-  } else {
-    $platform = 'src';
-  }
-
-  my $pattern = $self->{$platform}{pattern};
+  my $pattern = $self->{pattern};
 
   my @files = $self->list_files();
 
@@ -61,7 +68,7 @@ sub probe {
 
   @files = map { +{ 
     repository => $self,
-    platform   => $platform,
+    platform   => $self->{platform},
     filename   => $_,
   } } @files;
 

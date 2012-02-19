@@ -40,15 +40,33 @@ sub new {
   my $class = shift;
   my $self = $class->SUPER::new(@_);
 
-  my @repos = 
-    ( (ref $self->{alien_repository} || '') eq 'ARRAY')
-      ? @{ $self->{alien_repository} }
-      : $self->{alien_repository};
+  #my @repos = 
+  #  ( (ref $self->{alien_repository} || '') eq 'ARRAY')
+  #    ? @{ $self->{alien_repository} }
+  #    : $self->{alien_repository};
+
+  my $base_repo = Alien::Base::ModuleBuild::Repository->new(
+    protocol => delete $self->{alien_repository}{protocol},
+    host     => delete $self->{alien_repository}{host},
+    folder   => delete $self->{alien_repository}{folder},
+    pattern  => delete $self->{alien_repository}{pattern},
+  );
+
+  my @platforms = keys %{ $self->{alien_repository} };
+
+  my @repos;
+  if ( @platforms ) {
+    # if plaform specifics exist, use base to build repos
+    @repos = 
+      map { $base_repo->new( platform => $_, %{$self->{alien_repository}{$_}}) } 
+      @platforms;
+  } else {
+    # if no platform specifics, convert base to full repo and push
+    $default_repo->{platform} = 'src';
+    push @repos, $base_repo;
+  }
 
   # map repository constructs to A::B::MB::R objects
-  @repos = 
-    map { Alien::Base::ModuleBuild::Repository->new($_) } 
-    @repos;
 
   $self->{alien_repository} = \@repos;
 

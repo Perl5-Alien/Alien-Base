@@ -20,11 +20,11 @@ my @filenames = $repo->list_files;
 }
 
 my $pattern = qr/^gsl-[\d\.]+\.tar\.gz$/;
-$repo->{src}{pattern} = $pattern;
+my $repo_pattern = $repo->new( pattern => $pattern );
 @filenames = grep { $_ =~ $pattern } @filenames;
 
 {
-  my @files = $repo->probe();
+  my @files = $repo_pattern->probe();
 
   is( scalar @files, scalar @filenames, 'with pattern, probe returns an object for each matching file');
   isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
@@ -32,10 +32,10 @@ $repo->{src}{pattern} = $pattern;
 }
 
 $pattern = qr/^gsl-([\d\.])+\.tar\.gz$/;
-$repo->{src}{pattern} = $pattern;
+my $repo_pattern_capture = $repo->new( pattern => $pattern );
 
 {
-  my @files = $repo->probe();
+  my @files = $repo_pattern_capture->probe();
 
   is( scalar @files, scalar @filenames, 'with pattern, probe returns an object for each matching file');
   isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
