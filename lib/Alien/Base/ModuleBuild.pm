@@ -26,13 +26,14 @@ our $Verbose ||= 0;
 # alien_version_check: command to execute to check if install/version
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
 #   |-- protocol: ftp or http
+#   |-- protocol_class: holder for class type (defaults to 'Net::FTP' or 'HTTP::Tiny')
 #   |-- host: ftp server for source
 #   |-- folder: ftp folder containing source
+#   |-- pattern: qr regex matching acceptable files, if has capture group those are version numbers
 #   |-- platform: src or platform
-#   |     |-- pattern
+#   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
-#   |-- (non-api) connection_class: holder for class type (defaults to 'Net::FTP')
 # (non-api, set share_dir) alien_share_folder: full folder name for $self->{share_dir}
 # (non-api) alien_cabinet: holder for A::B::MB::Cabinet object (holds found files)
 
@@ -40,16 +41,13 @@ sub new {
   my $class = shift;
   my $self = $class->SUPER::new(@_);
 
-  #my @repos = 
-  #  ( (ref $self->{alien_repository} || '') eq 'ARRAY')
-  #    ? @{ $self->{alien_repository} }
-  #    : $self->{alien_repository};
-
   my $base_repo = Alien::Base::ModuleBuild::Repository->new(
-    protocol => delete $self->{alien_repository}{protocol},
-    host     => delete $self->{alien_repository}{host},
-    folder   => delete $self->{alien_repository}{folder},
-    pattern  => delete $self->{alien_repository}{pattern},
+    protocol       => delete $self->{alien_repository}{protocol},
+    protocol_class => delete $self->{alien_repository}{protocol_class},
+    host           => delete $self->{alien_repository}{host},
+    folder         => delete $self->{alien_repository}{folder},
+    pattern        => delete $self->{alien_repository}{pattern},
+    platform       => 'src',
   );
 
   my @platforms = keys %{ $self->{alien_repository} };

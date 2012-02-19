@@ -15,9 +15,9 @@ sub connection {
     if $self->{connection};
 
   # allow easy use of HTTP::Tiny subclass
-  $self->{connection_class} ||= 'HTTP::Tiny';
+  $self->{protocol_class} ||= 'HTTP::Tiny';
 
-  my $http = $self->{connection_class}->new();
+  my $http = $self->{protocol_class}->new();
 
   $self->{connection} = $http;
 
