@@ -22,8 +22,6 @@ sub new {
     $self = $base;
     # then override with specifics
     $self->{$_} = $spec->{$_} for keys %$spec;
-    # default to 'src' platform if not otherwise given
-    $self->{platform} = 'src' unless $self->{platform};
 
   } else {
     # if first arg was not an object, only use specific
@@ -68,7 +66,7 @@ sub probe {
 
   @files = map { +{ 
     repository => $self,
-    platform   => $self->{platform},
+    platform   => $self->{platform} || 'src',
     filename   => $_,
   } } @files;
 

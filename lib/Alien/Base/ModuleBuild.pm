@@ -61,8 +61,6 @@ sub new {
       map { $base_repo->new( platform => $_, %{$self->{alien_repository}{$_}}) } 
       @platforms;
   } else {
-    # if no platform specifics, convert base to full repo and push
-    $default_repo->{platform} = 'src';
     push @repos, $base_repo;
   }
 
