@@ -52,6 +52,7 @@ sub new {
 
   my @platforms = keys %{ $self->{alien_repository} };
 
+  # map repository constructs to A::B::MB::R objects
   my @repos;
   if ( @platforms ) {
     # if plaform specifics exist, use base to build repos
@@ -61,8 +62,6 @@ sub new {
   } else {
     push @repos, $base_repo;
   }
-
-  # map repository constructs to A::B::MB::R objects
 
   $self->{alien_repository} = \@repos;
 
