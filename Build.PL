@@ -9,11 +9,12 @@ my $builder = Module::Build->new(
   dist_author => 'Joel A. Berger <joel.a.berger@gmail.com>',
   license  => 'perl',
   requires => {
-    'perl' => '5.8.1',
-    'parent' => 0,
-    'Capture::Tiny' => 0,
-    'File::chdir' => 0,
-    #'Sort::Versions' => 0,
+    'perl'            => '5.8.1',
+    'parent'          => 0,
+    'Capture::Tiny'   => 0,
+    'File::chdir'     => 0,
+    'Sort::Versions'  => 0,
+    'List::MoreUtils' => 0,
   },
 );
 
