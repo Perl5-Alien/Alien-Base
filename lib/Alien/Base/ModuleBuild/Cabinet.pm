@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Sort::Versions;
+use List::MoreUtils qw/part/;
 
 sub new {
   my $class = shift;
@@ -25,25 +26,17 @@ sub add_files {
 sub sort_files {
   my $self = shift;
 
-  @{ $self->{files} } 
-    = sort { 
-      $b->has_version <=> $a->has_version 
-      || _versioncmp($b,$a)
-    }
-    @{ $self->{files} };
+  # split files which have versions and those which don't (sorted on filename)
+  my ($name, $version) = part { $_->has_version } @{ $self->{files} };
+
+  # store the sorted lists of versioned, then non-versioned
+  my @sorted;
+  push @sorted, sort { versioncmp($b,$a) } @$version;
+  push @sorted, sort { versioncmp($b,$a) } @$name;
+
+  $self->{files} = \@sorted;
 
   return;
-}
-
-####################
-# helper function(s)
-
-
-sub _versioncmp {
-  my ($x, $y) = map {
-    $_->has_version ? $_->version : $_->filename;
-  } @_;
-  return versioncmp ( $x, $y );
 }
 
 1;
