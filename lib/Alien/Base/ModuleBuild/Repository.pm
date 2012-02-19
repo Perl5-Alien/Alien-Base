@@ -4,12 +4,25 @@ use strict;
 use warnings;
 
 use Carp;
+use Module::Loaded qw/is_loaded/;
+
+use Alien::Base::ModuleBuild::File;
 
 use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
 use Alien::Base::ModuleBuild::Repository::TEST;
 
-use Alien::Base::ModuleBuild::File;
+# setup protocol specific classes
+# Alien:: author can override these defaults using package variable
+our %Repository_Class;
+my %default_repository_class = (
+  HTTP => 'Alien::Base::ModuleBuild::Repository::HTTP',
+  FTP  => 'Alien::Base::ModuleBuild::Repository::FTP',
+  TEST => 'Alien::Base::ModuleBuild::Repository::TEST',
+);
+foreach my $type (keys %default_repository_class) {
+  $Repository_Class{$type} ||= $default_repository_class{$type};
+}
 
 sub new {
   my $base = shift;
@@ -30,9 +43,9 @@ sub new {
 
   my $protocol = $self->{protocol} = uc $self->{protocol};
   croak "Unsupported protocol: $protocol" 
-    unless grep {$_ eq $protocol} qw/FTP HTTP TEST/; 
+    unless exists $Repository_Class{$protocol}; 
 
-  my $obj = bless $self, "Alien::Base::ModuleBuild::Repository::$protocol";
+  my $obj = bless $self, $Repository_Class{$protocol};
 
   return $obj;
 }

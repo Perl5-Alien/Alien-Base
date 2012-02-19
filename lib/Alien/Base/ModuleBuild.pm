@@ -57,8 +57,8 @@ sub new {
   my @repos;
   if ( @platforms ) {
     # if plaform specifics exist, use base to build repos
-    @repos = 
-      map { $base_repo->new( platform => $_, %{$self->{alien_repository}{$_}}) } 
+    push @repos, 
+      map { $base_repo->new( platform => $_, %{$self->{alien_repository}{$_}} ) } 
       @platforms;
   } else {
     push @repos, $base_repo;
