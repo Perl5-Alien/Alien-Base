@@ -1,5 +1,8 @@
 Build.PL
 examples/Alien-GSL/Build.PL
+examples/Alien-GSL/lib/Alien/GSL.pm
+examples/Alien-GSL/MANIFEST
+examples/Alien-GSL/share/PLACEHOLDER
 lib/Alien/Base.pm
 lib/Alien/Base/ModuleBuild.pm
 lib/Alien/Base/ModuleBuild/Cabinet.pm

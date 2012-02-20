@@ -16,6 +16,15 @@ my $builder = Module::Build->new(
     'Sort::Versions'  => 0,
     'List::MoreUtils' => 0,
   },
+  meta_merge => {
+    resources  => {
+      repository => "http://github.com/jberger/Alien-Base",
+    },
+    no_index => {
+      file      => [ 'README.pod' ],
+      directory => [ 'examples'   ],
+    },
+  },
 );
 
 $builder->create_build_script;
