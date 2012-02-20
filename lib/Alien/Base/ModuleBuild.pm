@@ -98,7 +98,11 @@ sub alien_main_procedure {
   $cabinet->sort_files;
 
   {
+    use Data::Dumper;
     local $CWD = $self->alien_temp_folder;
+    warn Dumper $cabinet->files;
+    exit;
+
     my $file = $cabinet->files->[0];
     my $filename = $file->get;
 

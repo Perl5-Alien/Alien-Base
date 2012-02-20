@@ -31,7 +31,7 @@ my $repo_pattern = $repo->new( pattern => $pattern );
   ok( ! defined $files[0]->version, 'without capture, no version information is available');
 }
 
-$pattern = qr/^gsl-([\d\.])+\.tar\.gz$/;
+$pattern = qr/^gsl-([\d\.]+)\.tar\.gz$/;
 my $repo_pattern_capture = $repo->new( pattern => $pattern );
 
 {

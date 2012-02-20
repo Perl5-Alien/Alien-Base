@@ -22,7 +22,7 @@ my $builder = Alien::Base::ModuleBuild->new(
     protocol => 'ftp',
     host     => 'ftp.gnu.org',
     folder   => '/gnu/gsl',
-    pattern  => qr/^gsl-([\d\.])+\.tar\.gz$/,
+    pattern  => qr/^gsl-([\d\.]+)\.tar\.gz$/,
   },
 );
 $builder->create_build_script;
