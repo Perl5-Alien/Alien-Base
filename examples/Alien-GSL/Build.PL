@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use lib '../../lib';
+
 use Alien::Base::ModuleBuild;
 
 my $builder = Alien::Base::ModuleBuild->new(
@@ -18,11 +20,9 @@ my $builder = Alien::Base::ModuleBuild->new(
   alien_name => 'gsl',
   alien_repository => {
     protocol => 'ftp',
-    host  => 'ftp.gnu.org',
-    folder  => '/gnu/gsl',
-    src => {
-      pattern => qr/^gsl-([\d\.])+\.tar\.gz$/,
-    },
+    host     => 'ftp.gnu.org',
+    folder   => '/gnu/gsl',
+    pattern  => qr/^gsl-([\d\.])+\.tar\.gz$/,
   },
 );
 $builder->create_build_script;
