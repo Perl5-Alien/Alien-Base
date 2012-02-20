@@ -31,8 +31,8 @@ sub sort_files {
 
   # store the sorted lists of versioned, then non-versioned
   my @sorted;
-  push @sorted, sort { versioncmp($b,$a) } @$version;
-  push @sorted, sort { versioncmp($b,$a) } @$name;
+  push @sorted, sort { versioncmp( $b->version,  $a->version  ) } @$version if $version;
+  push @sorted, sort { versioncmp( $b->filename, $a->filename ) } @$name    if $name;
 
   $self->{files} = \@sorted;
 

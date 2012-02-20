@@ -9,6 +9,7 @@ use Capture::Tiny 'capture_stderr';
 use Sort::Versions;
 use File::chdir;
 use Carp;
+use Archive::Extract;
 
 use Alien::Base::ModuleBuild::Repository;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -39,64 +40,86 @@ our $Verbose ||= 0;
 
 sub new {
   my $class = shift;
-  my $self = $class->SUPER::new(@_);
+  my %args = @_;
+
+  $args{'share_dir'} = 'share' unless defined $args{'share_dir'};
+
+  my $self = $class->SUPER::new(%args);
+
+  my $repo_property = $self->{properties}{alien_repository};
 
   my $base_repo = Alien::Base::ModuleBuild::Repository->new(
-    protocol       => delete $self->{alien_repository}{protocol},
-    protocol_class => delete $self->{alien_repository}{protocol_class},
-    host           => delete $self->{alien_repository}{host},
-    folder         => delete $self->{alien_repository}{folder},
-    pattern        => delete $self->{alien_repository}{pattern},
+    protocol       => delete $repo_property->{protocol},
+    protocol_class => delete $repo_property->{protocol_class},
+    host           => delete $repo_property->{host},
+    folder         => delete $repo_property->{folder},
+    pattern        => delete $repo_property->{pattern},
     platform       => 'src',
   );
 
-  my @platforms = keys %{ $self->{alien_repository} };
+  my @platforms = keys %$repo_property;
 
   # map repository constructs to A::B::MB::R objects
   my @repos;
   if ( @platforms ) {
     # if plaform specifics exist, use base to build repos
     push @repos, 
-      map { $base_repo->new( platform => $_, %{$self->{alien_repository}{$_}} ) } 
+      map { $base_repo->new( platform => $_, %{$repo_property->{$_}} ) } 
       @platforms;
   } else {
     push @repos, $base_repo;
   }
 
-  $self->{alien_repository} = \@repos;
+  $self->{properties}{alien_repository} = \@repos;
 
-  $self->{alien_cabinet} = Alien::Base::ModuleBuild::Cabinet->new();
+  $self->{properties}{alien_cabinet} = Alien::Base::ModuleBuild::Cabinet->new();
 
-  if (! defined $self->{alien_selection_method} or $ENV{AUTOMATED_TESTING}) {
-    $self->{alien_selection_method} = 'newest'
+  if (! defined $self->{properties}{alien_selection_method} or $ENV{AUTOMATED_TESTING}) {
+    $self->{properties}{alien_selection_method} = 'newest'
   } 
 
   return $self;
 }
 
+sub ACTION_code {
+  my $self = shift;
+  $self->alien_main_procedure;
+  $self->SUPER::ACTION_code;
+}
+
 sub alien_main_procedure {
   my $self = shift;
-  my $cabinet = $self->{alien_cabinet};
+  my $cabinet = $self->{properties}{alien_cabinet};
 
-  foreach my $repo (@{ $self->{alien_repository} }) {
+  foreach my $repo (@{ $self->{properties}{alien_repository} }) {
     $cabinet->add_files( $repo->probe() );
   }
 
   $cabinet->sort_files;
 
-  local $CWD = $self->alien_temp_folder;
+  {
+    local $CWD = $self->alien_temp_folder;
+    my $file = $cabinet->files->[0];
+    my $filename = $file->get;
+
+    my $ae = Archive::Extract->new( archive => $filename );
+    $ae->extract;
+    warn $CWD = $ae->extract_path;
+
+    $self->alien_build;
+  }
   #$repo->get_file($file);
 }
 
 sub alien_temp_folder {
   my $self = shift;
 
-  return $self->{alien_temp_folder}
-    if defined $self->{alien_temp_folder};
+  return $self->{properties}{alien_temp_folder}
+    if defined $self->{properties}{alien_temp_folder};
 
   my $tempdir = File::Temp->newdir();
 
-  $self->{alien_temp_folder} = $tempdir;
+  $self->{properties}{alien_temp_folder} = $tempdir;
 
   return $tempdir;
 }
@@ -104,13 +127,15 @@ sub alien_temp_folder {
 sub alien_share_folder {
   my $self = shift;
 
-  return $self->{alien_share_folder}
-    if defined $self->{alien_share_folder};
+  return $self->{properties}{alien_share_folder}
+    if defined $self->{properties}{alien_share_folder};
 
   my $location = do {
+    my $share_dir = $self->{properties}{share_dir}{dist}[0];
     # for share_dir install get full path to share_dir
     local $CWD = $self->base_dir();
-    push @CWD, $self->{'share_dir'};
+    # mkdir $share_dir unless ( -d $share_dir );
+    push @CWD, $share_dir;
     "$CWD";    
   };
 
@@ -119,8 +144,8 @@ sub alien_share_folder {
 
 sub alien_check_installed_version {
   my $self = shift;
-  my $name = $self->{alien_name};
-  my $command = $self->{alien_version_check} || "pkg-config --modversion $name";
+  my $name = $self->{properties}{alien_name};
+  my $command = $self->{properties}{alien_version_check} || "pkg-config --modversion $name";
 
   my $version;
   my $err = capture_stderr {
@@ -159,17 +184,15 @@ sub alien_build {
   my $self = shift;
 
   my $commands = 
-    $self->{alien_build_commands} 
+    $self->{properties}{alien_build_commands} 
     || [ '%pconfigure --prefix=%s', 'make', 'make install' ];
-
-  local $CWD = $self->alien_temp_folder;
 
   foreach my $command (@$commands) {
     $command = $self->alien_interpolate($command);
 
     system( $command );
     if ($?) {
-      print "External command ($command) failed!\n";
+      print "External command ($command) failed! Error: $?\n";
       return 0;
     }
   }
