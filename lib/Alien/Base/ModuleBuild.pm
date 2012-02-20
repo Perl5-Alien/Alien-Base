@@ -105,7 +105,7 @@ sub alien_main_procedure {
 
     my $ae = Archive::Extract->new( archive => $filename );
     $ae->extract;
-    warn $CWD = $ae->extract_path;
+    $CWD = $ae->extract_path;
 
     $self->alien_build;
   }
