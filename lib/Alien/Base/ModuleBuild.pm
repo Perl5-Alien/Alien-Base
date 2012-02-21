@@ -26,7 +26,7 @@ our $Verbose ||= 0;
 # alien_build_commands: arrayref of commands for building
 # alien_version_check: command to execute to check if install/version
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
-#   |-- valid: string matching is_*ish M::B method or closure returning true if valid
+#   |-- valid: string matching is_*ish M::B method or closure (build object is $_[0]) returning true if valid
 #   |-- protocol: ftp or http
 #   |-- protocol_class: holder for class type (defaults to 'Net::FTP' or 'HTTP::Tiny')
 #   |-- host: ftp server for source
@@ -55,7 +55,7 @@ sub new {
     host           => delete $repo_property->{host},
     location       => delete $repo_property->{location},
     pattern        => delete $repo_property->{pattern},
-    platform       => 'src',
+    platform       => delete $repo_property->{platform} || 'src',
   );
 
   my @platforms = keys %$repo_property;
