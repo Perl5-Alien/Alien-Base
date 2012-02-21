@@ -3,9 +3,16 @@ package Alien::Base::ModuleBuild::Repository::HTTP;
 use strict;
 use warnings;
 
+use Carp;
+
+use URI;
+use HTML::LinkExtor;
+
+use Alien::Base::ModuleBuild::Utils;
+
 use parent 'Alien::Base::ModuleBuild::Repository';
 
-use Carp;
+my $has_html_parser = eval { require HTML::LinkExtor; 1 };
 
 sub connection {
 
@@ -41,7 +48,59 @@ sub get_file {
 }
 
 sub list_files {
-  croak "HTTP list_files Not Implemented";
+  my $self = shift;
+
+  my $host = $self->host;
+  my $uri = URI->new($host);
+
+  my $res = $self->connection->get($uri->abs($self->location));
+
+  unless ($res->{success}) {
+    carp $res->{reason};
+    return ();
+  }
+
+  my @links = 
+    map { $uri->abs($_) }
+    $self->find_links($res->{content});
+
+  return @links;  
+}
+
+sub find_links {
+  my $self = shift;
+  my ($html) = @_;
+
+  my @links = 
+    $has_html_parser 
+    ? find_links_preferred($html) 
+    : find_links_textbalanced($html);
+
+  return @links;
+}
+
+sub find_links_preferred {
+  my $self = shift;
+  my ($html) = @_;
+
+  my @links;
+
+  my $extor = HTML::LinkExtor->new(
+    sub { 
+      my ($tag, %attrs) = @_;
+      return unless $tag eq 'a';
+      return unless defined $attrs{href};
+      push @links, $attrs{href};
+    },
+  );
+
+  return @links;
+}
+
+sub find_links_textbalanced {
+  my $self = shift;
+  my ($html) = @_;
+  return Alien::Build::ModuleBuild::Utils::find_anchor_targets($html);
 }
 
 1;

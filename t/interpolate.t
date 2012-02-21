@@ -6,7 +6,7 @@ use Alien::Base::ModuleBuild;
 use File::Spec::Functions 'rel2abs';
 
 my $builder = {
-  share_dir => 't',
+  properties => { alien_share_folder => rel2abs 't' },
 };
 
 bless $builder, 'Alien::Base::ModuleBuild';
