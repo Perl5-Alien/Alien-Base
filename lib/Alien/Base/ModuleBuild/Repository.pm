@@ -59,10 +59,10 @@ sub host {
   return $self->{host};
 }
 
-sub folder {
+sub location {
   my $self = shift;
-  $self->{folder} = shift if @_;
-  return $self->{folder};
+  $self->{location} = shift if @_;
+  return $self->{location};
 }
 
 sub probe {

@@ -21,7 +21,7 @@ my $builder = Alien::Base::ModuleBuild->new(
   alien_repository => {
     protocol => 'ftp',
     host     => 'ftp.gnu.org',
-    folder   => '/gnu/gsl',
+    location => '/gnu/gsl',
     pattern  => qr/^gsl-([\d\.]+)\.tar\.gz$/,
   },
 );

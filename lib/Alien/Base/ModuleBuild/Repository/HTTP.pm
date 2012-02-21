@@ -30,7 +30,7 @@ sub get_file {
   my $file = shift || croak "Must specify file to download";
 
   my $host = $self->{host};
-  my $from = $self->{folder};
+  my $from = $self->location;
 
   my $http = $self->connection();
 

@@ -6,8 +6,8 @@ use_ok( 'Alien::Base::ModuleBuild::Repository' );
 
 my $repo = Alien::Base::ModuleBuild::Repository->new({ 
   protocol => 'test',
-  host => 'ftp.gnu.org',
-  folder => '/gnu/gsl',
+  host     => 'ftp.gnu.org',
+  location => '/gnu/gsl',
 });
 
 my @filenames = $repo->list_files;

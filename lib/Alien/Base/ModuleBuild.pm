@@ -29,7 +29,7 @@ our $Verbose ||= 0;
 #   |-- protocol: ftp or http
 #   |-- protocol_class: holder for class type (defaults to 'Net::FTP' or 'HTTP::Tiny')
 #   |-- host: ftp server for source
-#   |-- folder: ftp folder containing source
+#   |-- location: ftp folder containing source, http addr to page with links
 #   |-- pattern: qr regex matching acceptable files, if has capture group those are version numbers
 #   |-- platform: src or platform
 #   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
@@ -52,7 +52,7 @@ sub new {
     protocol       => delete $repo_property->{protocol},
     protocol_class => delete $repo_property->{protocol_class},
     host           => delete $repo_property->{host},
-    folder         => delete $repo_property->{folder},
+    location       => delete $repo_property->{location},
     pattern        => delete $repo_property->{pattern},
     platform       => 'src',
   );
@@ -109,7 +109,7 @@ sub alien_main_procedure {
 
     $self->alien_build;
   }
-  #$repo->get_file($file);
+
 }
 
 sub alien_temp_folder {

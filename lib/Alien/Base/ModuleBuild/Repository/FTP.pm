@@ -26,8 +26,8 @@ sub connection {
   $ftp->login() 
     or croak "Cannot login ", $ftp->message;
 
-  if (defined $self->{folder}) {
-    $ftp->cwd($self->{folder}) 
+  if (defined $self->location) {
+    $ftp->cwd($self->location) 
       or croak "Cannot change working directory ", $ftp->message;
   }
 
