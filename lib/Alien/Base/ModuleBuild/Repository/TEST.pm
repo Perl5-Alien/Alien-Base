@@ -68,3 +68,6 @@ sub list_files {
 
   return @files;
 }
+
+1;
+
