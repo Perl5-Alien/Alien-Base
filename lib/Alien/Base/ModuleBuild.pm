@@ -88,7 +88,7 @@ sub alien_validate_repo {
 
   if (ref $valid) {
     # $valid is coderef
-
+    return $valid->($self);
   } else {
     # $valid is a string to match against is_*ish() method provided by M::B
     return $self->is_windowsish if $valid eq 'windows';
