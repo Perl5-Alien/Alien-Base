@@ -12,7 +12,7 @@ use Alien::Base::ModuleBuild::Utils;
 
 use parent 'Alien::Base::ModuleBuild::Repository';
 
-my $has_html_parser = eval { require HTML::LinkExtor; 1 };
+our $Has_HTML_Parser = eval { require HTML::LinkExtor; 1 };
 
 sub connection {
 
@@ -71,10 +71,12 @@ sub find_links {
   my $self = shift;
   my ($html) = @_;
 
-  my @links = 
-    $has_html_parser 
-    ? find_links_preferred($html) 
-    : find_links_textbalanced($html);
+  my @links;
+  if ($Has_HTML_Parser) {
+    push @links, $self->find_links_preferred($html) 
+  } else {
+    push @links, $self->find_links_textbalanced($html)
+  }
 
   return @links;
 }
@@ -94,13 +96,15 @@ sub find_links_preferred {
     },
   );
 
+  $extor->parse($html);
+
   return @links;
 }
 
 sub find_links_textbalanced {
   my $self = shift;
   my ($html) = @_;
-  return Alien::Build::ModuleBuild::Utils::find_anchor_targets($html);
+  return Alien::Base::ModuleBuild::Utils::find_anchor_targets($html);
 }
 
 1;
