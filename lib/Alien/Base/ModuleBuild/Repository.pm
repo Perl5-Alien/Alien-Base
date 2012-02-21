@@ -8,6 +8,7 @@ use Carp;
 use Module::Loaded qw/is_loaded/;
 
 use Alien::Base::ModuleBuild::File;
+use Alien::Base::ModuleBuild::Utils qw/pattern_has_capture_groups/;
 
 use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
@@ -80,11 +81,11 @@ sub probe {
 
   @files = map { +{ 
     repository => $self,
-    platform   => $self->{platform} || 'src',
+    platform   => $self->{platform},
     filename   => $_,
   } } @files;
 
-  if ($pattern and $self->_has_capture_groups($pattern)) {
+  if ($pattern and pattern_has_capture_groups($pattern)) {
     foreach my $file (@files) {
       $file->{version} = $1 
         if $file->{filename} =~ $pattern;
@@ -96,13 +97,6 @@ sub probe {
     @files;
 
   return @files;
-}
-
-sub _has_capture_groups {
-  my $self = shift;
-  my $re = shift;
-  "" =~ /|$re/;
-  return $#+;
 }
 
 # subclasses are expected to provide 
