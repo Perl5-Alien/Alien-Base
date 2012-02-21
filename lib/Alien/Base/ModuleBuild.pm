@@ -26,6 +26,7 @@ our $Verbose ||= 0;
 # alien_build_commands: arrayref of commands for building
 # alien_version_check: command to execute to check if install/version
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
+#   |-- valid: string matching is_*ish M::B method or closure returning true if valid
 #   |-- protocol: ftp or http
 #   |-- protocol_class: holder for class type (defaults to 'Net::FTP' or 'HTTP::Tiny')
 #   |-- host: ftp server for source
@@ -79,6 +80,22 @@ sub new {
   } 
 
   return $self;
+}
+
+sub alien_validate_repo {
+  my $self = shift;
+  my ($valid) = @_;
+
+  if (ref $valid) {
+    # $valid is coderef
+
+  } else {
+    # $valid is a string to match against is_*ish() method provided by M::B
+    return $self->is_windowsish if $valid eq 'windows';
+    return $self->is_unixish    if $valid eq 'unix';
+    return $self->is_vmsish     if $valid eq 'vms';
+    
+  }
 }
 
 sub ACTION_code {

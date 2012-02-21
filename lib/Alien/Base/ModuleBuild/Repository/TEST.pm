@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild::Repository::TEST;
 use strict;
 use warnings;
 
-our @ISA = 'Alien::Base::ModuleBuild::Repository';
+use parent 'Alien::Base::ModuleBuild::Repository';
 
 sub list_files {
   my $self = shift;

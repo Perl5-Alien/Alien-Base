@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild::Repository::HTTP;
 use strict;
 use warnings;
 
-our @ISA = 'Alien::Base::ModuleBuild::Repository';
+use parent 'Alien::Base::ModuleBuild::Repository';
 
 use Carp;
 

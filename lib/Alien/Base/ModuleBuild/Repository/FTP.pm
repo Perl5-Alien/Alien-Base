@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild::Repository::FTP;
 use strict;
 use warnings;
 
-our @ISA = 'Alien::Base::ModuleBuild::Repository';
+use parent 'Alien::Base::ModuleBuild::Repository';
 
 use Carp;
 use Net::FTP;
