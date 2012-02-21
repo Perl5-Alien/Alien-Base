@@ -7,7 +7,7 @@ use warnings;
 use Text::Balanced qw/extract_bracketed extract_delimited extract_multiple/;
 
 use parent 'Exporter';
-our @EXPORT_OK = qw/find_anchor_targets/;
+our @EXPORT_OK = qw/find_anchor_targets pattern_has_capture_groups/;
 
 sub find_anchor_targets {
   my $html = shift;
@@ -39,6 +39,12 @@ sub extract_href {
   } else {
     return ();
   }
+}
+
+sub pattern_has_capture_groups {
+  my $re = shift;
+  "" =~ /|$re/;
+  return $#+;
 }
 
 
