@@ -98,6 +98,11 @@ sub probe {
   return @files;
 }
 
+# subclasses are expected to provide 
+sub connection { croak "$_[0] doesn't provide 'connection' method" }
+sub list_files { croak "$_[0] doesn't provide 'list_files' method" }
+sub get_files  { croak "$_[0] doesn't provide 'get_files' method"  }
+
 sub _has_capture_groups {
   my $self = shift;
   my $re = shift;
