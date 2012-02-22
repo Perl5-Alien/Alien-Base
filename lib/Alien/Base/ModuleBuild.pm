@@ -43,6 +43,7 @@ sub new {
   my $class = shift;
   my %args = @_;
 
+  # initialize M::B property share_dir 
   $args{'share_dir'} = 'share' unless defined $args{'share_dir'};
 
   my $self = $class->SUPER::new(%args);
