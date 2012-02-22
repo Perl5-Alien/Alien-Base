@@ -26,7 +26,7 @@ our $Verbose ||= 0;
 # alien_build_commands: arrayref of commands for building
 # alien_version_check: command to execute to check if install/version
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
-#   |-- valid: string matching is_*ish M::B method or closure (build object is $_[0]) returning true if valid
+#   |-- validation: string matching os_type M::B method or closure (build object is $_[0]) returning true if valid
 #   |-- protocol: ftp or http
 #   |-- protocol_class: holder for class type (defaults to 'Net::FTP' or 'HTTP::Tiny')
 #   |-- host: ftp server for source
@@ -50,6 +50,7 @@ sub new {
   my $repo_property = $self->{properties}{alien_repository};
 
   my $base_repo = Alien::Base::ModuleBuild::Repository->new(
+    validation     => delete $repo_property->{validation},
     protocol       => delete $repo_property->{protocol},
     protocol_class => delete $repo_property->{protocol_class},
     host           => delete $repo_property->{host},
@@ -71,6 +72,21 @@ sub new {
     push @repos, $base_repo;
   }
 
+  # check validation, including c compiler for src type
+  @repos = 
+    grep { 
+      my $valid = $repo_property->{$_}{validation};
+      if (!$valid and $_ eq 'src') {
+        $valid = 'src';
+      }
+      $self->alien_validate_repo($valid) 
+    }
+    @repos;
+
+  unless (@repos) {
+    croak "No valid repositories available";
+  }
+
   $self->{properties}{alien_repository} = \@repos;
 
   $self->{properties}{alien_cabinet} = Alien::Base::ModuleBuild::Cabinet->new();
@@ -86,16 +102,21 @@ sub alien_validate_repo {
   my $self = shift;
   my ($valid) = @_;
 
+  # allow grepping without checking definedness first
+  return 1 unless defined $valid;
+
+  # $valid is coderef
   if (ref $valid) {
-    # $valid is coderef
     return $valid->($self);
-  } else {
-    # $valid is a string to match against is_*ish() method provided by M::B
-    return $self->is_windowsish if $valid eq 'windows';
-    return $self->is_unixish    if $valid eq 'unix';
-    return $self->is_vmsish     if $valid eq 'vms';
-    
+  } 
+
+  # if $valid is src, check for c compiler
+  if ($valid eq 'src') {
+    return $self->have_c_compiler;
   }
+
+  # $valid is a string (OS) to match against
+  return $self->os_type eq $valid;
 }
 
 sub ACTION_code {
@@ -223,7 +244,8 @@ sub alien_build {
 ########################
 
 sub alien_exec_prefix {
-  if ( $^O eq 'MSWin32' ) {
+  my $self = shift;
+  if ( $self->is_windowsish ) {
     return '';
   } else {
     return './';
