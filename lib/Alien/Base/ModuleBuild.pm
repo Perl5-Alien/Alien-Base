@@ -20,25 +20,31 @@ $VERSION = eval $VERSION;
 
 our $Verbose ||= 0;
 
-## Extra parameters in $self (all (toplevel) should start with 'alien_')
+## Extra parameters in A::B::MB objects (all (toplevel) should start with 'alien_')
+
 # alien_name: name of library 
 __PACKAGE__->add_property('alien_name');
+
 # alien_temp_folder: folder name or File::Temp object for download/build
 __PACKAGE__->add_property(
   alien_temp_folder =>
   default => File::Temp->newdir,
   check => sub { blessed $_ ? $_->isa('File::Temp') : -d },
 );
+
 # alien_selection_method: name of method for selecting file: (todo: newest, manual)
 #   default is specified later, when this is undef (see alien_check_installed_version)
 __PACKAGE__->add_property( alien_selection_method => 'newest' );
+
 # alien_build_commands: arrayref of commands for building
 __PACKAGE__->add_property( 
   alien_build_commands => 
   default => [ '%pconfigure --prefix=%s', 'make', 'make install' ],
 );
+
 # alien_version_check: command to execute to check if install/version
 __PACKAGE__->add_property( 'alien_version_check' );
+
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
 #   |-- validation: string matching os_type M::B method or closure (build object is $_[0]) returning true if valid
 #   |-- protocol: ftp or http
@@ -50,8 +56,10 @@ __PACKAGE__->add_property( 'alien_version_check' );
 #   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
+
 # (non-api, set share_dir) alien_share_dir: full folder name for $self->{share_dir}
 __PACKAGE__->add_property('alien_share_dir');
+
 # (non-api) alien_cabinet: holder for A::B::MB::Cabinet object (holds found files)
 __PACKAGE__->add_property(
   alien_cabinet =>
