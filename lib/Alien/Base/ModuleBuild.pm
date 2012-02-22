@@ -24,6 +24,7 @@ our $Verbose ||= 0;
 __PACKAGE__->add_property('alien_name');
 # alien_temp_folder: folder name or File::Temp object for download/build
 # alien_selection_method: name of method for selecting file: (todo: newest, manual)
+__PACKAGE__->add_property( alien_selection_method => 'newest' );
 # alien_build_commands: arrayref of commands for building
 # alien_version_check: command to execute to check if install/version
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
@@ -107,10 +108,10 @@ sub new {
 
   $self->{properties}{alien_repository} = \@repos;
 
-  #$self->{properties}{alien_cabinet} = Alien::Base::ModuleBuild::Cabinet->new();
-
-  if (! defined $self->{properties}{alien_selection_method} or $ENV{AUTOMATED_TESTING}) {
-    $self->{properties}{alien_selection_method} = 'newest'
+  # force newest for all automated testing 
+  #TODO (this probably should be checked for "input needed" rather than blindly assigned)
+  if ($ENV{AUTOMATED_TESTING}) {
+    $self->alien_selection_method('newest');
   } 
 
   return $self;
