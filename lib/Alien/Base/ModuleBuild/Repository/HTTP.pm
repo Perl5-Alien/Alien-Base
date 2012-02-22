@@ -6,7 +6,6 @@ use warnings;
 use Carp;
 
 use URI;
-use HTML::LinkExtor;
 
 use Alien::Base::ModuleBuild::Utils;
 
