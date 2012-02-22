@@ -21,6 +21,7 @@ our $Verbose ||= 0;
 
 ## Extra parameters in $self (all (toplevel) should start with 'alien_')
 # alien_name: name of library 
+__PACKAGE__->add_property('alien_name');
 # alien_temp_folder: folder name or File::Temp object for download/build
 # alien_selection_method: name of method for selecting file: (todo: newest, manual)
 # alien_build_commands: arrayref of commands for building
@@ -184,7 +185,7 @@ sub alien_share_folder {
 
 sub alien_check_installed_version {
   my $self = shift;
-  my $name = $self->{properties}{alien_name};
+  my $name = $self->alien_name;
   my $command = $self->{properties}{alien_version_check} || "pkg-config --modversion $name";
 
   my $version;
