@@ -39,6 +39,11 @@ __PACKAGE__->add_property('alien_name');
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
 # (non-api, set share_dir) alien_share_folder: full folder name for $self->{share_dir}
 # (non-api) alien_cabinet: holder for A::B::MB::Cabinet object (holds found files)
+__PACKAGE__->add_property(
+  alien_cabinet =>
+  default => Alien::Base::ModuleBuild::Repository::Cabinet->new,
+  check => sub { $_->isa('Alien::Base::ModuleBuild::Repository::Cabinet') },
+);
 
 sub new {
   my $class = shift;
@@ -91,7 +96,7 @@ sub new {
 
   $self->{properties}{alien_repository} = \@repos;
 
-  $self->{properties}{alien_cabinet} = Alien::Base::ModuleBuild::Cabinet->new();
+  #$self->{properties}{alien_cabinet} = Alien::Base::ModuleBuild::Cabinet->new();
 
   if (! defined $self->{properties}{alien_selection_method} or $ENV{AUTOMATED_TESTING}) {
     $self->{properties}{alien_selection_method} = 'newest'
@@ -129,7 +134,7 @@ sub ACTION_code {
 
 sub alien_main_procedure {
   my $self = shift;
-  my $cabinet = $self->{properties}{alien_cabinet};
+  my $cabinet = $self->alien_cabinet;
 
   foreach my $repo (@{ $self->{properties}{alien_repository} }) {
     $cabinet->add_files( $repo->probe() );
