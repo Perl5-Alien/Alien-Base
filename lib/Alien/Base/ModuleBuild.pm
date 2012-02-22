@@ -33,6 +33,10 @@ __PACKAGE__->add_property(
 #   default is specified later, when this is undef (see alien_check_installed_version)
 __PACKAGE__->add_property( alien_selection_method => 'newest' );
 # alien_build_commands: arrayref of commands for building
+__PACKAGE__->add_property( 
+  alien_build_commands => 
+  default => [ '%pconfigure --prefix=%s', 'make', 'make install' ],
+);
 # alien_version_check: command to execute to check if install/version
 __PACKAGE__->add_property( 'alien_version_check' );
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
@@ -218,9 +222,7 @@ sub alien_interpolate {
 sub alien_build {
   my $self = shift;
 
-  my $commands = 
-    $self->{properties}{alien_build_commands} 
-    || [ '%pconfigure --prefix=%s', 'make', 'make install' ];
+  my $commands = $self->alien_build_commands;
 
   foreach my $command (@$commands) {
     $command = $self->alien_interpolate($command);
