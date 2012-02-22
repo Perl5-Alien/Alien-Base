@@ -37,12 +37,13 @@ __PACKAGE__->add_property('alien_name');
 #   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
-# (non-api, set share_dir) alien_share_folder: full folder name for $self->{share_dir}
+# (non-api, set share_dir) alien_share_dir: full folder name for $self->{share_dir}
+__PACKAGE__->add_property('alien_share_dir');
 # (non-api) alien_cabinet: holder for A::B::MB::Cabinet object (holds found files)
 __PACKAGE__->add_property(
   alien_cabinet =>
-  default => Alien::Base::ModuleBuild::Repository::Cabinet->new,
-  check => sub { $_->isa('Alien::Base::ModuleBuild::Repository::Cabinet') },
+  default => Alien::Base::ModuleBuild::Cabinet->new,
+  check => sub { $_->isa('Alien::Base::ModuleBuild::Cabinet') },
 );
 
 sub new {
@@ -53,6 +54,16 @@ sub new {
   $args{'share_dir'} = 'share' unless defined $args{'share_dir'};
 
   my $self = $class->SUPER::new(%args);
+
+  # set alien_share_dir
+  $self->alien_share_dir( do {
+    my $share_dir = $self->{properties}{share_dir}{dist}[0];
+    # for share_dir install get full path to share_dir
+    local $CWD = $self->base_dir();
+    # mkdir $share_dir unless ( -d $share_dir );
+    push @CWD, $share_dir;
+    "$CWD";    
+  } );
 
   my $repo_property = $self->{properties}{alien_repository};
 
@@ -170,24 +181,6 @@ sub alien_temp_folder {
   return $tempdir;
 }
 
-sub alien_share_folder {
-  my $self = shift;
-
-  return $self->{properties}{alien_share_folder}
-    if defined $self->{properties}{alien_share_folder};
-
-  my $location = do {
-    my $share_dir = $self->{properties}{share_dir}{dist}[0];
-    # for share_dir install get full path to share_dir
-    local $CWD = $self->base_dir();
-    # mkdir $share_dir unless ( -d $share_dir );
-    push @CWD, $share_dir;
-    "$CWD";    
-  };
-
-  return $location;
-}
-
 sub alien_check_installed_version {
   my $self = shift;
   my $name = $self->alien_name;
@@ -208,7 +201,7 @@ sub alien_interpolate {
   my ($string) = @_;
 
   my $prefix = $self->alien_exec_prefix;
-  my $share  = $self->alien_share_folder;
+  my $share  = $self->alien_share_dir;
 
   # substitute:
   #   install location share_dir (placeholder: %s)
