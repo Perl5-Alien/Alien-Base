@@ -10,6 +10,7 @@ use Sort::Versions;
 use File::chdir;
 use Carp;
 use Archive::Extract;
+use Scalar::Util qw/blessed/;
 
 use Alien::Base::ModuleBuild::Repository;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -23,6 +24,11 @@ our $Verbose ||= 0;
 # alien_name: name of library 
 __PACKAGE__->add_property('alien_name');
 # alien_temp_folder: folder name or File::Temp object for download/build
+__PACKAGE__->add_property(
+  alien_temp_folder =>
+  default => File::Temp->newdir,
+  check => sub { blessed $_ ? $_->isa('File::Temp') : -d },
+);
 # alien_selection_method: name of method for selecting file: (todo: newest, manual)
 #   default is specified later, when this is undef (see alien_check_installed_version)
 __PACKAGE__->add_property( alien_selection_method => 'newest' );
@@ -169,19 +175,6 @@ sub alien_main_procedure {
     $self->alien_build;
   }
 
-}
-
-sub alien_temp_folder {
-  my $self = shift;
-
-  return $self->{properties}{alien_temp_folder}
-    if defined $self->{properties}{alien_temp_folder};
-
-  my $tempdir = File::Temp->newdir();
-
-  $self->{properties}{alien_temp_folder} = $tempdir;
-
-  return $tempdir;
 }
 
 sub alien_check_installed_version {
