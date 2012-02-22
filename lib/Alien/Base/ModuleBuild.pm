@@ -24,9 +24,11 @@ our $Verbose ||= 0;
 __PACKAGE__->add_property('alien_name');
 # alien_temp_folder: folder name or File::Temp object for download/build
 # alien_selection_method: name of method for selecting file: (todo: newest, manual)
+#   default is specified later, when this is undef (see alien_check_installed_version)
 __PACKAGE__->add_property( alien_selection_method => 'newest' );
 # alien_build_commands: arrayref of commands for building
 # alien_version_check: command to execute to check if install/version
+__PACKAGE__->add_property( 'alien_version_check' );
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
 #   |-- validation: string matching os_type M::B method or closure (build object is $_[0]) returning true if valid
 #   |-- protocol: ftp or http
@@ -185,7 +187,7 @@ sub alien_temp_folder {
 sub alien_check_installed_version {
   my $self = shift;
   my $name = $self->alien_name;
-  my $command = $self->{properties}{alien_version_check} || "pkg-config --modversion $name";
+  my $command = $self->alien_version_check || "pkg-config --modversion $name";
 
   my $version;
   my $err = capture_stderr {
