@@ -75,7 +75,7 @@ sub new {
   # check validation, including c compiler for src type
   @repos = 
     grep { 
-      my $valid = $repo_property->{$_}{validation};
+      my $valid = $_->{validation};
       if (!$valid and $_ eq 'src') {
         $valid = 'src';
       }
