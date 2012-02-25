@@ -41,13 +41,12 @@ __PACKAGE__->add_property(
 __PACKAGE__->add_property( 'alien_version_check' );
 
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
-#   |-- validation: string matching os_type M::B method or closure (build object is $_[0]) returning true if valid
 #   |-- protocol: ftp or http
 #   |-- protocol_class: holder for class type (defaults to 'Net::FTP' or 'HTTP::Tiny')
 #   |-- host: ftp server for source
 #   |-- location: ftp folder containing source, http addr to page with links
 #   |-- pattern: qr regex matching acceptable files, if has capture group those are version numbers
-#   |-- platform: src or platform
+#   |-- platform: src or platform, matching os_type M::B method
 #   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
@@ -95,7 +94,6 @@ sub alien_create_repositories {
   my $repo_property = $self->{properties}{alien_repository};
 
   my $base_repo = Alien::Base::ModuleBuild::Repository->new(
-    validation     => delete $repo_property->{validation},
     protocol       => delete $repo_property->{protocol},
     protocol_class => delete $repo_property->{protocol_class},
     host           => delete $repo_property->{host},
