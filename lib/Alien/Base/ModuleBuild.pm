@@ -88,7 +88,7 @@ sub new {
   return $self;
 }
 
-sub alien_init_repositories {
+sub alien_create_repositories {
   my $self = shift;
 
   ## build repository objects
@@ -132,7 +132,7 @@ sub alien_init_repositories {
     croak "No valid repositories available";
   }
 
-  $self->{properties}{alien_repository} = \@repos;
+  return @repos;
 
 }
 
@@ -164,11 +164,11 @@ sub ACTION_alien {
   my $self = shift;
 
   $self->alien_init_temp_dir;
-  $self->alien_init_repositories;
+  my @repos = $self->alien_create_repositories;
 
   my $cabinet = Alien::Base::ModuleBuild::Cabinet->new;
 
-  foreach my $repo (@{ $self->{properties}{alien_repository} }) {
+  foreach my $repo (@repos) {
     $cabinet->add_files( $repo->probe() );
   }
 
