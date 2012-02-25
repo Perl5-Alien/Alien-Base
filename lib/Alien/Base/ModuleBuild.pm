@@ -25,11 +25,8 @@ our $Verbose ||= 0;
 # alien_name: name of library 
 __PACKAGE__->add_property('alien_name');
 
-# alien_temp_dir: folder name or File::Temp object for download/build
-__PACKAGE__->add_property(
-  alien_temp_dir =>
-  check => sub { blessed $_ ? $_->isa('File::Temp') : -d },
-);
+# alien_temp_dir: folder name for download/build
+__PACKAGE__->add_property( alien_temp_dir => '_alien' );
 
 # alien_selection_method: name of method for selecting file: (todo: newest, manual)
 #   default is specified later, when this is undef (see alien_check_installed_version)
@@ -102,10 +99,6 @@ sub alien_init {
 
   $self->alien_cabinet( Alien::Base::ModuleBuild::Cabinet->new );
 
-  unless (defined $self->alien_temp_dir) {
-    $self->alien_temp_dir( File::Temp->newdir );
-  }
-
   ## build repository objects
   my $repo_property = $self->{properties}{alien_repository};
 
@@ -151,6 +144,20 @@ sub alien_init {
 
 }
 
+sub alien_init_temp_dir {
+  my $self = shift;
+  my $dir_name = $self->alien_temp_dir;
+
+  # make sure we are in base_dir
+  local $CWD = $self->base_dir;
+
+  unless ( -d $dir_name ) {
+    mkdir $dir_name or croak "Could not create temporary directory $dir_name";
+  }
+
+  $self->add_to_cleanup( $dir_name );
+}
+
 sub alien_validate_repo {
   my $self = shift;
   my ($valid) = @_;
@@ -181,6 +188,7 @@ sub ACTION_code {
 sub alien_main_procedure {
   my $self = shift;
   $self->alien_init;
+  $self->alien_init_temp_dir;
 
   my $cabinet = $self->alien_cabinet;
 
