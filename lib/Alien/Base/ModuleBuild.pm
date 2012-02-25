@@ -121,9 +121,7 @@ sub alien_create_repositories {
   @repos = 
     grep { 
       my $valid = $_->{validation};
-      if (!$valid and $_ eq 'src') {
-        $valid = 'src';
-      }
+      $valid ||= 'src' if $_->{platform} eq 'src';
       $self->alien_validate_repo($valid) 
     }
     @repos;
