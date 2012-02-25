@@ -88,7 +88,7 @@ sub new {
   return $self;
 }
 
-sub alien_init {
+sub alien_init_repositories {
   my $self = shift;
 
   ## build repository objects
@@ -179,8 +179,9 @@ sub ACTION_code {
 
 sub ACTION_alien {
   my $self = shift;
-  $self->alien_init;
+
   $self->alien_init_temp_dir;
+  $self->alien_init_repositories;
 
   my $cabinet = Alien::Base::ModuleBuild::Cabinet->new;
 
