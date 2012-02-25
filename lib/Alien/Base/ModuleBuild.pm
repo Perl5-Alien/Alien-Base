@@ -25,10 +25,9 @@ our $Verbose ||= 0;
 # alien_name: name of library 
 __PACKAGE__->add_property('alien_name');
 
-# alien_temp_folder: folder name or File::Temp object for download/build
+# alien_temp_dir: folder name or File::Temp object for download/build
 __PACKAGE__->add_property(
-  alien_temp_folder =>
-  default => File::Temp->newdir,
+  alien_temp_dir =>
   check => sub { blessed $_ ? $_->isa('File::Temp') : -d },
 );
 
@@ -63,9 +62,12 @@ __PACKAGE__->add_property('alien_share_dir');
 # (non-api) alien_cabinet: holder for A::B::MB::Cabinet object (holds found files)
 __PACKAGE__->add_property(
   alien_cabinet =>
-  default => Alien::Base::ModuleBuild::Cabinet->new,
   check => sub { $_->isa('Alien::Base::ModuleBuild::Cabinet') },
 );
+
+############################
+#  Initialization Methods  #
+############################
 
 sub new {
   my $class = shift;
@@ -86,6 +88,25 @@ sub new {
     "$CWD";    
   } );
 
+  # force newest for all automated testing 
+  #TODO (this probably should be checked for "input needed" rather than blindly assigned)
+  if ($ENV{AUTOMATED_TESTING}) {
+    $self->alien_selection_method('newest');
+  } 
+
+  return $self;
+}
+
+sub alien_init {
+  my $self = shift;
+
+  $self->alien_cabinet( Alien::Base::ModuleBuild::Cabinet->new );
+
+  unless (defined $self->alien_temp_dir) {
+    $self->alien_temp_dir( File::Temp->newdir );
+  }
+
+  ## build repository objects
   my $repo_property = $self->{properties}{alien_repository};
 
   my $base_repo = Alien::Base::ModuleBuild::Repository->new(
@@ -128,13 +149,6 @@ sub new {
 
   $self->{properties}{alien_repository} = \@repos;
 
-  # force newest for all automated testing 
-  #TODO (this probably should be checked for "input needed" rather than blindly assigned)
-  if ($ENV{AUTOMATED_TESTING}) {
-    $self->alien_selection_method('newest');
-  } 
-
-  return $self;
 }
 
 sub alien_validate_repo {
@@ -166,6 +180,8 @@ sub ACTION_code {
 
 sub alien_main_procedure {
   my $self = shift;
+  $self->alien_init;
+
   my $cabinet = $self->alien_cabinet;
 
   foreach my $repo (@{ $self->{properties}{alien_repository} }) {
@@ -175,7 +191,7 @@ sub alien_main_procedure {
   $cabinet->sort_files;
 
   {
-    local $CWD = $self->alien_temp_folder;
+    local $CWD = $self->alien_temp_dir;
 
     my $file = $cabinet->files->[0];
     my $filename = $file->get;
