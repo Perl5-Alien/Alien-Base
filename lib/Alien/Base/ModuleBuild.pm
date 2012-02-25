@@ -119,11 +119,7 @@ sub alien_create_repositories {
 
   # check validation, including c compiler for src type
   @repos = 
-    grep { 
-      my $valid = $_->{validation};
-      $valid ||= 'src' if $_->{platform} eq 'src';
-      $self->alien_validate_repo($valid) 
-    }
+    grep { $self->alien_validate_repo($_) }
     @repos;
 
   unless (@repos) {
@@ -208,23 +204,19 @@ sub alien_check_installed_version {
 
 sub alien_validate_repo {
   my $self = shift;
-  my ($valid) = @_;
+  my ($repo) = @_;
+  my $platform = $repo->{platform};
 
-  # allow grepping without checking definedness first
-  return 1 unless defined $valid;
-
-  # $valid is coderef
-  if (ref $valid) {
-    return $valid->($self);
-  } 
+  # return true if platform is undefined
+  return 1 unless defined $platform;
 
   # if $valid is src, check for c compiler
-  if ($valid eq 'src') {
+  if ($platform eq 'src') {
     return $self->have_c_compiler;
   }
 
   # $valid is a string (OS) to match against
-  return $self->os_type eq $valid;
+  return $self->os_type eq $platform;
 }
 
 ###################
