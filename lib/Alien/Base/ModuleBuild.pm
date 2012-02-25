@@ -150,26 +150,9 @@ sub alien_init_temp_dir {
   $self->add_to_cleanup( $dir_name );
 }
 
-sub alien_validate_repo {
-  my $self = shift;
-  my ($valid) = @_;
-
-  # allow grepping without checking definedness first
-  return 1 unless defined $valid;
-
-  # $valid is coderef
-  if (ref $valid) {
-    return $valid->($self);
-  } 
-
-  # if $valid is src, check for c compiler
-  if ($valid eq 'src') {
-    return $self->have_c_compiler;
-  }
-
-  # $valid is a string (OS) to match against
-  return $self->os_type eq $valid;
-}
+####################
+#  ACTION methods  #
+####################
 
 sub ACTION_code {
   my $self = shift;
@@ -206,6 +189,10 @@ sub ACTION_alien {
 
 }
 
+#######################
+#  Pre-build Methods  #
+#######################
+
 sub alien_check_installed_version {
   my $self = shift;
   my $name = $self->alien_name;
@@ -221,23 +208,25 @@ sub alien_check_installed_version {
   return $version;
 }
 
-sub alien_interpolate {
+sub alien_validate_repo {
   my $self = shift;
-  my ($string) = @_;
+  my ($valid) = @_;
 
-  my $prefix = $self->alien_exec_prefix;
-  my $share  = $self->alien_share_dir;
+  # allow grepping without checking definedness first
+  return 1 unless defined $valid;
 
-  # substitute:
-  #   install location share_dir (placeholder: %s)
-  $string =~ s/(?<!\%)\%s/$share/g;
-  #   local exec prefix (ph: %p)
-  $string =~ s/(?<!\%)\%p/$prefix/g;
+  # $valid is coderef
+  if (ref $valid) {
+    return $valid->($self);
+  } 
 
-  #remove escapes (%%)
-  $string =~ s/\%(?=\%)//g;
+  # if $valid is src, check for c compiler
+  if ($valid eq 'src') {
+    return $self->have_c_compiler;
+  }
 
-  return $string;
+  # $valid is a string (OS) to match against
+  return $self->os_type eq $valid;
 }
 
 ###################
@@ -262,9 +251,24 @@ sub alien_build {
   return 1;
 }
 
-########################
-#   Helper Functions   #
-########################
+sub alien_interpolate {
+  my $self = shift;
+  my ($string) = @_;
+
+  my $prefix = $self->alien_exec_prefix;
+  my $share  = $self->alien_share_dir;
+
+  # substitute:
+  #   install location share_dir (placeholder: %s)
+  $string =~ s/(?<!\%)\%s/$share/g;
+  #   local exec prefix (ph: %p)
+  $string =~ s/(?<!\%)\%p/$prefix/g;
+
+  #remove escapes (%%)
+  $string =~ s/\%(?=\%)//g;
+
+  return $string;
+}
 
 sub alien_exec_prefix {
   my $self = shift;
