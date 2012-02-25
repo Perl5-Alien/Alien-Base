@@ -14,15 +14,15 @@ ok( $builder->alien_validate_repo(
 ), "Closure with reference to builder");
 
 SKIP: {
-  skip "Windows test", 1 unless $builder->is_windowsish();
+  skip "Windows test", 2 unless $builder->is_windowsish();
   ok( $builder->alien_validate_repo( 'Windows' ), "OS string (Windows)");
-
+  ok( ! $builder->alien_validate_repo( 'Unix' ), "OS string (Unix on Windows) is false");
 }
 
 SKIP: {
-  skip "Unix test", 1 unless $builder->is_unixish();
+  skip "Unix test", 2 unless $builder->is_unixish();
   ok( $builder->alien_validate_repo( 'Unix' ), "OS string (Unix)");
-
+  ok( ! $builder->alien_validate_repo( 'Windows' ), "OS string (Windows on Unix) is false");
 }
 
 done_testing;
