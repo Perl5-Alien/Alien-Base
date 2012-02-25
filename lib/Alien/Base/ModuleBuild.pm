@@ -10,7 +10,6 @@ use Sort::Versions;
 use File::chdir;
 use Carp;
 use Archive::Extract;
-use Scalar::Util qw/blessed/;
 
 use Alien::Base::ModuleBuild::Repository;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -181,11 +180,11 @@ sub alien_validate_repo {
 
 sub ACTION_code {
   my $self = shift;
-  $self->alien_main_procedure;
+  $self->depends_on('alien');
   $self->SUPER::ACTION_code;
 }
 
-sub alien_main_procedure {
+sub ACTION_alien {
   my $self = shift;
   $self->alien_init;
   $self->alien_init_temp_dir;
