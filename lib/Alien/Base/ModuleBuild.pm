@@ -55,11 +55,6 @@ __PACKAGE__->add_property( 'alien_version_check' );
 # (non-api, set share_dir) alien_share_dir: full folder name for $self->{share_dir}
 __PACKAGE__->add_property('alien_share_dir');
 
-# (non-api) alien_cabinet: holder for A::B::MB::Cabinet object (holds found files)
-__PACKAGE__->add_property(
-  alien_cabinet =>
-  check => sub { $_->isa('Alien::Base::ModuleBuild::Cabinet') },
-);
 
 ############################
 #  Initialization Methods  #
@@ -95,8 +90,6 @@ sub new {
 
 sub alien_init {
   my $self = shift;
-
-  $self->alien_cabinet( Alien::Base::ModuleBuild::Cabinet->new );
 
   ## build repository objects
   my $repo_property = $self->{properties}{alien_repository};
@@ -189,7 +182,7 @@ sub ACTION_alien {
   $self->alien_init;
   $self->alien_init_temp_dir;
 
-  my $cabinet = $self->alien_cabinet;
+  my $cabinet = Alien::Base::ModuleBuild::Cabinet->new;
 
   foreach my $repo (@{ $self->{properties}{alien_repository} }) {
     $cabinet->add_files( $repo->probe() );
