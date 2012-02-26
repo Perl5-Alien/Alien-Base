@@ -6,7 +6,6 @@ use warnings;
 use parent 'Module::Build';
 
 use Capture::Tiny qw/capture_stderr capture_merged/;
-use Sort::Versions;
 use File::chdir;
 use Carp;
 use Archive::Extract;
