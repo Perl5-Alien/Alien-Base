@@ -5,7 +5,7 @@ use warnings;
 
 use parent 'Module::Build';
 
-use Capture::Tiny 'capture_stderr';
+use Capture::Tiny qw/capture_stderr capture_merged/;
 use Sort::Versions;
 use File::chdir;
 use Carp;
@@ -17,7 +17,7 @@ use Alien::Base::ModuleBuild::Cabinet;
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
 
-our $Verbose ||= 0;
+our $Verbose ||= $ENV{ALIEN_VERBOSE};
 
 ## Extra parameters in A::B::MB objects (all (toplevel) should start with 'alien_')
 
@@ -171,17 +171,28 @@ sub ACTION_alien {
     local $CWD = $self->alien_temp_dir;
 
     my $file = $cabinet->files->[0];
-    print "Downloading File: $file\n";
 
+    print "Downloading File: " . $file->filename . " ... ";
     my $filename = $file->get;
+    print "Done\n";
 
+    print "Extracting Archive ... ";
     my $ae = Archive::Extract->new( archive => $filename );
     $ae->extract;
     $CWD = $ae->extract_path;
+    print "Done\n";
 
-    print "Building library\n";
+    print "Building library ... ";
     #TODO capture and log?
-    $self->alien_build;
+    my $build = sub { $self->alien_build };
+    my $log;
+    if ($Verbose) {
+      $build->();
+    } else {
+      $log = capture_merged { $build->() };
+    }
+    print "Done\n";
+
   }
 
 }
