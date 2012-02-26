@@ -64,6 +64,14 @@ sub new {
   my %args = @_;
 
   my $install_dir = $args{alien_share_dir} || '_install';
+  my $cleanup_install_dir = 0;
+
+  # if does not exist, create AND mark for add_to_cleanup
+  unless ( -d $install_dir ) {
+    mkdir $install_dir;
+    $cleanup_install_dir = 1;
+  }
+
   # initialize M::B property share_dir 
   if (! defined $args{share_dir}) {
     # no share_dir property
@@ -81,13 +89,12 @@ sub new {
 
   my $self = $class->SUPER::new(%args);
 
-  # set alien_share_dir
+  # add_to_cleanup if "new" had to create the folder
+  $self->add_to_cleanup( $install_dir ) if $cleanup_install_dir;
+
+  # reset the alien_share_dir property to the full path, used in interpolate
   $self->alien_share_dir( do {
     local $CWD = $self->base_dir();
-    unless ( -d $install_dir ) {
-      mkdir $install_dir;
-      $self->add_to_cleanup( $install_dir );
-    }
     push @CWD, $install_dir;
     "$CWD";    
   } );
