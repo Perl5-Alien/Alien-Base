@@ -26,6 +26,11 @@ __PACKAGE__->add_property('alien_name');
 # alien_temp_dir: folder name for download/build
 __PACKAGE__->add_property( alien_temp_dir => '_alien' );
 
+# alien_share_dir: folder name for the "install" of the library
+# this is added (unshifted) to the @{share_dir->{dist}}  
+# N.B. is reset during constructor to be full folder name 
+__PACKAGE__->add_property('alien_share_dir'); # default => '_install'
+
 # alien_selection_method: name of method for selecting file: (todo: newest, manual)
 #   default is specified later, when this is undef (see alien_check_installed_version)
 __PACKAGE__->add_property( alien_selection_method => 'newest' );
@@ -50,10 +55,6 @@ __PACKAGE__->add_property( alien_version_check => 'pkg-config --modversion %n' )
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
 
-# (non-api, set share_dir) alien_share_dir: full folder name for $self->{share_dir}
-__PACKAGE__->add_property('alien_share_dir');
-
-
 ############################
 #  Initialization Methods  #
 ############################
@@ -62,7 +63,7 @@ sub new {
   my $class = shift;
   my %args = @_;
 
-  my $install_dir = '_install';
+  my $install_dir = $args{alien_share_dir} || '_install';
   # initialize M::B property share_dir 
   if (! defined $args{share_dir}) {
     # no share_dir property
