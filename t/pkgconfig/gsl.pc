@@ -1,0 +1,11 @@
+prefix=/home/joel/Programs/Dist/Alien-Base/examples/Alien-GSL/_install
+exec_prefix=/home/joel/Programs/Dist/Alien-Base/examples/Alien-GSL/_install
+libdir=/home/joel/Programs/Dist/Alien-Base/examples/Alien-GSL/_install/lib
+includedir=/home/joel/Programs/Dist/Alien-Base/examples/Alien-GSL/_install/include
+GSL_CBLAS_LIB=-lgslcblas
+
+Name: GSL
+Description: GNU Scientific Library
+Version: 1.15
+Libs: -L/home/joel/Programs/Dist/Alien-Base/examples/Alien-GSL/_install/lib -lgsl ${GSL_CBLAS_LIB} -lm -lm 
+Cflags: -I/home/joel/Programs/Dist/Alien-Base/examples/Alien-GSL/_install/include
