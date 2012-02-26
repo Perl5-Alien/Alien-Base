@@ -62,8 +62,21 @@ sub new {
   my $class = shift;
   my %args = @_;
 
+  my $install_dir = '_install';
   # initialize M::B property share_dir 
-  $args{'share_dir'} = 'share' unless defined $args{'share_dir'};
+  if (! defined $args{share_dir}) {
+    # no share_dir property
+    $args{share_dir} = $install_dir;
+  } elsif (! ref $args{share_dir}) {
+    # share_dir is a scalar, meaning dist
+    $args{share_dir} = { dist => [$install_dir, $args{share_dir}] };
+  } elsif (! ref $args{share_dir}{dist}) {
+    # share_dir is like {dist => scalar}, so upconvert to arrayref
+    $args{share_dir} = { dist => [$install_dir, $args{share_dir}{dist}] };
+  } else {
+    # share_dir is like {dist => [...]}, so unshift
+    unshift @{$args{share_dir}{dist}}, $install_dir;
+  }
 
   my $self = $class->SUPER::new(%args);
 
@@ -72,8 +85,10 @@ sub new {
     my $share_dir = $self->{properties}{share_dir}{dist}[0];
     # for share_dir install get full path to share_dir
     local $CWD = $self->base_dir();
-    #TODO consider adding this again:
-    # mkdir $share_dir unless ( -d $share_dir );
+    unless ( -d $share_dir ) {
+      mkdir $share_dir;
+      $self->add_to_cleanup( $share_dir );
+    }
     push @CWD, $share_dir;
     "$CWD";    
   } );
