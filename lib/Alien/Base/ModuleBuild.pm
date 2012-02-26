@@ -73,6 +73,7 @@ sub new {
     my $share_dir = $self->{properties}{share_dir}{dist}[0];
     # for share_dir install get full path to share_dir
     local $CWD = $self->base_dir();
+    #TODO consider adding this again:
     # mkdir $share_dir unless ( -d $share_dir );
     push @CWD, $share_dir;
     "$CWD";    
@@ -170,12 +171,16 @@ sub ACTION_alien {
     local $CWD = $self->alien_temp_dir;
 
     my $file = $cabinet->files->[0];
+    print "Downloading File: $file\n";
+
     my $filename = $file->get;
 
     my $ae = Archive::Extract->new( archive => $filename );
     $ae->extract;
     $CWD = $ae->extract_path;
 
+    print "Building library\n";
+    #TODO capture and log?
     $self->alien_build;
   }
 
