@@ -38,7 +38,7 @@ __PACKAGE__->add_property(
 );
 
 # alien_version_check: command to execute to check if install/version
-__PACKAGE__->add_property( 'alien_version_check' );
+__PACKAGE__->add_property( alien_version_check => 'pkg-config --modversion %n' );
 
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
 #   |-- protocol: ftp or http
@@ -187,8 +187,9 @@ sub ACTION_alien {
 
 sub alien_check_installed_version {
   my $self = shift;
-  my $name = $self->alien_name;
-  my $command = $self->alien_version_check || "pkg-config --modversion $name";
+  my $command = $self->alien_version_check;
+
+  $command = $self->alien_interpolate($command);
 
   my $version;
   my $err = capture_stderr {
@@ -245,12 +246,15 @@ sub alien_interpolate {
 
   my $prefix = $self->alien_exec_prefix;
   my $share  = $self->alien_share_dir;
+  my $name   = $self->alien_name;
 
   # substitute:
   #   install location share_dir (placeholder: %s)
   $string =~ s/(?<!\%)\%s/$share/g;
   #   local exec prefix (ph: %p)
   $string =~ s/(?<!\%)\%p/$prefix/g;
+  #   library name (ph: %n)
+  $string =~ s/(?<!\%)\%n/$name/g;
 
   #remove escapes (%%)
   $string =~ s/\%(?=\%)//g;

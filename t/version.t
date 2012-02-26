@@ -16,8 +16,15 @@ SKIP: {
   my @installed = map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
   my $lib = $installed[0];
 
-  my $builder_ok = bless { properties => { alien_name => $lib } }, 'Alien::Base::ModuleBuild';
-  my $builder_bad = bless { properties => { alien_name => 'siughspidghsp' } }, 'Alien::Base::ModuleBuild';
+  my ($builder_ok, $builder_bad) = map { 
+    Alien::Base::ModuleBuild->new( 
+      module_name => 'My::Test', 
+      dist_version => 0.01,
+      alien_name => $_,
+      share_dir => 't',
+    ); 
+  }
+  ($lib, 'siughspidghsp');
 
   is( !! $builder_ok->alien_check_installed_version, 1, "Found installed library $lib" );
   is( $builder_bad->alien_check_installed_version, 0, 'Returns 0 if not found' );
