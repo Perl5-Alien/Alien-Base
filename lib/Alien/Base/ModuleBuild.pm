@@ -82,14 +82,12 @@ sub new {
 
   # set alien_share_dir
   $self->alien_share_dir( do {
-    my $share_dir = $self->{properties}{share_dir}{dist}[0];
-    # for share_dir install get full path to share_dir
     local $CWD = $self->base_dir();
-    unless ( -d $share_dir ) {
-      mkdir $share_dir;
-      $self->add_to_cleanup( $share_dir );
+    unless ( -d $install_dir ) {
+      mkdir $install_dir;
+      $self->add_to_cleanup( $install_dir );
     }
-    push @CWD, $share_dir;
+    push @CWD, $install_dir;
     "$CWD";    
   } );
 
