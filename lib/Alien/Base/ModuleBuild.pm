@@ -48,6 +48,10 @@ __PACKAGE__->add_property(
 # alien_version_check: command to execute to check if install/version
 __PACKAGE__->add_property( alien_version_check => 'pkg-config --modversion %n' );
 
+# pkgconfig-esque info, author provides these by hand for now, will parse .pc file eventually
+__PACKAGE__->add_property( 'alien_provides_cflags' );
+__PACKAGE__->add_property( 'alien_provides_libs' );
+
 # alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
 #   |-- protocol: ftp or http
 #   |-- protocol_class: holder for class type (defaults to 'Net::FTP' or 'HTTP::Tiny')
@@ -173,6 +177,16 @@ sub alien_init_temp_dir {
   }
 
   $self->add_to_cleanup( $dir_name );
+}
+
+sub alien_init_configdata {
+  my $self = shift;
+
+  my $cflags = $self->alien_provides_cflags;
+  $self->config_data( cflags => $cflags );
+
+  my $libs   = $self->alien_provides_libs;
+  $self->config_data( libs   => $libs   );
 }
 
 ####################
