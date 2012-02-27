@@ -18,6 +18,10 @@ $VERSION = eval $VERSION;
 
 our $Verbose ||= $ENV{ALIEN_VERBOSE};
 
+################
+#  Parameters  #
+################
+
 ## Extra parameters in A::B::MB objects (all (toplevel) should start with 'alien_')
 
 # alien_name: name of library 
@@ -54,6 +58,12 @@ __PACKAGE__->add_property( alien_version_check => 'pkg-config --modversion %n' )
 #   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
+
+################
+#  ConfigData  #
+################
+
+# build_share_dir: full path to the shared directory specified in alien_share_dir
 
 ############################
 #  Initialization Methods  #
@@ -92,12 +102,14 @@ sub new {
   # add_to_cleanup if "new" had to create the folder
   $self->add_to_cleanup( $install_dir ) if $cleanup_install_dir;
 
-  # reset the alien_share_dir property to the full path, used in interpolate
-  $self->alien_share_dir( do {
-    local $CWD = $self->base_dir();
-    push @CWD, $install_dir;
-    "$CWD";    
-  } );
+  # store full path to alien_share_dir, used in interpolate
+  $self->config_data( 
+    build_share_dir => do {
+      local $CWD = $self->base_dir();
+      push @CWD, $install_dir;
+      "$CWD"; 
+    }   
+  );
 
   # force newest for all automated testing 
   #TODO (this probably should be checked for "input needed" rather than blindly assigned)
@@ -281,7 +293,7 @@ sub alien_interpolate {
   my ($string) = @_;
 
   my $prefix = $self->alien_exec_prefix;
-  my $share  = $self->alien_share_dir;
+  my $share  = $self->config_data('build_share_dir');
   my $name   = $self->alien_name;
 
   # substitute:
