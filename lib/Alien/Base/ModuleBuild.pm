@@ -7,6 +7,7 @@ use parent 'Module::Build';
 
 use Capture::Tiny qw/capture_stderr capture_merged/;
 use File::chdir;
+use File::Spec;
 use Carp;
 use Archive::Extract;
 
@@ -80,12 +81,6 @@ sub new {
   my $install_dir = $args{alien_share_dir} || '_install';
   my $cleanup_install_dir = 0;
 
-  # if does not exist, create AND mark for add_to_cleanup
-  unless ( -d $install_dir ) {
-    mkdir $install_dir;
-    $cleanup_install_dir = 1;
-  }
-
   # initialize M::B property share_dir 
   if (! defined $args{share_dir}) {
     # no share_dir property
@@ -103,16 +98,9 @@ sub new {
 
   my $self = $class->SUPER::new(%args);
 
-  # add_to_cleanup if "new" had to create the folder
-  $self->add_to_cleanup( $install_dir ) if $cleanup_install_dir;
-
   # store full path to alien_share_dir, used in interpolate
   $self->config_data( 
-    build_share_dir => do {
-      local $CWD = $self->base_dir();
-      push @CWD, $install_dir;
-      "$CWD"; 
-    }   
+    build_share_dir => File::Spec->catpath( $self->base_dir(), $install_dir )
   );
 
   # force newest for all automated testing 
@@ -168,6 +156,7 @@ sub alien_create_repositories {
 sub alien_init_temp_dir {
   my $self = shift;
   my $dir_name = $self->alien_temp_dir;
+  my $install_dir = $self->config_data('build_share_dir');
 
   # make sure we are in base_dir
   local $CWD = $self->base_dir;
@@ -175,8 +164,13 @@ sub alien_init_temp_dir {
   unless ( -d $dir_name ) {
     mkdir $dir_name or croak "Could not create temporary directory $dir_name";
   }
-
   $self->add_to_cleanup( $dir_name );
+
+  # if install_dir does not exist, create AND mark for add_to_cleanup
+  unless ( -d $install_dir ) {
+    mkdir $install_dir;
+    $self->add_to_cleanup( $install_dir );
+  }
 }
 
 sub alien_init_configdata {
