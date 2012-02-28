@@ -79,17 +79,24 @@ sub make_abstract {
 
 sub _interpolate_vars {
   my $self = shift;
-  my ($string) = @_;
+  my ($string, $override) = @_;
 
-  1 while $string =~ s/\$\{(.*?)\}/$self->{vars}{$1}/e;
+  1 while $string =~ s/\$\{(.*?)\}/$override->{$1} || $self->{vars}{$1}/e;
 
   return $string;
 }
 
 sub keyword {
   my $self = shift;
-  my ($keyword) = @_;
-  return $self->_interpolate_vars( $self->{keywords}{$keyword} );
+  my ($keyword, $override) = @_;
+  
+  {
+    no warnings 'uninitialized';
+    croak "overrides passed to 'keyword' must be a hashref"
+      if defined $override and ref $override ne 'HASH';
+  }
+
+  return $self->_interpolate_vars( $self->{keywords}{$keyword}, $override );
 }
 
 1;

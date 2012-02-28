@@ -53,5 +53,12 @@ is( $pc->keyword('Version'), '1.01', "Simple keyword getter" );
 is( (split qr/\s+/, $pc->keyword('Libs'))[0], '-L/home/test/path/lib', "single interpolation keyword" );
 is( $pc->keyword('Cflags'), '-I/home/test/path/deeper/include', "multiple interpolation keyword" );
 
+# interpolate with overrides
+is( 
+  $pc->keyword( 'Cflags', {prefix => '/some/other/path'}), 
+  '-I/some/other/path/deeper/include', 
+  "multiple interpolation keyword with override"
+);
+
 done_testing;
 
