@@ -27,18 +27,10 @@ is_deeply(
   $pc->{keywords},
   {
     'Version' => '1.01',
-    'Libs' => [
-      '-L/home/test/path/lib',
-      '-lsomelib',
-      '${INTERNAL_VARIABLE}',
-      '-lm',
-      '-lm'
-    ],
-    'Cflags' => [
-      '-I/home/test/path/deeper/include'
-    ],
+    'Libs' => '-L/home/test/path/lib -lsomelib ${INTERNAL_VARIABLE} -lm -lm',
+    'Cflags' => '-I/home/test/path/deeper/include',
     'Description' => 'My TEST Library',
-    'Name' => 'TEST'
+    'Name' => 'TEST',
   },
   "read keywords"
 );
@@ -53,10 +45,10 @@ is( $pc->var(deeper => '/home/test/path/deeper'), '/home/test/path/deeper', "var
 $pc->make_abstract;
 
 is( $pc->{vars}{deeper}, '${prefix}/deeper', "abstract vars in terms of each other" );
-is( $pc->{keywords}{Libs}[0], '-L${prefix}/lib', "abstract simple" );
-is( $pc->{keywords}{Cflags}[0], '-I${deeper}/include', "abstract abstract 'nested'" );
+is( (split qr/\s+/, $pc->{keywords}{Libs})[0], '-L${prefix}/lib', "abstract simple" );
+is( (split qr/\s+/, $pc->{keywords}{Cflags})[0], '-I${deeper}/include', "abstract abstract 'nested'" );
 
-# interpolate vars
+# interpolate vars into keywords
 
 done_testing;
 

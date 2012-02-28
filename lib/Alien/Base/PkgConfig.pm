@@ -37,14 +37,7 @@ sub read {
     if (/(.*?)=(.*)/) {
       $self->{vars}{$1} = $2;
     } elsif (/^(.*?):\s*(.*)/) {
-      my $keyword = $1;
-      my $value   = $2;
-
-      if ( grep {$keyword eq $_} qw/Name Description URL Version/ ) {
-        $self->{keywords}{$keyword} = $value;
-      } else {
-        $self->{keywords}{$keyword} = [ split /\s+/, $value ];
-      }
+      $self->{keywords}{$1} = $2;
     }
   }
 }
@@ -77,12 +70,9 @@ sub make_abstract {
       $self->{vars}{$key} =~ s/$value/\$\{$var\}/g;
     }
 
+    # convert keywords
     foreach my $key (keys %{ $self->{keywords} }) {
-      if (ref $self->{keywords}{$key}) {
-        s/$value/\$\{$var\}/g for @{ $self->{keywords}{$key} };
-      } else {
-        $self->{keywords}{$key} =~ s/$value/\$\{$var\}/g;
-      }
+      $self->{keywords}{$key} =~ s/$value/\$\{$var\}/g;
     }
   }
 }
