@@ -49,6 +49,16 @@ sub read {
   }
 }
 
+# getter/setter for vars
+sub var {
+  my $self = shift;
+  my ($var, $newval) = @_;
+  if (defined $newval) {
+    $self->{vars}{$var} = $newval;
+  }
+  return $self->{vars}{$var};
+}
+
 # abstract keywords and other vars in terms of "pure" vars
 sub make_abstract {
   my $self = shift;

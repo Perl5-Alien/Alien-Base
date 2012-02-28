@@ -1,5 +1,4 @@
 prefix=/home/test/path
-deeper=/home/test/path/deeper
 INTERNAL_VARIABLE=-lotherlib
 
 Name: TEST

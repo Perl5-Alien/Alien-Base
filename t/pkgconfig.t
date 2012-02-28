@@ -19,7 +19,6 @@ is_deeply(
   {
     'INTERNAL_VARIABLE' => '-lotherlib',
     'prefix' => '/home/test/path',
-    'deeper' => '/home/test/path/deeper',
   },
   "read vars"
 );
@@ -45,6 +44,10 @@ is_deeply(
 );
 
 is( $pc->{package}, 'test', "understands package name from file path" );
+
+# vars getter/setter
+is( $pc->var('prefix'), '/home/test/path', "var getter" );
+is( $pc->var(deeper => '/home/test/path/deeper'), '/home/test/path/deeper', "var setter" );
 
 # abstract vars
 $pc->make_abstract;
