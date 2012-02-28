@@ -18,7 +18,8 @@ is_deeply(
   $pc->{vars}, 
   {
     'INTERNAL_VARIABLE' => '-lotherlib',
-    'prefix' => '/home/test/path'
+    'prefix' => '/home/test/path',
+    'deeper' => '/home/test/path/deeper',
   },
   "read vars"
 );
@@ -35,7 +36,7 @@ is_deeply(
       '-lm'
     ],
     'Cflags' => [
-      '-I/home/test/path/include'
+      '-I/home/test/path/deeper/include'
     ],
     'Description' => 'My TEST Library',
     'Name' => 'TEST'
@@ -46,6 +47,11 @@ is_deeply(
 is( $pc->{package}, 'test', "understands package name from file path" );
 
 # abstract vars
+$pc->make_abstract;
+
+is( $pc->{vars}{deeper}, '${prefix}/deeper', "abstract vars in terms of each other" );
+is( $pc->{keywords}{Libs}[0], '-L${prefix}/lib', "abstract simple" );
+is( $pc->{keywords}{Cflags}[0], '-I${deeper}/include', "abstract abstract 'nested'" );
 
 # interpolate vars
 

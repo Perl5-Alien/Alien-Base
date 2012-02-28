@@ -1,8 +1,9 @@
 prefix=/home/test/path
+deeper=/home/test/path/deeper
 INTERNAL_VARIABLE=-lotherlib
 
 Name: TEST
 Description: My TEST Library
 Version: 1.01
 Libs: -L/home/test/path/lib -lsomelib ${INTERNAL_VARIABLE} -lm -lm 
-Cflags: -I/home/test/path/include
+Cflags: -I/home/test/path/deeper/include

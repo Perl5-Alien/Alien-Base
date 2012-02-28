@@ -49,5 +49,33 @@ sub read {
   }
 }
 
+# abstract keywords and other vars in terms of "pure" vars
+sub make_abstract {
+  my $self = shift;
+  my @vars = 
+    sort { length $self->{vars}{$b} <=> length $self->{vars}{$a} }
+    grep { $self->{vars}{$_} !~ /\$\{.*?\}/ } # skip vars which contain vars
+    keys %{ $self->{vars} };
+
+  foreach my $var (@vars) {
+    my $value = $self->{vars}{$var};
+    next if $value =~ /\$\{.*?\}/; # skip vars which contain vars
+    
+    # convert other vars
+    foreach my $key (keys %{ $self->{vars} }) {
+      next if $key eq $var; # don't overwrite the current var
+      $self->{vars}{$key} =~ s/$value/\$\{$var\}/g;
+    }
+
+    foreach my $key (keys %{ $self->{keywords} }) {
+      if (ref $self->{keywords}{$key}) {
+        s/$value/\$\{$var\}/g for @{ $self->{keywords}{$key} };
+      } else {
+        $self->{keywords}{$key} =~ s/$value/\$\{$var\}/g;
+      }
+    }
+  }
+}
+
 1;
 
