@@ -36,7 +36,7 @@ sub read {
   while (<$fh>) {
     if (/(.*?)=(.*)/) {
       $self->{vars}{$1} = $2;
-    } elsif (/^(.*?):\s+(.*)/) {
+    } elsif (/^(.*?):\s*(.*)/) {
       my $keyword = $1;
       my $value   = $2;
 
