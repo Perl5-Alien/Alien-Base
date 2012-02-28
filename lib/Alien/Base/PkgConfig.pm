@@ -77,5 +77,20 @@ sub make_abstract {
   }
 }
 
+sub _interpolate_vars {
+  my $self = shift;
+  my ($string) = @_;
+
+  1 while $string =~ s/\$\{(.*?)\}/$self->{vars}{$1}/e;
+
+  return $string;
+}
+
+sub keyword {
+  my $self = shift;
+  my ($keyword) = @_;
+  return $self->_interpolate_vars( $self->{keywords}{$keyword} );
+}
+
 1;
 

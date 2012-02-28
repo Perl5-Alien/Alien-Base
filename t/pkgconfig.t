@@ -46,9 +46,12 @@ $pc->make_abstract;
 
 is( $pc->{vars}{deeper}, '${prefix}/deeper', "abstract vars in terms of each other" );
 is( (split qr/\s+/, $pc->{keywords}{Libs})[0], '-L${prefix}/lib', "abstract simple" );
-is( (split qr/\s+/, $pc->{keywords}{Cflags})[0], '-I${deeper}/include', "abstract abstract 'nested'" );
+is( $pc->{keywords}{Cflags}, '-I${deeper}/include', "abstract abstract 'nested'" );
 
 # interpolate vars into keywords
+is( $pc->keyword('Version'), '1.01', "Simple keyword getter" );
+is( (split qr/\s+/, $pc->keyword('Libs'))[0], '-L/home/test/path/lib', "single interpolation keyword" );
+is( $pc->keyword('Cflags'), '-I/home/test/path/deeper/include', "multiple interpolation keyword" );
 
 done_testing;
 
