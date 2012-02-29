@@ -12,8 +12,24 @@ my $builder = do 'Build.PL';
 isa_ok( $builder, 'Module::Build' );
 isa_ok( $builder, 'Alien::Base::ModuleBuild' );
 
-$builder->dispatch('realclean');
+$builder->dispatch('alien');
+ok( -d '_install', "ACTION_alien creates _install (share) directory" );
+ok( -d '_alien',   "ACTION_alien creates _alien (build) directory" );
+{
+  local $CWD = '_install';
+  {
+    local $CWD = 'lib';
+    ok( -e 'libdontpanic.so.1.0', "ACTION_alien installs lib" );
+  }
+  {
+    local $CWD = 'include';
+    ok( -e 'libdontpanic.h', "ACTION_alien installs header" );
+  }
+}
 
-ok( ! -e 'Build', "realclean removes Build script" );
+$builder->dispatch('realclean');
+ok( ! -e 'Build'   , "realclean removes Build script" );
+ok( ! -d '_install', "realclean removes _install (share) directory" );
+ok( ! -d '_alien'  , "realclean removes _alien (build) directory" );
 
 done_testing;
