@@ -100,7 +100,7 @@ sub new {
 
   # store full path to alien_share_dir, used in interpolate
   $self->config_data( 
-    build_share_dir => File::Spec->catpath( $self->base_dir(), $install_dir )
+    build_share_dir => File::Spec->catdir( $self->base_dir(), $install_dir )
   );
 
   # force newest for all automated testing 
