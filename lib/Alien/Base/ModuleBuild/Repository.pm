@@ -51,6 +51,10 @@ sub new {
 
   my $obj = bless $self, $Repository_Class{$protocol};
 
+  if ($obj->can('init')) {
+    $obj->init;
+  }
+
   return $obj;
 }
 
