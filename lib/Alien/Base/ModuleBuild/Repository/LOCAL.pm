@@ -17,8 +17,6 @@ sub init {
   local $CWD = $self->location;
   $self->location("$CWD");
 
-  warn $CWD;
-
   return $self;
 }
 
