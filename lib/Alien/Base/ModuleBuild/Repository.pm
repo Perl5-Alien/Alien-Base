@@ -13,14 +13,16 @@ use Alien::Base::ModuleBuild::Utils qw/pattern_has_capture_groups/;
 use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
 use Alien::Base::ModuleBuild::Repository::TEST;
+use Alien::Base::ModuleBuild::Repository::LOCAL;
 
 # setup protocol specific classes
 # Alien:: author can override these defaults using package variable
 our %Repository_Class;
 my %default_repository_class = (
-  HTTP => 'Alien::Base::ModuleBuild::Repository::HTTP',
-  FTP  => 'Alien::Base::ModuleBuild::Repository::FTP',
-  TEST => 'Alien::Base::ModuleBuild::Repository::TEST',
+  HTTP  => 'Alien::Base::ModuleBuild::Repository::HTTP',
+  FTP   => 'Alien::Base::ModuleBuild::Repository::FTP',
+  TEST  => 'Alien::Base::ModuleBuild::Repository::TEST',
+  LOCAL => 'Alien::Base::ModuleBuild::Repository::LOCAL',
 );
 foreach my $type (keys %default_repository_class) {
   $Repository_Class{$type} ||= $default_repository_class{$type};
@@ -102,7 +104,7 @@ sub probe {
 # subclasses are expected to provide 
 sub connection { croak "$_[0] doesn't provide 'connection' method" }
 sub list_files { croak "$_[0] doesn't provide 'list_files' method" }
-sub get_files  { croak "$_[0] doesn't provide 'get_files' method"  }
+sub get_file  { croak "$_[0] doesn't provide 'get_files' method"  }
 
 1;
 
