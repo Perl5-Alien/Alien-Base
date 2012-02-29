@@ -31,4 +31,8 @@ my $builder = Alien::Base::ModuleBuild->new(
 );
 $builder->create_build_script;
 
+# zz-example.t "do loads" this file, so hand it something:
+no warnings 'void';
+$builder;
+
 
