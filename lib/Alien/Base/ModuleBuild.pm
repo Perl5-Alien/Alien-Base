@@ -71,6 +71,7 @@ __PACKAGE__->add_property( 'alien_provides_libs' );
 ################
 
 # build_share_dir: full path to the shared directory specified in alien_share_dir
+# pkgconfig: hashref of A::B::PkgConfig objects created from .pc file found in build_share_dir
 
 ############################
 #  Initialization Methods  #
