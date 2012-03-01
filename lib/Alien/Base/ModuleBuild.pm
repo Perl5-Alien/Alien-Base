@@ -343,13 +343,13 @@ sub alien_load_pkgconfig {
 
   return unless @$pc_files;  
 
-  my @pc_objects = map { 
+  my %pc_objects = map { 
     my $pc = Alien::Base::PkgConfig->new($_);
     $pc->make_abstract;
-    $pc
+    ($pc->{package}, $pc)
   } @$pc_files;
 
-  $self->config_data( pkgconfig => \@pc_objects);
+  $self->config_data( pkgconfig => \%pc_objects);
 }
 
 1;

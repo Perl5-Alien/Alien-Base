@@ -28,7 +28,8 @@ ok( -d '_alien',   "ACTION_alien creates _alien (build) directory" );
 }
 
 my $pc_objects = $builder->config_data('pkgconfig');
-isa_ok( $pc_objects->[0], 'Alien::Base::PkgConfig', "Generate pkgconfig" );
+my $dontpanic_pc = $pc_objects->{dontpanic};
+isa_ok( $dontpanic_pc, 'Alien::Base::PkgConfig', "Generate pkgconfig" );
 
 $builder->depends_on('build');
 
