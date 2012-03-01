@@ -14,6 +14,8 @@ use Archive::Extract;
 use Alien::Base::ModuleBuild::Repository;
 use Alien::Base::ModuleBuild::Cabinet;
 
+use Alien::Base::PkgConfig;
+
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
 
@@ -236,6 +238,7 @@ sub ACTION_alien {
 
   }
 
+  $self->alien_load_pkgconfig;
 }
 
 #######################
@@ -335,11 +338,18 @@ sub alien_exec_prefix {
 sub alien_load_pkgconfig {
   my $self = shift;
 
-  my $dir = $self->alien_share_dir;
-  my $pcfiles = $self->rscan_dir( $dir, qr/\.pc$/ );  
+  my $dir = $self->config_data('build_share_dir');
+  my $pc_files = $self->rscan_dir( $dir, qr/\.pc$/ );
 
-  use Data::Dumper;
-  warn Dumper $pcfiles;
+  return unless @$pc_files;  
+
+  my @pc_objects = map { 
+    my $pc = Alien::Base::PkgConfig->new($_);
+    $pc->make_abstract;
+    $pc
+  } @$pc_files;
+
+  $self->config_data( pkgconfig => \@pc_objects);
 }
 
 1;
