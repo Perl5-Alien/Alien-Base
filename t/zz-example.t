@@ -32,6 +32,24 @@ my $dontpanic_pc = $pc_objects->{dontpanic};
 isa_ok( $dontpanic_pc, 'Alien::Base::PkgConfig', "Generate pkgconfig" );
 
 $builder->depends_on('build');
+{ # prepare @INC for Ford::Prefect
+  local $CWD = $builder->blib;
+  push @CWD, 'lib';
+  push @INC, $CWD;
+}
+
+{ # Ford::Prefect relies on Alien::DontPanic
+  local $CWD;
+  pop @CWD; # cd ..
+  push @CWD, 'Ford-Prefect';
+
+  ok( -e 'Build.PL', "Ford::Prefect's Build.PL found" );
+  my $ford_builder = do 'Build.PL' or warn $@;
+  isa_ok( $ford_builder, 'Module::Build' );
+
+  #$ford_builder->depends_on('build');
+  $ford_builder->depends_on('realclean');
+}
 
 $builder->depends_on('realclean');
 ok( ! -e 'Build'   , "realclean removes Build script" );

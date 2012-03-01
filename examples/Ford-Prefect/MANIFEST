@@ -1,0 +1,4 @@
+Build.PL
+lib/Ford/Prefect.pm
+lib/Ford/Prefect.xs
+MANIFEST			This list of files
