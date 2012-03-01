@@ -12,7 +12,7 @@ my $builder = do 'Build.PL';
 isa_ok( $builder, 'Module::Build' );
 isa_ok( $builder, 'Alien::Base::ModuleBuild' );
 
-$builder->dispatch('alien');
+$builder->depends_on('alien');
 ok( -d '_install', "ACTION_alien creates _install (share) directory" );
 ok( -d '_alien',   "ACTION_alien creates _alien (build) directory" );
 {
@@ -27,7 +27,9 @@ ok( -d '_alien',   "ACTION_alien creates _alien (build) directory" );
   }
 }
 
-$builder->dispatch('realclean');
+$builder->depends_on('build');
+
+$builder->depends_on('realclean');
 ok( ! -e 'Build'   , "realclean removes Build script" );
 ok( ! -d '_install', "realclean removes _install (share) directory" );
 ok( ! -d '_alien'  , "realclean removes _alien (build) directory" );
