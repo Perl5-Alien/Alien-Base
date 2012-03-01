@@ -173,6 +173,7 @@ sub alien_init_temp_dir {
   }
 }
 
+#TODO this method not used yet
 sub alien_init_configdata {
   my $self = shift;
 
@@ -325,6 +326,20 @@ sub alien_exec_prefix {
   } else {
     return './';
   }
+}
+
+########################
+#  Post-Build Methods  #
+########################
+
+sub alien_load_pkgconfig {
+  my $self = shift;
+
+  my $dir = $self->alien_share_dir;
+  my $pcfiles = $self->rscan_dir( $dir, qr/\.pc$/ );  
+
+  use Data::Dumper;
+  warn Dumper $pcfiles;
 }
 
 1;
