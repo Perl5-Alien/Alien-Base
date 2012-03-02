@@ -8,6 +8,10 @@ use Carp;
 use File::chdir;
 use File::ShareDir qw/dist_dir/;
 use Scalar::Util qw/blessed/;
+use List::MoreUtils qw/part/;
+
+require DynaLoader;
+use autodynaload;
 
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
@@ -20,13 +24,16 @@ sub import {
 
   my $dist_dir = $class->_find_dist_dir;
 
-  my $libs = $class->libs;
+  my ($l, $L) = part { /^-L/ } split /\s+/, $class->libs;
+  my %libs = 
+    map { 
+      ( my $lib = $_ ) =~ s/^-l//;
+      ( $lib, DynaLoader::dl_findfile( @$L, $_ ) );
+    } 
+    @$l;
 
-  my @L = $libs =~ /-L(\S+)/g;
-  
-  no strict 'refs';
-  push @{ caller . '::dl_library_path' }, @L;
-  *{ caller . '::dl_load_flags' } = sub { 0x01 };
+  autodynaload->new( sub { $libs{$_[1]} } )->insert;
+
 }
 
 sub _find_dist_dir {

@@ -55,10 +55,11 @@ $builder->depends_on('build');
     push @INC, $CWD;
   }
 
-  #require Ford::Prefect;
-  #my $answer = Ford::Prefect::answer();
-
-  #is( $answer, 42, "Ford::Prefect knows the answer" );
+  TODO: {
+    local $TODO = "Still trying to handle dynamically loading shared objects";
+    my $answer = eval { require Ford::Prefect; Ford::Prefect::answer() };
+    is( $answer, 42, "Ford::Prefect knows the answer" );
+  }
 
   $ford_builder->depends_on('realclean');
 }
