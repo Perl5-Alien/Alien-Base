@@ -7,4 +7,4 @@ Special thanks go out to:
 - Christian Walde (Mithaldu) for productive conversations about component interoperablility,
 - kmx for writing Alien::Tidyp from which I drew many of my initial ideas,
 - David Mertens (run4flat) for productive conversations about implementation,
-
+- Mark Nunberg (mordy, mnunberg) for graciously teaching me about rpath and dynamic loading,
