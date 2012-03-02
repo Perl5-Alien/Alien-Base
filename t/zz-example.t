@@ -47,7 +47,7 @@ $builder->depends_on('build');
   my $ford_builder = do 'Build.PL' or warn $@;
   isa_ok( $ford_builder, 'Module::Build' );
 
-  #$ford_builder->depends_on('build');
+  $ford_builder->depends_on('build');
   $ford_builder->depends_on('realclean');
 }
 

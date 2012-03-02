@@ -64,7 +64,7 @@ sub make_abstract {
 
   if ($top_var) {
     @vars = grep { $_ ne $top_var } @vars;
-    push @vars, $top_var;
+    unshift @vars, $top_var;
 
     $self->{vars}{$top_var} = $top_val if defined $top_val;
   }

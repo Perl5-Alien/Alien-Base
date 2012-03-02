@@ -7,10 +7,10 @@ use Alien::DontPanic;
 my $dontpanic = Alien::DontPanic->new;
 
 use Data::Dumper;
-warn Dumper $dontpanic->pkgconfig('dontpanic');
+my $pc = $dontpanic->pkgconfig('dontpanic');
 
-my $cflags = $dontpanic->cflags('dontpanic');
-my $libs   = $dontpanic->libs('dontpanic');
+my $cflags = $pc->keyword('Cflags');
+my $libs   = $pc->keyword('Libs');
 
 warn "$cflags\n$libs\n";
 

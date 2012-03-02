@@ -36,14 +36,14 @@ sub cflags {
   my $self = shift;
   my $package = shift;
   my $pc = $self->config('pkgconfig')->{$package};
-  return $pc->keyword('Cflags', { alien_dist_dir => $self->{dist_dir} });
+  return $pc->keyword('Cflags', { alien_dist_dir => $self->{share} });
 }
 
 sub libs {
   my $self = shift;
   my $package = shift;
   my $pc = $self->config('pkgconfig')->{$package};
-  return $pc->keyword('Libs', { alien_dist_dir => $self->{dist_dir} });
+  return $pc->keyword('Libs', { alien_dist_dir => $self->{share} });
 }
 
 sub pkgconfig {
