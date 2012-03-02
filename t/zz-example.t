@@ -58,6 +58,7 @@ $builder->depends_on('build');
   TODO: {
     local $TODO = "Still trying to handle dynamically loading shared objects";
     my $answer = eval { require Ford::Prefect; Ford::Prefect::answer() };
+    warn $@ if $@;
     is( $answer, 42, "Ford::Prefect knows the answer" );
   }
 
