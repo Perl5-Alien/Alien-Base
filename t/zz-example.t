@@ -19,7 +19,7 @@ ok( -d '_alien',   "ACTION_alien creates _alien (build) directory" );
   local $CWD = '_install';
   {
     local $CWD = 'lib';
-    ok( -e 'libdontpanic.so.1.0', "ACTION_alien installs lib" );
+    ok( -e 'libdontpanic.so', "ACTION_alien installs lib" );
   }
   {
     local $CWD = 'include';
