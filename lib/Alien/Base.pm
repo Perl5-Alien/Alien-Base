@@ -11,7 +11,7 @@ use Scalar::Util qw/blessed/;
 use List::MoreUtils qw/part/;
 
 require DynaLoader;
-use autodynaload;
+#use autodynaload;
 
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
@@ -25,15 +25,16 @@ sub import {
   my $dist_dir = $class->_find_dist_dir;
 
   my ($l, $L) = part { /^-L/ } split /\s+/, $class->libs;
-  my %libs = 
-    map { 
-      ( my $lib = $_ ) =~ s/^-l//;
-      ( $lib, DynaLoader::dl_findfile( @$L, $_ ) );
-    } 
-    @$l;
+  #my %libs = 
+  #  map { 
+  #    ( my $lib = $_ ) =~ s/^-l//;
+  #    ( $lib, DynaLoader::dl_findfile( @$L, $_ ) );
+  #  } 
+  #  @$l;
 
-  autodynaload->new( sub { $libs{$_[1]} } )->insert;
+  #autodynaload->new( sub { $libs{$_[1]} } )->insert(0);
 
+  #$ENV{'LD_LIBRARY_PATH'} = join (':', map { my $in = $_; $in=~s/^-L//; $in } @$L); 
 }
 
 sub _find_dist_dir {
