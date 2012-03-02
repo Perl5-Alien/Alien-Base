@@ -7,57 +7,76 @@ use Carp;
 
 use File::chdir;
 use File::ShareDir qw/dist_dir/;
+use Scalar::Util qw/blessed/;
 
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
 
-sub new {
+sub import {
   my $class = shift;
 
   my $config = $class . '::ConfigData';
   eval "require $config";
 
+  my $dist_dir = $class->_find_dist_dir;
+
+  my $libs = $class->libs;
+
+  my @L = $libs =~ /-L(\S+)/g;
+  
+  no strict 'refs';
+  push @{ caller . '::dl_library_path' }, @L;
+  *{ caller . '::dl_load_flags' } = sub { 0x01 };
+}
+
+sub _find_dist_dir {
+  my $class = shift;
+
   my $dist = $class;
   $dist =~ s/::/-/g;
 
-  my $dist_dir = dist_dir $dist;
-  
-  my $self = {
-    config => $config,
-    share  => $dist_dir,
-  };
-
-  bless $self, $class;
-
-  return $self;
+  return eval { dist_dir $dist } or $class->{build_share_dir};
 }
+
+sub new { return bless {}, $_[0] }
 
 sub cflags {
   my $self = shift;
-  my $package = shift;
-  my $pc = $self->config('pkgconfig')->{$package};
-  return $pc->keyword('Cflags', { alien_dist_dir => $self->{share} });
+  return $self->_keyword('Cflags', @_);
 }
 
 sub libs {
   my $self = shift;
-  my $package = shift;
-  my $pc = $self->config('pkgconfig')->{$package};
-  return $pc->keyword('Libs', { alien_dist_dir => $self->{share} });
+  return $self->_keyword('Libs', @_);
+}
+
+sub _keyword {
+  my $self = shift;
+  my $keyword = shift;
+
+  my $dist_dir = $self->_find_dist_dir;
+  my @pc = $self->pkgconfig(@_);
+  my @strings = 
+    map { $_->keyword($keyword, { alien_dist_dir => $dist_dir }) }
+    @pc;
+
+  return join( ' ', @strings );
 }
 
 sub pkgconfig {
   my $self = shift;
-  my ($pc_file) = @_;
-  croak "Must specify a package" unless $pc_file;
-
-  return $self->config('pkgconfig')->{$pc_file};
+  my %all = %{ $self->config('pkgconfig') };
+  return values %all unless @_;
+  return @all{@_};
 }
 
 # helper method to call Alien::MyLib::ConfigData->config(@_)
 sub config {
-  my $self = shift;
-  return $self->{config}->config(@_);
+  my $class = shift;
+  $class = blessed $class || $class;
+  
+  my $config = $class . '::ConfigData';
+  return $config->config(@_);
 }
 
 1;

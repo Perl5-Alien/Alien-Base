@@ -6,13 +6,10 @@ use Alien::DontPanic;
 
 my $dontpanic = Alien::DontPanic->new;
 
-use Data::Dumper;
 my $pc = $dontpanic->pkgconfig('dontpanic');
 
 my $cflags = $pc->keyword('Cflags');
 my $libs   = $pc->keyword('Libs');
-
-warn "$cflags\n$libs\n";
 
 my $builder = Module::Build->new(
     module_name       => 'Ford::Prefect',

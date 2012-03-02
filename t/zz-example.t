@@ -8,7 +8,7 @@ use File::chdir;
 local $CWD;
 push @CWD, qw/examples Alien-DontPanic/;
 
-my $builder = do 'Build.PL';
+my $builder = do 'Build.PL' or warn $@;
 isa_ok( $builder, 'Module::Build' );
 isa_ok( $builder, 'Alien::Base::ModuleBuild' );
 
@@ -48,6 +48,18 @@ $builder->depends_on('build');
   isa_ok( $ford_builder, 'Module::Build' );
 
   $ford_builder->depends_on('build');
+
+  {
+    local $CWD;
+    push @CWD, qw/blib lib/;
+    push @INC, $CWD;
+  }
+
+  #require Ford::Prefect;
+  #my $answer = Ford::Prefect::answer();
+
+  #is( $answer, 42, "Ford::Prefect knows the answer" );
+
   $ford_builder->depends_on('realclean');
 }
 
