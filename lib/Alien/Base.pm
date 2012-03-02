@@ -34,14 +34,16 @@ sub new {
 
 sub cflags {
   my $self = shift;
-  my $pc = $self->config('pkgconfig');
-
+  my $package = shift;
+  my $pc = $self->config('pkgconfig')->{$package};
+  return $pc->keyword('Cflags', { alien_dist_dir => $self->{dist_dir} });
 }
 
 sub libs {
   my $self = shift;
-  my $pc = $self->config('pkgconfig');
-
+  my $package = shift;
+  my $pc = $self->config('pkgconfig')->{$package};
+  return $pc->keyword('Libs', { alien_dist_dir => $self->{dist_dir} });
 }
 
 sub pkgconfig {

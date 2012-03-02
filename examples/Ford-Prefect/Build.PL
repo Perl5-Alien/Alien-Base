@@ -4,7 +4,15 @@ use warnings;
 use Module::Build;
 use Alien::DontPanic;
 
-my $dontpanic = Alien::DontPanic->new->pkgconfig('dontpanic');
+my $dontpanic = Alien::DontPanic->new;
+
+use Data::Dumper;
+warn Dumper $dontpanic->pkgconfig('dontpanic');
+
+my $cflags = $dontpanic->cflags('dontpanic');
+my $libs   = $dontpanic->libs('dontpanic');
+
+warn "$cflags\n$libs\n";
 
 my $builder = Module::Build->new(
     module_name       => 'Ford::Prefect',
@@ -20,8 +28,8 @@ my $builder = Module::Build->new(
     build_requires    => {
       'ExtUtils::CBuilder' => 0,
     },
-    extra_compiler_flags => $dontpanic->keyword('Cflags'),
-    extra_linker_flags   => $dontpanic->keyword('Libs'), 
+    extra_compiler_flags => $cflags,
+    extra_linker_flags   => $libs, 
 );
 
 $builder->create_build_script;

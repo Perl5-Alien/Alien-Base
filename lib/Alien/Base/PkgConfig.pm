@@ -55,10 +55,19 @@ sub var {
 # abstract keywords and other vars in terms of "pure" vars
 sub make_abstract {
   my $self = shift;
+  my ($top_var, $top_val) = @_;
+
   my @vars = 
     sort { length $self->{vars}{$b} <=> length $self->{vars}{$a} }
     grep { $self->{vars}{$_} !~ /\$\{.*?\}/ } # skip vars which contain vars
     keys %{ $self->{vars} };
+
+  if ($top_var) {
+    @vars = grep { $_ ne $top_var } @vars;
+    push @vars, $top_var;
+
+    $self->{vars}{$top_var} = $top_val if defined $top_val;
+  }
 
   foreach my $var (@vars) {
     my $value = $self->{vars}{$var};

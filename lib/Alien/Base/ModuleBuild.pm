@@ -346,7 +346,7 @@ sub alien_load_pkgconfig {
 
   my %pc_objects = map { 
     my $pc = Alien::Base::PkgConfig->new($_);
-    $pc->make_abstract;
+    $pc->make_abstract( alien_dist_dir => $dir );
     ($pc->{package}, $pc)
   } @$pc_files;
 
