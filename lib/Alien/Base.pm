@@ -8,10 +8,6 @@ use Carp;
 use File::chdir;
 use File::ShareDir qw/dist_dir/;
 use Scalar::Util qw/blessed/;
-use List::MoreUtils qw/part/;
-
-require DynaLoader;
-#use autodynaload;
 
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
