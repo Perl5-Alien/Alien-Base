@@ -22,19 +22,14 @@ sub import {
   my $config = $class . '::ConfigData';
   eval "require $config";
 
-  my $dist_dir = $class->_find_dist_dir;
+  my $libs = $class->libs;
 
-  my ($l, $L) = part { /^-L/ } split /\s+/, $class->libs;
-  #my %libs = 
-  #  map { 
-  #    ( my $lib = $_ ) =~ s/^-l//;
-  #    ( $lib, DynaLoader::dl_findfile( @$L, $_ ) );
-  #  } 
-  #  @$l;
-
-  #autodynaload->new( sub { $libs{$_[1]} } )->insert(0);
-
-  #$ENV{'LD_LIBRARY_PATH'} = join (':', map { my $in = $_; $in=~s/^-L//; $in } @$L); 
+  my @L = $libs =~ /-L(\S+)/g;
+  for ( qw/LD_RUN_PATH/ ) {
+    my @LL = @L;
+    unshift @LL, $ENV{$_} if $ENV{$_};
+    $ENV{$_} = join( ':', @LL );
+  }
 }
 
 sub _find_dist_dir {
