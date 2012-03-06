@@ -21,10 +21,14 @@ sub import {
   my $libs = $class->libs;
 
   my @L = $libs =~ /-L(\S+)/g;
-  for ( qw/LD_RUN_PATH/ ) {
+  for my $var ( qw/LD_RUN_PATH/ ) {
     my @LL = @L;
-    unshift @LL, $ENV{$_} if $ENV{$_};
-    $ENV{$_} = join( ':', @LL );
+    unshift @LL, $ENV{$var} if $ENV{$var};
+
+    no strict 'refs';
+    $ENV{$var} = join( ':', @LL ) 
+      unless ${ $class . "::AlienEnv" }{$var}++;
+      # %Alien::MyLib::AlienEnv has keys like ENV_VAR => int
   }
 }
 
