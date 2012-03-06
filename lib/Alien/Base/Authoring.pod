@@ -1,0 +1,60 @@
+=head1 NAME
+
+Alien::Base::Authoring - Authoring an C<Alien::> module
+
+=head1 DESCRIPTION
+
+Congratulations! You have made the decision to help the Perl community by providing a C library via CPAN. The L<Alien> namespace has been instrumental in providing C libraries for many years, but authoring those modules has been a commitment that most authors weren't willing to take on. L<Alien::Base> tries to ease that pain by providing most of the needed functionality; usually authors should only need a little boilerplate and configuration!
+
+=head1 ECOSYSTEM
+
+The L<Alien::Base> ecosystem is made up of several elements. Of course, no ecosystem is complete without inhabitants. It is also important to consider the users of the base classes. This documentation will assume that you are writing C<Alien::MyLibrary> which provides F<libmylibrary.so>. Further it will assume that you or someone else is going to use this module/library to write C<Some::Module::MyLibrary>. Finally an end user might use that module to write F<myscript.pl>.
+
+=head2 Alien::Base::ModuleBuild
+
+L<Alien::Base::ModuleBuild> provides a base class, utility methods and configuration handling for the build/install phase of the library. It is itself a subclass of L<Module::Build>. C<Alien::MyLibrary>'s F<Build.PL> file will use L<Alien::Base::ModuleBuild> to create its builder object.
+
+ # file: Alien-MyLibrary/Build.PL
+ use Alien::Base::ModuleBuild;
+ my $builder = Alien::Base::ModuleBuild->new({...});
+ $builder->create_build_script;
+
+This is just like you would do for L<Module::Build>, except that there will be a few additional configuration parameters (see L<Alien::Base::ModuleBuild::API>).
+
+L<Alien::Base::ModuleBuild> adds the additional build action C<alien>. This action need never be run directly, the usual C<build> action (usually seen as C<./Build>) will call it for you. The C<alien> action is responsible for finding, downloading, extracting and building the external libary. It also prepares it for installation with your C<Alien::> module.
+
+=head2 Alien::Base
+
+L<Alien::Base> is the subclass of C<Alien::MyLibrary>. In this context, L<Alien::Base> has two distinct uses. First it is used by C<Alien::MyLibrary> to provide the build information/flags for building C<Some::Module::MyLibrary>. Secondly it is use (again through C<Alien::MyLibrary>) to allow run-time access to F<libmylibrary.so> to C<Some::Module::MyLibrary>.
+
+=head3 Alien::Base for Building
+
+C<Alien::MyLibrary> is called by C<Some::Library::MyLibrary>'s build script, either F<Build.PL> or F<Makefile.PL>. Most of the functionality can be utilized through class method calls, though creating an object can save a few keystrokes.
+
+ # file: Some-Module-MyLibrary/Build.PL
+ use Module::Build;
+ use Alien::MyLibrary;
+
+ my $alien = Alien::MyLibrary->new;
+ my $builder = Module::Build->new({
+   ...
+   extra_compiler_flags => $alien->cflags(),
+   extra_linker_flags   => $alien->libs(),
+ });
+ $builder->create_build_script;
+
+Additional information can be gotten from the C<config> method.
+
+=head3 Alien::Base for Run-Time Provision
+
+C<Alien::MyLibrary> must also be called by C<Some::Library::MyLibrary> before C<DynaLoader::bootstrap> or C<XSLoader::load>. This does the run-time provisioning so that when the XS file is loaded, it can find L<libmylibrary.so>. It does this by appending to C<$ENV{LD_RUN_PATH}> or your system's equvialent environment variable (PLEASE file a bug if this should fail on your system).
+
+ # file: Some-Module-MyLibrary/lib/Some/Module/MyLibrary.pm
+ package Some::Module::MyLibrary;
+
+ use Alien::MyLibrary;
+
+ require XSLoader;
+ XSLoader::load();
+ 
+The C<use> directive is recommended, however if you must use C<require> then be sure to call the C<import> method too.
