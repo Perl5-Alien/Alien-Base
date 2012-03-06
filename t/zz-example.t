@@ -55,6 +55,12 @@ $builder->depends_on('build');
     push @INC, $CWD;
   }
 
+  {
+    local $CWD;
+    push @CWD, qw/blib arch/;
+    push @INC, $CWD;
+  }
+
   TODO: {
     local $TODO = "Still trying to handle dynamically loading shared objects";
     my $answer = eval { require Ford::Prefect; Ford::Prefect::answer() };
