@@ -58,3 +58,17 @@ C<Alien::MyLibrary> must also be called by C<Some::Library::MyLibrary> before C<
  XSLoader::load();
  
 The C<use> directive is recommended, however if you must use C<require> then be sure to call the C<import> method too.
+
+=head1 AUTHOR
+
+Joel Berger <joel.a.berger@gmail.com>
+
+=head1 SEE ALSO
+
+=over
+
+=item L<Module::Build>
+
+=item L<Alien>
+
+=back
