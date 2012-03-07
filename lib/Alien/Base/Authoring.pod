@@ -16,7 +16,7 @@ L<Alien::Base::ModuleBuild> provides a base class, utility methods and configura
 
  # file: Alien-MyLibrary/Build.PL
  use Alien::Base::ModuleBuild;
- my $builder = Alien::Base::ModuleBuild->new({...});
+ my $builder = Alien::Base::ModuleBuild->new(...);
  $builder->create_build_script;
 
 This is just like you would do for L<Module::Build>, except that there will be a few additional configuration parameters (see L<Alien::Base::ModuleBuild::API>).

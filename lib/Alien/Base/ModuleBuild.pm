@@ -11,10 +11,25 @@ use File::Spec;
 use Carp;
 use Archive::Extract;
 
-use Alien::Base::ModuleBuild::Repository;
-use Alien::Base::ModuleBuild::Cabinet;
-
 use Alien::Base::PkgConfig;
+use Alien::Base::ModuleBuild::Cabinet;
+use Alien::Base::ModuleBuild::Repository;
+
+use Alien::Base::ModuleBuild::Repository::HTTP;
+use Alien::Base::ModuleBuild::Repository::FTP;
+use Alien::Base::ModuleBuild::Repository::Test;
+use Alien::Base::ModuleBuild::Repository::Local;
+
+# setup protocol specific classes
+# Alien:: author can override these defaults using alien_repository_class property
+our %Repository_Class;
+my %default_repository_class = (
+  default => 'Alien::Base::ModuleBuild::Repository',
+  http    => 'Alien::Base::ModuleBuild::Repository::HTTP',
+  ftp     => 'Alien::Base::ModuleBuild::Repository::FTP',
+  test    => 'Alien::Base::ModuleBuild::Repository::Test',
+  local   => 'Alien::Base::ModuleBuild::Repository::Local',
+);
 
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
@@ -65,8 +80,10 @@ __PACKAGE__->add_property( 'alien_provides_libs' );
 #   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
+__PACKAGE__->add_property( 'alien_repository'         => {} );
 __PACKAGE__->add_property( 'alien_repository_default' => {} );
-__PACKAGE__->add_property( 'alien_repository' );
+__PACKAGE__->add_property( 'alien_repository_class'   => {} );
+
 
 ################
 #  ConfigData  #
@@ -85,6 +102,12 @@ sub new {
 
   my $install_dir = $args{alien_share_dir} || '_install';
   my $cleanup_install_dir = 0;
+
+  # merge default and user-defined repository classes
+  foreach my $protocol (keys %default_repository_class) {
+    next if defined $args{alien_repository_class}{$protocol};
+    $args{alien_repository_class}{$protocol} = $default_repository_class{$protocol};
+  }
 
   # initialize M::B property share_dir 
   if (! defined $args{share_dir}) {
@@ -138,8 +161,9 @@ sub alien_create_repositories {
     }
 
     $repo->{platform} = 'src' unless defined $repo->{platform};
+    my $protocol = $repo->{protocol} || 'default';
 
-    push @repos, Alien::Base::ModuleBuild::Repository->new( $repo );
+    push @repos, $self->alien_repository_class($protocol)->new( $repo );
   }
 
   # check validation, including c compiler for src type

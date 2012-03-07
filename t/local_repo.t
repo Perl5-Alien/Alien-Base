@@ -7,10 +7,9 @@ use File::Basename qw/fileparse/;
 use File::Temp;
 use File::chdir;
 
-use Alien::Base::ModuleBuild::Repository::LOCAL;
+use Alien::Base::ModuleBuild::Repository::Local;
 
-my $repo = bless { location => 't' }, 'Alien::Base::ModuleBuild::Repository::LOCAL';
-$repo->init; # this hack fixes the internal representation of location, usually called by Repository->new
+my $repo = Alien::Base::ModuleBuild::Repository::Local->new({ location => 't' });
 
 my @files = $repo->list_files;
 my $this_file = fileparse __FILE__;

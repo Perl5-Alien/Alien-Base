@@ -1,4 +1,4 @@
-package Alien::Base::ModuleBuild::Repository::LOCAL;
+package Alien::Base::ModuleBuild::Repository::Local;
 
 use strict;
 use warnings;
@@ -10,8 +10,10 @@ use File::Spec;
 
 use parent 'Alien::Base::ModuleBuild::Repository';
 
-sub init {
-  my $self = shift;
+sub new {
+  my $class = shift;
+
+  my $self = $class->SUPER::new(@_);
 
   # make location absolute
   local $CWD = $self->location;

@@ -10,37 +10,11 @@ use Module::Loaded qw/is_loaded/;
 use Alien::Base::ModuleBuild::File;
 use Alien::Base::ModuleBuild::Utils qw/pattern_has_capture_groups/;
 
-use Alien::Base::ModuleBuild::Repository::HTTP;
-use Alien::Base::ModuleBuild::Repository::FTP;
-use Alien::Base::ModuleBuild::Repository::TEST;
-use Alien::Base::ModuleBuild::Repository::LOCAL;
-
-# setup protocol specific classes
-# Alien:: author can override these defaults using package variable
-our %Repository_Class;
-my %default_repository_class = (
-  HTTP  => 'Alien::Base::ModuleBuild::Repository::HTTP',
-  FTP   => 'Alien::Base::ModuleBuild::Repository::FTP',
-  TEST  => 'Alien::Base::ModuleBuild::Repository::TEST',
-  LOCAL => 'Alien::Base::ModuleBuild::Repository::LOCAL',
-);
-foreach my $type (keys %default_repository_class) {
-  $Repository_Class{$type} ||= $default_repository_class{$type};
-}
-
 sub new {
   my $class = shift;
-  my ($self) = @_;
+  my (%self) = ref $_[0] ? %{ shift() } : @_;
 
-  my $protocol = $self->{protocol} = uc $self->{protocol};
-  croak "Unsupported protocol: $protocol" 
-    unless exists $Repository_Class{$protocol}; 
-
-  my $obj = bless $self, $Repository_Class{$protocol};
-
-  if ($obj->can('init')) {
-    $obj->init;
-  }
+  my $obj = bless \%self, $class;
 
   return $obj;
 }

@@ -1,4 +1,4 @@
-package Alien::Base::ModuleBuild::Repository::TEST;
+package Alien::Base::ModuleBuild::Repository::Test;
 
 use strict;
 use warnings;

@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use Test::More;
-use_ok( 'Alien::Base::ModuleBuild::Repository' );
+use Alien::Base::ModuleBuild::Repository::Test;
 
 my $default = { 
   protocol => 'test',
@@ -11,7 +11,7 @@ my $default = {
 };
 
 {
-  my $repo = Alien::Base::ModuleBuild::Repository->new($default);
+  my $repo = Alien::Base::ModuleBuild::Repository::Test->new($default);
 
   my @filenames = $repo->list_files;
 
@@ -24,7 +24,7 @@ my $default = {
 {
   my $pattern = qr/^gsl-[\d\.]+\.tar\.gz$/;
   local $default->{pattern} = $pattern;
-  my $repo = Alien::Base::ModuleBuild::Repository->new($default);
+  my $repo = Alien::Base::ModuleBuild::Repository::Test->new($default);
 
   my @filenames = grep { $_ =~ $pattern } $repo->list_files;
 
@@ -38,7 +38,7 @@ my $default = {
 {
   my $pattern = qr/^gsl-([\d\.]+)\.tar\.gz$/;
   local $default->{pattern} = $pattern;
-  my $repo = Alien::Base::ModuleBuild::Repository->new($default);
+  my $repo = Alien::Base::ModuleBuild::Repository::Test->new($default);
 
   my @filenames = grep { $_ =~ $pattern } $repo->list_files;
 
