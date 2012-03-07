@@ -29,21 +29,8 @@ foreach my $type (keys %default_repository_class) {
 }
 
 sub new {
-  my $base = shift;
-  my $self;
-
-  # allow building from a base object
-  my $spec = ref $_[0] ? shift : { @_ };
-  if (ref $base) {
-    # if first arg was an object, use it for generics
-    $self = $base;
-    # then override with specifics
-    $self->{$_} = $spec->{$_} for keys %$spec;
-
-  } else {
-    # if first arg was not an object, only use specific
-    $self = $spec;
-  }
+  my $class = shift;
+  my ($self) = @_;
 
   my $protocol = $self->{protocol} = uc $self->{protocol};
   croak "Unsupported protocol: $protocol" 
