@@ -47,7 +47,7 @@ Additional information can be gotten from the C<config> method.
 
 =head3 Alien::Base for Run-Time Provision
 
-C<Alien::MyLibrary> must also be called by C<Some::Library::MyLibrary> before C<DynaLoader::bootstrap> or C<XSLoader::load>. This does the run-time provisioning so that when the XS file is loaded, it can find L<libmylibrary.so>. It does this by appending to C<$ENV{LD_RUN_PATH}> or your system's equvialent environment variable (PLEASE file a bug if this should fail on your system).
+C<Alien::MyLibrary> must also be called by C<Some::Library::MyLibrary> before C<DynaLoader::bootstrap> or C<XSLoader::load>. This does the run-time provisioning so that when the XS file is loaded, it can find f<libmylibrary.so>. It does this by appending to C<$ENV{LD_RUN_PATH}> or your system's equivalent environment variable (PLEASE file a bug if this should fail on your system).
 
  # file: Some-Module-MyLibrary/lib/Some/Module/MyLibrary.pm
  package Some::Module::MyLibrary;
