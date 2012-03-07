@@ -8,7 +8,7 @@ Congratulations! You have made the decision to help the Perl community by provid
 
 =head1 ECOSYSTEM
 
-The L<Alien::Base> ecosystem is made up of several elements. Of course, no ecosystem is complete without inhabitants. It is also important to consider the users of the base classes. This documentation will assume that you are writing C<Alien::MyLibrary> which provides F<libmylibrary.so>. Further it will assume that you or someone else is going to use this module/library to write C<Some::Module::MyLibrary>. Finally an end user might use that module to write F<myscript.pl>.
+The L<Alien::Base> ecosystem is made up of several elements. Some of these elements are the base classes in the distribution itself. Of course, no ecosystem is complete without inhabitants, therefore, it is also important to consider the users of these base classes. This documentation will assume that you are writing C<Alien::MyLibrary> which provides F<libmylibrary.so>. Further it will assume that you or someone else is going to use this module/library to write C<Some::Module::MyLibrary>. Finally an end user might use that module to write F<myscript.pl>.
 
 =head2 Alien::Base::ModuleBuild
 
