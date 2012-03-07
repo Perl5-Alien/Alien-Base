@@ -65,6 +65,8 @@ __PACKAGE__->add_property( 'alien_provides_libs' );
 #   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
+__PACKAGE__->add_property( 'alien_repository_default' => {} );
+__PACKAGE__->add_property( 'alien_repository' );
 
 ################
 #  ConfigData  #
@@ -118,29 +120,26 @@ sub new {
 sub alien_create_repositories {
   my $self = shift;
 
-  ## build repository objects
-  my $repo_property = $self->{properties}{alien_repository};
+  ## get repository specs
+  my $repo_default = $self->alien_repository_default;
+  my $repo_specs = $self->alien_repository;
 
-  my $base_repo = Alien::Base::ModuleBuild::Repository->new(
-    protocol       => delete $repo_property->{protocol},
-    protocol_class => delete $repo_property->{protocol_class},
-    host           => delete $repo_property->{host},
-    location       => delete $repo_property->{location},
-    pattern        => delete $repo_property->{pattern},
-    platform       => delete $repo_property->{platform} || 'src',
-  );
+  # upconvert to arrayref if a single hashref is passed
+  if (ref $repo_specs eq 'HASH') {
+    $repo_specs = [ $repo_specs ];
+  }
 
-  my @platforms = keys %$repo_property;
-
-  # map repository constructs to A::B::MB::R objects
   my @repos;
-  if ( @platforms ) {
-    # if plaform specifics exist, use base to build repos
-    push @repos, 
-      map { $base_repo->new( platform => $_, %{$repo_property->{$_}} ) } 
-      @platforms;
-  } else {
-    push @repos, $base_repo;
+  foreach my $repo ( @$repo_specs ) {
+    #merge defaults into spec
+    foreach my $key ( keys %$repo_default ) {
+      next if defined $repo->{$key};
+      $repo->{$key} = $repo_default->{$key};
+    }
+
+    $repo->{platform} = 'src' unless defined $repo->{platform};
+
+    push @repos, Alien::Base::ModuleBuild::Repository->new( $repo );
   }
 
   # check validation, including c compiler for src type
