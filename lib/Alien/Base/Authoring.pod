@@ -12,7 +12,7 @@ The L<Alien::Base> ecosystem is made up of several elements. Of course, no ecosy
 
 =head2 Alien::Base::ModuleBuild
 
-L<Alien::Base::ModuleBuild> provides a base class, utility methods and configuration handling for the build/install phase of the library. It is itself a subclass of L<Module::Build>. C<Alien::MyLibrary>'s F<Build.PL> file will use L<Alien::Base::ModuleBuild> to create its builder object.
+L<Alien::Base::ModuleBuild> provides a base class, utility methods and configuration handling for the build/install phase of the library. It is itself a subclass of L<Module::Build>, which is what supports the building and installing of the surrouning C<Alien::> module. C<Alien::MyLibrary>'s F<Build.PL> file will use L<Alien::Base::ModuleBuild> to create its builder object.
 
  # file: Alien-MyLibrary/Build.PL
  use Alien::Base::ModuleBuild;
@@ -25,7 +25,7 @@ L<Alien::Base::ModuleBuild> adds the additional build action C<alien>. This acti
 
 =head2 Alien::Base
 
-L<Alien::Base> is the subclass of C<Alien::MyLibrary>. In this context, L<Alien::Base> has two distinct uses. First it is used by C<Alien::MyLibrary> to provide the build information/flags for building C<Some::Module::MyLibrary>. Secondly it is use (again through C<Alien::MyLibrary>) to allow run-time access to F<libmylibrary.so> to C<Some::Module::MyLibrary>.
+L<Alien::Base> is the subclass of C<Alien::MyLibrary>. In this context, L<Alien::Base> has two distinct uses. First it is used by C<Alien::MyLibrary> to provide the build information/flags for building C<Some::Module::MyLibrary>. Secondly it is used (again through C<Alien::MyLibrary>) to allow run-time access to F<libmylibrary.so> to C<Some::Module::MyLibrary>.
 
 =head3 Alien::Base for Building
 
