@@ -99,8 +99,7 @@ sub new {
   my $class = shift;
   my %args = @_;
 
-  my $install_dir = $args{alien_share_dir} || '_install';
-  my $cleanup_install_dir = 0;
+  my $install_dir = ($args{alien_share_dir} ||= '_install');
 
   # merge default and user-defined repository classes
   $args{alien_repository_class}{$_} ||= $default_repository_class{$_} 
