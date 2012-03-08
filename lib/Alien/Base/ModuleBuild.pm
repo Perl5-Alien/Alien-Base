@@ -22,7 +22,6 @@ use Alien::Base::ModuleBuild::Repository::Local;
 
 # setup protocol specific classes
 # Alien:: author can override these defaults using alien_repository_class property
-our %Repository_Class;
 my %default_repository_class = (
   default => 'Alien::Base::ModuleBuild::Repository',
   http    => 'Alien::Base::ModuleBuild::Repository::HTTP',

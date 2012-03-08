@@ -24,6 +24,7 @@ lib/Alien/Base/ModuleBuild/Utils.pm
 lib/Alien/Base/PkgConfig.pm
 MANIFEST			This list of files
 README
+t/builder.t
 t/cabinet.t
 t/file.t
 t/http.t
