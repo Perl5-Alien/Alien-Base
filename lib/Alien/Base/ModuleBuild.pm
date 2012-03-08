@@ -103,10 +103,8 @@ sub new {
   my $cleanup_install_dir = 0;
 
   # merge default and user-defined repository classes
-  foreach my $protocol (keys %default_repository_class) {
-    next if defined $args{alien_repository_class}{$protocol};
-    $args{alien_repository_class}{$protocol} = $default_repository_class{$protocol};
-  }
+  $args{alien_repository_class}{$_} ||= $default_repository_class{$_} 
+    for keys %default_repository_class;
 
   # initialize M::B property share_dir 
   if (! defined $args{share_dir}) {
