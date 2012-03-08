@@ -70,7 +70,23 @@ Finally, C<Alien::MyLibrary> must also be called by C<Some::Library::MyLibrary> 
 
 =head1 EXAMPLES
 
-For more examples, see the F<examples> directory in the L<Alien::Base> distribution. Also the author intends to convert L<Alien::GSL> to use this system as soon as it is production ready, so see that distribution for a "Code in the Wild" example.
+For more examples, see the F<examples> directory in the L<Alien::Base> distribution. Two of the example distributions are used in the test suite (see F<t/zz-examples.t>). Those are:
+
+=over
+
+=item *
+
+C<Alien::DontPanic> -- An example C<Alien::> module which provides F<libdontpanic.so>. It provides the C function C<answer> which is simply:
+
+ int answer () { return 42 }
+
+=item *
+
+C<Ford::Prefect> -- An XS module which provides the Perl-level access to C<answer>. It relies on F<libdontpanic.so> and uses C<Alien::DontPanic> to locate/load it.
+
+=back
+
+Also the author intends to convert L<Alien::GSL> to use this system as soon as it is production ready, so that C<Alien::> authors can see a "Code in the Wild" example. Until then, a pre-release version of this module is provided in the F<examples> directory as well.
  
 =head1 AUTHOR
 
