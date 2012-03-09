@@ -15,9 +15,6 @@ $VERSION = eval $VERSION;
 sub import {
   my $class = shift;
 
-  my $config = $class . '::ConfigData';
-  eval "require $config";
-
   my $libs = $class->libs;
 
   my @L = $libs =~ /-L(\S+)/g;
@@ -79,6 +76,8 @@ sub config {
   $class = blessed $class || $class;
   
   my $config = $class . '::ConfigData';
+  eval "require $config";
+
   return $config->config(@_);
 }
 
