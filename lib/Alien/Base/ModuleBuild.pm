@@ -10,6 +10,7 @@ use File::chdir;
 use File::Spec;
 use Carp;
 use Archive::Extract;
+use Sort::Versions;
 
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -34,6 +35,7 @@ our $VERSION = 0.01;
 $VERSION = eval $VERSION;
 
 our $Verbose ||= $ENV{ALIEN_VERBOSE};
+our $Force   ||= $ENV{ALIEN_FORCE};
 
 ################
 #  Parameters  #
@@ -89,6 +91,8 @@ __PACKAGE__->add_property( 'alien_repository_class'   => {} );
 
 # build_share_dir: full path to the shared directory specified in alien_share_dir
 # pkgconfig: hashref of A::B::PkgConfig objects created from .pc file found in build_share_dir
+# install_type: either system or share
+# version: version number installed or available
 
 ############################
 #  Initialization Methods  #
@@ -218,6 +222,17 @@ sub ACTION_code {
 sub ACTION_alien {
   my $self = shift;
 
+  my $version;
+
+  $version = $self->alien_check_installed_version
+    unless $Force;
+
+  if ($version) {
+    $self->config_data( install_type => 'system' );
+    $self->config_data( version => $version );
+    return;
+  }
+
   $self->alien_init_temp_dir;
   my @repos = $self->alien_create_repositories;
 
@@ -233,6 +248,7 @@ sub ACTION_alien {
     local $CWD = $self->alien_temp_dir;
 
     my $file = $cabinet->files->[0];
+    $version = $file->version;
 
     print "Downloading File: " . $file->filename . " ... ";
     my $filename = $file->get;
@@ -257,7 +273,25 @@ sub ACTION_alien {
 
   }
 
-  $self->alien_load_pkgconfig;
+  $self->config_data( install_type => 'share' );
+
+  my $pc = $self->alien_load_pkgconfig;
+  my $pc_version = $pc->{$self->alien_name}->keyword('Version');
+
+  if (! $version and ! $pc_version) {
+    carp "Library looks like it installed, but no version was determined";
+    $self->config_data( version => 0 );    
+  }
+  if ( ! $version and $pc_version ) {
+    $self->config_data( version => $pc_version );
+    return;
+  } 
+  if ( ! $pc_version and $version ) {
+    $self->config_data( version => $version );
+    return;
+  }
+
+  #TODO handle when both versions found, especiallly conflicting
 }
 
 #######################
@@ -374,6 +408,7 @@ sub alien_load_pkgconfig {
   } @$pc_files;
 
   $self->config_data( pkgconfig => \%pc_objects);
+  return \%pc_objects;
 }
 
 1;
