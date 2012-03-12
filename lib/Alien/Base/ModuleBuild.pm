@@ -76,7 +76,6 @@ __PACKAGE__->add_property( 'alien_provides_libs' );
 #   |-- location: ftp folder containing source, http addr to page with links
 #   |-- pattern: qr regex matching acceptable files, if has capture group those are version numbers
 #   |-- platform: src or platform, matching os_type M::B method
-#   |-- [platform]*: hashref of above keys for specific case (overrides defaults)
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
 __PACKAGE__->add_property( 'alien_repository'         => {} );
@@ -308,16 +307,21 @@ sub alien_build {
   my $commands = $self->alien_build_commands;
 
   foreach my $command (@$commands) {
-    $command = $self->alien_interpolate($command);
-
-    system( $command );
-    if ($?) {
+    my $success = $self->do_system( $command );
+    unless ($success) {
       print "External command ($command) failed! Error: $?\n";
       return 0;
     }
   }
 
   return 1;
+}
+
+# wrapper for M::B::do_system which interpolates alien_ vars first
+sub do_system {
+  my $self = shift;
+  my @args = map { $self->alien_interpolate($_) } @_;
+  return $self->SUPER::do_system(@args);
 }
 
 sub alien_interpolate {
