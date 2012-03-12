@@ -281,17 +281,15 @@ sub ACTION_alien {
   if (! $version and ! $pc_version) {
     carp "Library looks like it installed, but no version was determined";
     $self->config_data( version => 0 );    
-  }
-  if ( ! $version and $pc_version ) {
-    $self->config_data( version => $pc_version );
-    return;
-  } 
-  if ( ! $pc_version and $version ) {
-    $self->config_data( version => $version );
-    return;
+    return
   }
 
-  #TODO handle when both versions found, especiallly conflicting
+  if ( $version and $pc_version and versioncmp($version, $pc_version)) {
+    carp "Version information extracted from the file name and pkgconfig data disagree";
+  } 
+
+  $self->config_data( version => $pc_version || $version );
+  return;
 }
 
 #######################
