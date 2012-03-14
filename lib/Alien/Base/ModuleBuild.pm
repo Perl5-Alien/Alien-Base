@@ -5,7 +5,7 @@ use warnings;
 
 use parent 'Module::Build';
 
-use Capture::Tiny qw/capture_stderr capture_merged/;
+use Capture::Tiny qw/capture capture_merged/;
 use File::chdir;
 use File::Spec;
 use Carp;
@@ -300,14 +300,13 @@ sub alien_check_installed_version {
   my $self = shift;
   my $command = $self->alien_version_check;
 
-  $command = $self->alien_interpolate($command);
+  my %result = $self->do_system($command);
 
-  my $version;
-  my $err = capture_stderr {
-    $version = `$command` || 0;
-  };
+  if ($Verbose and not $result{success}) {
+    print "Command `$result{command}` failed with message: $result{stderr}";
+  }
 
-  print "Command `$command` had stderr: $err" if ($Verbose and $err);
+  my $version = $result{stdout} || 0;
 
   return $version;
 }
@@ -350,9 +349,20 @@ sub alien_build {
 }
 
 # wrapper for M::B::do_system which interpolates alien_ vars first
+# also captures output if called in list context (returning a hash)
 sub do_system {
   my $self = shift;
   my @args = map { $self->alien_interpolate($_) } @_;
+  if (wantarray) {
+    my ($out, $err, $success) = capture { $self->SUPER::do_system(@args) };
+    my %return = (
+      stdout => $out,
+      stderr => $err,
+      success => $success,
+      command => join(' ', @args),
+    );
+    return %return;
+  }
   return $self->SUPER::do_system(@args);
 }
 
@@ -405,7 +415,7 @@ sub alien_load_pkgconfig {
     ($pc->{package}, $pc)
   } @$pc_files;
 
-  $self->config_data( pkgconfig => \%pc_objects);
+  $self->config_data( pkgconfig => \%pc_objects );
   return \%pc_objects;
 }
 
