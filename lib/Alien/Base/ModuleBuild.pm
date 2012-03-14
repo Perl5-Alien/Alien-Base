@@ -93,6 +93,9 @@ __PACKAGE__->add_property( 'alien_repository_class'   => {} );
 # pkgconfig: hashref of A::B::PkgConfig objects created from .pc file found in build_share_dir
 # install_type: either system or share
 # version: version number installed or available
+# Cflags: holder for cflags if manually specified
+# Libs:   same but libs
+# name: holder for name as needed by pkg-config
 
 ############################
 #  Initialization Methods  #
@@ -198,15 +201,17 @@ sub alien_init_temp_dir {
   }
 }
 
-#TODO this method not used yet
 sub alien_init_configdata {
   my $self = shift;
 
   my $cflags = $self->alien_provides_cflags;
-  $self->config_data( cflags => $cflags );
+  $self->config_data( Cflags => $cflags );
 
   my $libs   = $self->alien_provides_libs;
-  $self->config_data( libs   => $libs   );
+  $self->config_data( Libs   => $libs   );
+
+  my $name = $self->alien_name;
+  $self->config_data( name   => $name   );
 }
 
 ####################
@@ -222,8 +227,9 @@ sub ACTION_code {
 sub ACTION_alien {
   my $self = shift;
 
-  my $version;
+  $self->alien_init_configdata;
 
+  my $version;
   $version = $self->alien_check_installed_version
     unless $Force;
 
