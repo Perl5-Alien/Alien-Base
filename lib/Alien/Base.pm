@@ -54,6 +54,21 @@ sub _keyword {
   my $self = shift;
   my $keyword = shift;
 
+  # use manually entered info if it exists
+  # alien_provides_*
+  my $manual_data = $self->config($keyword);
+  return $manual_data if defined $manual_data;
+
+  # use pkg-config if installed system-wide
+  my $type = $self->config('install_type');
+  if ($type eq 'system') {
+    my $name = $self->config('name');
+    my $pcdata = `pkg-config --\L$keyword\E $name`;
+    croak "Could not call pkg-config: $!" if $!;
+    return $pcdata;
+  }
+
+  # use parsed info from build .pc file
   my $dist_dir = $self->_find_dist_dir;
   my @pc = $self->pkgconfig(@_);
   my @strings = 
