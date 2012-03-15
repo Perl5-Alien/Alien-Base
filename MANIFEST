@@ -6,6 +6,9 @@ examples/Alien-DontPanic/MANIFEST
 examples/Alien-GSL/Build.PL
 examples/Alien-GSL/lib/Alien/GSL.pm
 examples/Alien-GSL/MANIFEST
+examples/Alien-Nettle/Build.PL
+examples/Alien-Nettle/lib/Alien/Nettle.pm
+examples/Alien-Nettle/MANIFEST
 examples/Ford-Prefect/Build.PL
 examples/Ford-Prefect/lib/Ford/Prefect.pm
 examples/Ford-Prefect/lib/Ford/Prefect.xs
@@ -34,8 +37,11 @@ t/pkgconfig.t
 t/pkgconfig/gsl.pc
 t/pkgconfig/test.pc
 t/repository.t
+t/system_installed/lib/MyTest.pm
+t/system_installed/MANIFEST
 t/utils.t
 t/validation.t
 t/version.t
+t/yy-system_installed.t
 t/zz-example.t
 TODO
