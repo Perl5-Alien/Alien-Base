@@ -8,6 +8,8 @@ use Carp;
 use File::chdir;
 use File::ShareDir ();
 use Scalar::Util qw/blessed/;
+use Perl::OSType qw/is_os_type/;
+use Config;
 
 our $VERSION = 0.01;
 $VERSION = eval $VERSION;
@@ -18,15 +20,17 @@ sub import {
   my $libs = $class->libs;
 
   my @L = $libs =~ /-L(\S+)/g;
-  for my $var ( qw/LD_RUN_PATH/ ) {
-    my @LL = @L;
-    unshift @LL, $ENV{$var} if $ENV{$var};
 
-    no strict 'refs';
-    $ENV{$var} = join( ':', @LL ) 
-      unless ${ $class . "::AlienEnv" }{$var}++;
-      # %Alien::MyLib::AlienEnv has keys like ENV_VAR => int
-  }
+  #TODO investigate using Env module for this (VMS problems?)
+  my $var = is_os_type('Windows') ? 'PATH' : 'LD_RUN_PATH';
+  my @LL = @L;
+  unshift @LL, $ENV{$var} if $ENV{$var};
+
+  no strict 'refs';
+  $ENV{$var} = join( $Config::Config{path_sep}, @LL ) 
+    unless ${ $class . "::AlienEnv" }{$var}++;
+    # %Alien::MyLib::AlienEnv has keys like ENV_VAR => int (true if loaded)
+
 }
 
 sub dist_dir {
