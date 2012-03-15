@@ -6,7 +6,7 @@ use warnings;
 use Carp;
 
 use File::chdir;
-use File::ShareDir qw/dist_dir/;
+use File::ShareDir ();
 use Scalar::Util qw/blessed/;
 
 our $VERSION = 0.01;
@@ -35,7 +35,7 @@ sub dist_dir {
   my $dist = $class;
   $dist =~ s/::/-/g;
 
-  return eval { dist_dir $dist } or $class->{build_share_dir};
+  return eval { File::ShareDir::dist_dir $dist } or $class->{build_share_dir};
 }
 
 sub new { return bless {}, $_[0] }
