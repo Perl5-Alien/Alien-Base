@@ -5,8 +5,6 @@ use warnings;
 
 use Carp;
 
-use Module::Loaded qw/is_loaded/;
-
 use Alien::Base::ModuleBuild::File;
 use Alien::Base::ModuleBuild::Utils qw/pattern_has_capture_groups/;
 
