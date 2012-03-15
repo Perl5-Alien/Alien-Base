@@ -20,6 +20,9 @@ my $builder = Module::Build->new(
     'File::ShareDir'   => 0,
     'Archive::Extract' => 0,
   },
+  recommends => {
+    'HTML::LinkExtor' => 0,
+  },
   meta_merge => {
     resources  => {
       repository => "http://github.com/jberger/Alien-Base",
