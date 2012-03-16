@@ -1,0 +1,69 @@
+---
+abstract: 'A base class for Alien:: modules'
+author:
+  - 'Joel A. Berger <joel.a.berger@gmail.com>'
+build_requires: {}
+configure_requires:
+  Module::Build: 0.36
+dynamic_config: 1
+generated_by: 'Module::Build version 0.4, CPAN::Meta::Converter version 2.120351'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Alien-Base
+no_index:
+  directory:
+    - examples
+    - t
+  file:
+    - README.pod
+provides:
+  Alien::Base:
+    file: lib/Alien/Base.pm
+    version: 0.000_001
+  Alien::Base::ModuleBuild:
+    file: lib/Alien/Base/ModuleBuild.pm
+    version: 0.000_001
+  Alien::Base::ModuleBuild::Cabinet:
+    file: lib/Alien/Base/ModuleBuild/Cabinet.pm
+    version: 0.000_001
+  Alien::Base::ModuleBuild::File:
+    file: lib/Alien/Base/ModuleBuild/File.pm
+    version: 0.000_001
+  Alien::Base::ModuleBuild::Repository:
+    file: lib/Alien/Base/ModuleBuild/Repository.pm
+    version: 0.000_001
+  Alien::Base::ModuleBuild::Repository::FTP:
+    file: lib/Alien/Base/ModuleBuild/Repository/FTP.pm
+    version: 0.000_001
+  Alien::Base::ModuleBuild::Repository::HTTP:
+    file: lib/Alien/Base/ModuleBuild/Repository/HTTP.pm
+    version: 0.000_001
+  Alien::Base::ModuleBuild::Repository::Local:
+    file: lib/Alien/Base/ModuleBuild/Repository/Local.pm
+    version: 0.000_001
+  Alien::Base::ModuleBuild::Utils:
+    file: lib/Alien/Base/ModuleBuild/Utils.pm
+    version: 0.000_001
+  Alien::Base::PkgConfig:
+    file: lib/Alien/Base/PkgConfig.pm
+    version: 0.000_001
+recommends:
+  HTML::LinkExtor: 0
+requires:
+  Archive::Extract: 0
+  Capture::Tiny: 0
+  File::ShareDir: 0
+  File::chdir: 0
+  List::MoreUtils: 0
+  Module::Build: 0.36
+  Perl::OSType: 0
+  Sort::Versions: 0
+  URI: 0
+  parent: 0
+  perl: v5.8.1
+resources:
+  license: http://dev.perl.org/licenses/
+  repository: http://github.com/jberger/Alien-Base
+version: 0.000_001

@@ -45,3 +45,5 @@ t/version.t
 t/yy-system_installed.t
 t/zz-example.t
 TODO
+META.yml
+META.json
