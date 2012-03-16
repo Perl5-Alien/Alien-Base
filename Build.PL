@@ -30,6 +30,7 @@ my $builder = Module::Build->new(
   meta_merge => {
     resources  => {
       repository => "http://github.com/jberger/Alien-Base",
+      bugtracker => "http://github.com/jberger/Alien-Base/issues",
     },
     no_index => {
       file      => [ 'README.pod' ],

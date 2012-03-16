@@ -4,7 +4,7 @@
       "Joel A. Berger <joel.a.berger@gmail.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4, CPAN::Meta::Converter version 2.120351",
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110440",
    "license" : [
       "perl_5"
    ],
@@ -30,19 +30,19 @@
       },
       "runtime" : {
          "recommends" : {
-            "HTML::LinkExtor" : "0"
+            "HTML::LinkExtor" : 0
          },
          "requires" : {
-            "Archive::Extract" : "0",
-            "Capture::Tiny" : "0",
-            "File::ShareDir" : "0",
-            "File::chdir" : "0",
-            "List::MoreUtils" : "0",
+            "Archive::Extract" : 0,
+            "Capture::Tiny" : 0,
+            "File::ShareDir" : 0,
+            "File::chdir" : 0,
+            "List::MoreUtils" : 0,
             "Module::Build" : "0.36",
-            "Perl::OSType" : "0",
-            "Sort::Versions" : "0",
-            "URI" : "0",
-            "parent" : "0",
+            "Perl::OSType" : 0,
+            "Sort::Versions" : 0,
+            "URI" : 0,
+            "parent" : 0,
             "perl" : "v5.8.1"
          }
       }
@@ -91,6 +91,9 @@
    },
    "release_status" : "testing",
    "resources" : {
+      "bugtracker" : {
+         "web" : "http://github.com/jberger/Alien-Base/issues"
+      },
       "license" : [
          "http://dev.perl.org/licenses/"
       ],
