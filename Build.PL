@@ -29,7 +29,7 @@ my $builder = Module::Build->new(
     },
     no_index => {
       file      => [ 'README.pod' ],
-      directory => [ 'examples', 't/system_installed' ],
+      directory => [ 'examples', 't' ],
     },
   },
 );
