@@ -102,7 +102,9 @@ sub config {
 
 1;
 
+__END__
 __POD__
+
 =head1 NAME
 
 Alien::Base - Base classes for Alien:: modules
