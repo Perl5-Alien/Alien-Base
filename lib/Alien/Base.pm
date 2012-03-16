@@ -3,6 +3,9 @@ package Alien::Base;
 use strict;
 use warnings;
 
+our $VERSION = '0.000_001';
+$VERSION = eval $VERSION;
+
 use Carp;
 
 use File::chdir;
@@ -10,9 +13,6 @@ use File::ShareDir ();
 use Scalar::Util qw/blessed/;
 use Perl::OSType qw/is_os_type/;
 use Config;
-
-our $VERSION = 0.01;
-$VERSION = eval $VERSION;
 
 sub import {
   my $class = shift;
