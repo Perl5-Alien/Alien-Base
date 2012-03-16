@@ -77,7 +77,7 @@ Defines the protocol handler class. Defaults to 'Net::FTP' or 'HTTP::Tiny' as ap
 
 =item host
 
-This is either the root server address for the FTP and HTTP classes (i.e. C<my.server.com)
+This is either the root server address for the FTP and HTTP classes (i.e. C<my.server.com>)
 
 =item location
 
@@ -134,21 +134,43 @@ Setting either to a true value will cause the builder to ignore a system-wide in
 
 =back
 
-=begin comment
+=head2 CONFIG DATA
 
-################
-#  ConfigData  #
-################
+The L<Alien::Base> system needs to store some data to be used in other phases of the build and eventual use. This is done via the mechanism provided by L<Module::Build::ConfigData>. During the build-phase this information is mutable and is available through the C<Module::Build::config_data> method. As the build-phase ends the data is serialized and stored as C<Alien::MyModule::ConfigData> (assuming you are authoring C<Alien::MyModule>). Then during the use-phase, the C<Alien::MyModule::ConfigData::config> method (via the C<Alien::MyModule::config> wrapper) is used to query the information. This data is not strictly immutable, but it changing it involves file permissions and is best left alone.
 
-# build_share_dir: full path to the shared directory specified in alien_share_dir
-# pkgconfig: hashref of A::B::PkgConfig objects created from .pc file found in build_share_dir
-# install_type: either system or share
-# version: version number installed or available
-# Cflags: holder for cflags if manually specified
-# Libs:   same but libs
-# name: holder for name as needed by pkg-config
+Config keys of interest are:
 
-=end comment
+=over
+
+=item build_share_dir
+
+Holder for the full path to the shared directory specified in C<alien_share_dir> builder object parameter. This is used to munge the pkg-config data later on.
+
+=item pkgconfig
+
+A hashref of Alien::Base::PkgConfig objects created from F<.pc> files found in C<build_share_dir>.
+
+=item install_type
+
+Remembers if the library was found system-wide (value: C<system>) or was installed during build (value: C<share>).
+
+=item version
+
+The version number installed or available.
+
+=item Cflags
+
+Holder for C<cflags> if manually specified.
+
+=item Libs
+
+Holder for C<libs> if manually specified.
+
+=item name
+
+Holder for C<alien_name> as needed by pkg-config.
+
+=back
 
 =head1 AUTHOR
 
