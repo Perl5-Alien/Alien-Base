@@ -8,9 +8,13 @@ my $builder = Module::Build->new(
   dist_abstract => 'A base class for Alien:: modules',
   dist_author => 'Joel A. Berger <joel.a.berger@gmail.com>',
   license  => 'perl',
+  configure_requires => {
+    'Module::Build' => 0.36,
+  },
   requires => {
     'perl'             => '5.8.1',
     'parent'           => 0,
+    'Module::Build'    => 0.36,
     'Capture::Tiny'    => 0,
     'File::chdir'      => 0,
     'Sort::Versions'   => 0,
