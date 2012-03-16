@@ -32,8 +32,11 @@ my %default_repository_class = (
   local   => 'Alien::Base::ModuleBuild::Repository::Local',
 );
 
-our $Verbose ||= $ENV{ALIEN_VERBOSE};
-our $Force   ||= $ENV{ALIEN_FORCE};
+our $Verbose;
+$Verbose = $ENV{ALIEN_VERBOSE} if defined $ENV{ALIEN_VERBOSE};
+
+our $Force;
+$Force = $ENV{ALIEN_FORCE} if defined $ENV{ALIEN_FORCE};
 
 ################
 #  Parameters  #
