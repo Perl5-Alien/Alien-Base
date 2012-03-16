@@ -6,6 +6,10 @@ Alien::Base::Authoring - Authoring an C<Alien::> module
 
 Congratulations! You have made the decision to help the Perl community by providing a C library via CPAN. The L<Alien> namespace has been instrumental in providing C libraries for many years, but authoring those modules has been a commitment that most authors weren't willing to take on. L<Alien::Base> tries to ease that pain by providing most of the needed functionality; usually authors should only need a little boilerplate and configuration!
 
+=head1 STATUS
+
+L<Alien::Base> is under heavy development and is currently pre-alpha. The author hopes that the API will stabilize soon, but currently there are no promises that ANY PART of the API will remain as-is. Please resist the temptation to use it for production code until the warning is removed. Of course you are welcomed, and in fact encouraged, to test it with for your favorite library; if you do, you are more than welcome to share your experience with me.
+
 =head1 ECOSYSTEM
 
 The L<Alien::Base> ecosystem is made up of several elements. Some of these elements are the base classes in the distribution itself. Of course, no ecosystem is complete without inhabitants, therefore, it is also important to consider the users of these base classes. This documentation will assume that you are writing C<Alien::MyLibrary> which provides F<libmylibrary.so>. Further it will assume that you or someone else is going to use this module/library to write C<Some::Module::MyLibrary>. Finally an end user might use that module to write F<myscript.pl>.

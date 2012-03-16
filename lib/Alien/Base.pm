@@ -102,3 +102,52 @@ sub config {
 
 1;
 
+__POD__
+=head1 NAME
+
+Alien::Base - Base classes for Alien:: modules
+
+=head1 SYNOPSIS
+
+ package Alien::MyLibrary;
+
+ use strict;
+ use warnings;
+
+ use parent 'Alien::Base';
+
+ 1;
+
+=head1 DESCRIPTION
+
+L<Alien::Base> comprises base classes to help in the construction of C<Alien::> modules. Modules in the L<Alien> namespace are used to locate and install (if necessary) external libraries needed by other Perl modules.
+
+This is the documentation for the L<Alien::Base> module itself. To learn more about the system as a whole please see L<Alien::Base::Authoring>.
+
+=head1 SEE ALSO
+
+=over 
+
+=item *
+
+L<Alien>
+
+=back
+
+=head1 SOURCE REPOSITORY
+
+L<http://github.com/jberger/Tie-Array-CSV>
+
+=head1 AUTHOR
+
+Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2012 by Joel Berger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
