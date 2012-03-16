@@ -120,13 +120,13 @@ A few global variables are used to set gross behavior. For each pair of variable
 
 =over 
 
-=item $Verbose
+=item $Alien::Base::ModuleBuild::Verbose
 
 =item $ENV{ALIEN_VERBOSE}
 
 Setting the either to a true value will output a little more info from within the module itself, plus is will not suppress the messages from the library-build phase (i.e. make etc.). 
 
-=item $Force
+=item $Alien::Base::ModuleBuild::Force
 
 =item $ENV{ALIEN_FORCE}
 
