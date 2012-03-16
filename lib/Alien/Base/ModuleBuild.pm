@@ -457,13 +457,16 @@ is of particular importance to authors.
  
 This is the document you are currently reading.
  
-=item Authoring Reference (L<Alien::Base::ModuleBuild::Authoring>)
+=item Authoring Reference (L<Alien::Base::Authoring>)
  
 This document describes the structure and organization of 
 C<Alien::Base> based projects, beyond that contained in
 C<Module::Build::Authoring>, and the relevant concepts needed by authors who are
 writing F<Build.PL> scripts for a distribution or controlling
 C<Alien::Base::ModuleBuild> processes programmatically.
+
+Note that as it contains information both for the build and use phases of 
+L<Alien::Base> projects, it is located in the upper namespace.
  
 =item API Reference (L<Alien::Base::ModuleBuild::API>)
  
