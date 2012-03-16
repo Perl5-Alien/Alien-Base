@@ -425,3 +425,89 @@ sub alien_load_pkgconfig {
 
 1;
 
+__END__
+__POD__
+
+=head1 NAME
+
+Alien::Base::ModuleBuild - A Module::Build subclass for building Alien:: modules and their libraries
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 GUIDE TO DOCUMENTATION
+
+The documentation for C<Module::Build> is broken up into sections:
+ 
+=over
+
+=item General Usage (L<Module::Build>)
+ 
+This is the landing document for L<Alien::Base::ModuleBuild>'s parent class.
+It describes basic usage and background information.
+Its main purpose is to assist the user who wants to learn how to invoke 
+and control C<Module::Build> scripts at the command line.
+
+It also lists the extra documentation for its use. Users and authors of Alien:: 
+modules should familiarize themselves with these documents. L<Module::Build::API>
+is of particular importance to authors. 
+ 
+=item Alien-Specific Usage (L<Alien::Base::ModuleBuild>)
+ 
+This is the document you are currently reading.
+ 
+=item Authoring Reference (L<Alien::Base::ModuleBuild::Authoring>)
+ 
+This document describes the structure and organization of 
+C<Alien::Base> based projects, beyond that contained in
+C<Module::Build::Authoring>, and the relevant concepts needed by authors who are
+writing F<Build.PL> scripts for a distribution or controlling
+C<Alien::Base::ModuleBuild> processes programmatically.
+ 
+=item API Reference (L<Alien::Base::ModuleBuild::API>)
+ 
+This is a reference to the C<Alien::Base::ModuleBuild> API beyond that contained
+in C<Module::Build::API>.
+ 
+=back
+
+=head1 AUTHOR
+
+Joel Berger <joel.a.berger@gmail.com>
+
+=head1 SEE ALSO
+
+=over
+
+=item * 
+
+L<Module::Build>
+
+=item *
+
+L<Alien>
+
+=item *
+
+L<Alien::Base>
+
+=back
+
+=head1 SOURCE REPOSITORY
+
+L<http://github.com/jberger/Alien-Base>
+
+=head1 AUTHOR
+
+Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2012 by Joel Berger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
