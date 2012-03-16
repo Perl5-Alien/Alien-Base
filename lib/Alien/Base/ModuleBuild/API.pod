@@ -69,7 +69,7 @@ A hashref or arrayref of hashrefs defining the repositories used to find and fet
 
 =item protocol
 
-One of C<ftp> or C<http> or C<local>.
+One of C<ftp> or C<http> or C<local>. The first two are obvious, C<local> allows packaging a tarball with the Alien:: module.
 
 =item protocol_class
 
@@ -81,7 +81,7 @@ This is either the root server address for the FTP and HTTP classes (i.e. C<my.s
 
 =item location
 
-This key is protocol specific. For FTP this contains the name of the folder to search. For HTTP this is the page to be searched for links; this is specified as a path relative to the C<host>.
+This key is protocol specific. For FTP this contains the name of the folder to search. For HTTP this is the page to be searched for links; this is specified as a path relative to the C<host>. For a local file, this specifies the folder containing the tarball relative to the C<base_dir>.
 
 =item pattern
 
@@ -111,6 +111,26 @@ As the repositories in C<alien_repository> are converted to objects, this hash c
  default => 'Alien::Base::ModuleBuild::Repository',
 
 Unlike most L<Module::Build> parameters, authors may specify only those keys which are to be overridden. If any of the above keys are not specified, the above defaults will be used.
+
+=back
+
+=head2 PACKAGE AND ENVIRONMENT VARIABLES
+
+A few global variables are used to set gross behavior. For each pair of variables, if both are set, the environment variable takes precedence.
+
+=over 
+
+=item $Verbose
+
+=item $ENV{ALIEN_VERBOSE}
+
+Setting the either to a true value will output a little more info from within the module itself, plus is will not suppress the messages from the library-build phase (i.e. make etc.). 
+
+=item $Force
+
+=item $ENV{ALIEN_FORCE}
+
+Setting either to a true value will cause the builder to ignore a system-wide installation and build a local version of the library.
 
 =back
 
