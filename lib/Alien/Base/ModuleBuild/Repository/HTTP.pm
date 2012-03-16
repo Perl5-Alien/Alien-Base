@@ -41,9 +41,7 @@ sub get_file {
   my $host = $self->{host};
   my $from = $self->location;
 
-  my $http = $self->connection();
-
-  my $response = HTTP::Tiny->new->mirror( $host . $from . $file, $file );
+  my $response = $self->connection->mirror( $host . $from . $file, $file );
   croak "Download failed: " . $response->{reason} unless $response->{success};
 
   return 1;
