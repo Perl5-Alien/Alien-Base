@@ -128,6 +128,10 @@ This is the documentation for the L<Alien::Base> module itself. To learn more ab
 
 =over 
 
+=item * 
+
+L<Module::Build>
+
 =item *
 
 L<Alien>
@@ -136,7 +140,7 @@ L<Alien>
 
 =head1 SOURCE REPOSITORY
 
-L<http://github.com/jberger/Tie-Array-CSV>
+L<http://github.com/jberger/Alien-Base>
 
 =head1 AUTHOR
 
