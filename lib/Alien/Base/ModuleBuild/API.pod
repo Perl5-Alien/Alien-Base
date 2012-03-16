@@ -136,9 +136,6 @@ Setting either to a true value will cause the builder to ignore a system-wide in
 
 =begin comment
 
-our $Verbose ||= $ENV{ALIEN_VERBOSE};
-our $Force   ||= $ENV{ALIEN_FORCE};
-
 ################
 #  ConfigData  #
 ################
