@@ -3,6 +3,9 @@ package Alien::Base::ModuleBuild;
 use strict;
 use warnings;
 
+our $VERSION = '0.000_001';
+$VERSION = eval $VERSION;
+
 use parent 'Module::Build';
 
 use Capture::Tiny qw/capture capture_merged/;
@@ -18,7 +21,6 @@ use Alien::Base::ModuleBuild::Repository;
 
 use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
-use Alien::Base::ModuleBuild::Repository::Test;
 use Alien::Base::ModuleBuild::Repository::Local;
 
 # setup protocol specific classes
@@ -27,12 +29,8 @@ my %default_repository_class = (
   default => 'Alien::Base::ModuleBuild::Repository',
   http    => 'Alien::Base::ModuleBuild::Repository::HTTP',
   ftp     => 'Alien::Base::ModuleBuild::Repository::FTP',
-  test    => 'Alien::Base::ModuleBuild::Repository::Test',
   local   => 'Alien::Base::ModuleBuild::Repository::Local',
 );
-
-our $VERSION = 0.01;
-$VERSION = eval $VERSION;
 
 our $Verbose ||= $ENV{ALIEN_VERBOSE};
 our $Force   ||= $ENV{ALIEN_FORCE};

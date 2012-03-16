@@ -3,6 +3,9 @@ package Alien::Base::ModuleBuild::Repository;
 use strict;
 use warnings;
 
+our $VERSION = '0.000_001';
+$VERSION = eval $VERSION;
+
 use Carp;
 
 use Alien::Base::ModuleBuild::File;

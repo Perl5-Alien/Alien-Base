@@ -22,7 +22,6 @@ lib/Alien/Base/ModuleBuild/Repository.pm
 lib/Alien/Base/ModuleBuild/Repository/FTP.pm
 lib/Alien/Base/ModuleBuild/Repository/HTTP.pm
 lib/Alien/Base/ModuleBuild/Repository/Local.pm
-lib/Alien/Base/ModuleBuild/Repository/Test.pm
 lib/Alien/Base/ModuleBuild/Utils.pm
 lib/Alien/Base/PkgConfig.pm
 MANIFEST			This list of files
@@ -37,6 +36,7 @@ t/pkgconfig.t
 t/pkgconfig/gsl.pc
 t/pkgconfig/test.pc
 t/repository.t
+t/RepositoryTest.pm
 t/system_installed/lib/MyTest.pm
 t/system_installed/MANIFEST
 t/utils.t

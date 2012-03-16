@@ -3,6 +3,9 @@ package Alien::Base::PkgConfig;
 use strict;
 use warnings;
 
+our $VERSION = '0.000_001';
+$VERSION = eval $VERSION;
+
 use Carp;
 use File::Basename qw/fileparse/;
 

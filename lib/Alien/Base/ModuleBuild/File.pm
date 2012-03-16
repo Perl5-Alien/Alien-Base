@@ -3,6 +3,9 @@ package Alien::Base::ModuleBuild::File;
 use strict;
 use warnings;
 
+our $VERSION = '0.000_001';
+$VERSION = eval $VERSION;
+
 sub new {
   my $class = shift;
   my $self = ref $_[0] ? shift : { @_ };

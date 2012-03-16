@@ -2,7 +2,11 @@ use strict;
 use warnings;
 
 use Test::More;
-use Alien::Base::ModuleBuild::Repository::Test;
+
+use File::chdir;
+local $CWD = 't';
+
+require RepositoryTest;
 
 my $default = { 
   protocol => 'test',
