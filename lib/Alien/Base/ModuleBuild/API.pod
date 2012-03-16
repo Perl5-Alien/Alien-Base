@@ -25,62 +25,99 @@ The name of the primary library which will be provided. This should be in the fo
 
 [version 0.001]
 
-The name of the temporary folder which will house the library when it is downloaded and built. This folder will always be removed by the C<clean> action. The default name is '_alien'.
+The name of the temporary folder which will house the library when it is downloaded and built. This folder will always be removed by the C<clean> action. The default name is C<_alien>.
 
 =item alien_share_dir
 
 [version 0.001]
 
-The name of the folder which will both serve as the "install" directory (i.e. <--prefix>) for C<make install> as well as a share directory via L<Module::Build>'s C<share_dir>/C<dist_dir> parameter. This directory is added in a smart manner which attempts not to interfere with other author-defined C<share_dir>s. The default name is '_install'.
+The name of the folder which will both serve as the "install" directory (i.e. <--prefix>) for C<make install> as well as a share directory via L<Module::Build>'s C<share_dir>/C<dist_dir> parameter. This directory is added in a smart manner which attempts not to interfere with other author-defined C<share_dir>s. The default name is C<_install>.
+
+=item alien_selection_method
+
+[not yet implemented]
+
+This is intended to choose the mechanism for selecting one file from many. The default name is C<newest>.
+
+=item alien_build_commands
+
+[version 0.001]
+
+An arrayref of commands used to build the library and install it to the directory specified in C<alien_share_dir>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ '%pconfigure --prefix=%s', 'make', 'make install' ]>.
+
+=item alien_version_check
+
+[version 0.001]
+
+A command to run to check the version of the library installed on the system. The default is C<pkg-config --modversion %n>.
+
+=item alien_provides_cflags
+
+=item alien_provides_libs
+
+[version 0.001]
+
+These parameters, if specified, override anything provided by F<pkg-config>. They both are empty by default.
+
+=item alien_repository
+
+[version 0.001]
+
+A hashref or arrayref of hashrefs defining the repositories used to find and fetch library tarballs (or zipballs etc.). These attributes are used to create C<Alien::Base::ModuleBuild::Repository> objects (or more likely, subclasses thereof). Which class is created is governed by the C<protocol> attribute and the C<alien_repository_class> property below. Available attributes are:
+
+=over
+
+=item protocol
+
+One of C<ftp> or C<http> or C<local>.
+
+=item protocol_class
+
+Defines the protocol handler class. Defaults to 'Net::FTP' or 'HTTP::Tiny' as appropriate.
+
+=item host
+
+This is either the root server address for the FTP and HTTP classes (i.e. C<my.server.com)
+
+=item location
+
+This key is protocol specific. For FTP this contains the name of the folder to search. For HTTP this is the page to be searched for links; this is specified as a path relative to the C<host>.
+
+=item pattern
+
+This is a C<qr> regex matching acceptable files found in the C<location>. If the pattern contains a capture group, the captured string is interpreted as the version number. N.B. if no versions are found, the files are sorted by filename using version semantics, this mechanism is not likely to be as accurate as specifying a capture group.
+
+=item platform
+
+This attribute is a string telling the repository validator which platform the repository serves. This may be the string C<src> (the default) for platform-independent source files, or a string which matches the L<Module::Build> method C<os_type> (e.g. "Windows", "Unix", "MacOS", "VMS").
+
+=back
+
+=item alien_repository_default
+
+[version 0.001]
+
+This property is a shortcut for specifying multiple repositories with similar attributes. If a repository attribute is not defined in its C<alien_repository> hashref, but that attribute is defined here, then this value will be used. This hashref is empty by default.
+
+=item alien_repository_class
+
+[version 0.001]
+
+As the repositories in C<alien_repository> are converted to objects, this hash controls the type of object that is created. The keys are the relevant protocol. This allows for easy subclassing any or all protocol classes. The defaults are as follows.
+
+ http    => 'Alien::Base::ModuleBuild::Repository::HTTP',
+ ftp     => 'Alien::Base::ModuleBuild::Repository::FTP',
+ local   => 'Alien::Base::ModuleBuild::Repository::Local',
+ default => 'Alien::Base::ModuleBuild::Repository',
+
+Unlike most L<Module::Build> parameters, authors may specify only those keys which are to be overridden. If any of the above keys are not specified, the above defaults will be used.
 
 =back
 
 =begin comment
 
-my %default_repository_class = (
-  default => 'Alien::Base::ModuleBuild::Repository',
-  http    => 'Alien::Base::ModuleBuild::Repository::HTTP',
-  ftp     => 'Alien::Base::ModuleBuild::Repository::FTP',
-  local   => 'Alien::Base::ModuleBuild::Repository::Local',
-);
-
 our $Verbose ||= $ENV{ALIEN_VERBOSE};
 our $Force   ||= $ENV{ALIEN_FORCE};
-
-################
-#  Parameters  #
-################
-
-# alien_selection_method: name of method for selecting file: (todo: newest, manual)
-#   default is specified later, when this is undef (see alien_check_installed_version)
-__PACKAGE__->add_property( alien_selection_method => 'newest' );
-
-# alien_build_commands: arrayref of commands for building
-__PACKAGE__->add_property( 
-  alien_build_commands => 
-  default => [ '%pconfigure --prefix=%s', 'make', 'make install' ],
-);
-
-# alien_version_check: command to execute to check if install/version
-__PACKAGE__->add_property( alien_version_check => 'pkg-config --modversion %n' );
-
-# pkgconfig-esque info, author provides these by hand for now, will parse .pc file eventually
-__PACKAGE__->add_property( 'alien_provides_cflags' );
-__PACKAGE__->add_property( 'alien_provides_libs' );
-
-# alien_repository: hash (or arrayref of hashes) of information about source repo on ftp
-#   |-- protocol: ftp or http
-#   |-- protocol_class: holder for class type (defaults to 'Net::FTP' or 'HTTP::Tiny')
-#   |-- host: ftp server for source
-#   |-- location: ftp folder containing source, http addr to page with links
-#   |-- pattern: qr regex matching acceptable files, if has capture group those are version numbers
-#   |-- platform: src or platform, matching os_type M::B method
-#   |
-#   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
-__PACKAGE__->add_property( 'alien_repository'         => {} );
-__PACKAGE__->add_property( 'alien_repository_default' => {} );
-__PACKAGE__->add_property( 'alien_repository_class'   => {} );
-
 
 ################
 #  ConfigData  #
