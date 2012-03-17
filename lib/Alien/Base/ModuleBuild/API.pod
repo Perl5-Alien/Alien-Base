@@ -57,7 +57,7 @@ A command to run to check the version of the library installed on the system. Th
 
 [version 0.001]
 
-These parameters, if specified, override anything provided by F<pkg-config>. They both are empty by default.
+These parameters, if specified, augment the information found by F<pkg-config>. They both are empty by default.
 
 =item alien_repository
 
@@ -148,7 +148,7 @@ Holder for the full path to the shared directory specified in C<alien_share_dir>
 
 =item pkgconfig
 
-A hashref of Alien::Base::PkgConfig objects created from F<.pc> files found in C<build_share_dir>.
+A hashref of Alien::Base::PkgConfig objects created from F<.pc> files found in C<build_share_dir>. One extra object (whose key is C<_manual> is created from the C<alien_provides_*> information.
 
 =item install_type
 
@@ -157,14 +157,6 @@ Remembers if the library was found system-wide (value: C<system>) or was install
 =item version
 
 The version number installed or available.
-
-=item Cflags
-
-Holder for C<cflags> if manually specified.
-
-=item Libs
-
-Holder for C<libs> if manually specified.
 
 =item name
 

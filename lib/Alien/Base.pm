@@ -58,11 +58,6 @@ sub _keyword {
   my $self = shift;
   my $keyword = shift;
 
-  # use manually entered info if it exists
-  # alien_provides_*
-  my $manual_data = $self->config($keyword);
-  return $manual_data if defined $manual_data;
-
   # use pkg-config if installed system-wide
   my $type = $self->config('install_type');
   if ($type eq 'system') {
