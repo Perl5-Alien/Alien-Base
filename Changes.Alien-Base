@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.000_002  
+	- More documentation
+	- Slightly smarter in handling user-provided pkg-config data
+
 0.000_001  Mar 15, 2012
 	- Initial pre-alpha release, mostly to see CPANtesters results
 
