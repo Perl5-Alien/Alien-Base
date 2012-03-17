@@ -85,8 +85,16 @@ sub _keyword {
 sub pkgconfig {
   my $self = shift;
   my %all = %{ $self->config('pkgconfig') };
-  return values %all unless @_;
-  return @all{@_};
+
+  return @all{@_} if @_;
+
+  my $manual = delete $all{_manual};
+
+  if (keys %all) {
+    return values %all;
+  } else {
+    return $manual;
+  }
 }
 
 # helper method to call Alien::MyLib::ConfigData->config(@_)

@@ -11,6 +11,12 @@ use File::Basename qw/fileparse/;
 
 sub new {
   my $class   = shift;
+
+  # allow creation of an object from a full spec.
+  if (ref $_[0] eq 'HASH') {
+    return bless $_[0], $class;
+  }
+
   my ($path) = @_;
   croak "Must specify a file" unless defined $path;
 

@@ -202,19 +202,6 @@ sub alien_init_temp_dir {
   }
 }
 
-sub alien_init_configdata {
-  my $self = shift;
-
-  my $cflags = $self->alien_provides_cflags;
-  $self->config_data( Cflags => $cflags );
-
-  my $libs   = $self->alien_provides_libs;
-  $self->config_data( Libs   => $libs   );
-
-  my $name = $self->alien_name;
-  $self->config_data( name   => $name   );
-}
-
 ####################
 #  ACTION methods  #
 ####################
@@ -228,7 +215,7 @@ sub ACTION_code {
 sub ACTION_alien {
   my $self = shift;
 
-  $self->alien_init_configdata;
+  $self->config_data( name => $self->alien_name );
 
   my $version;
   $version = $self->alien_check_installed_version
@@ -414,13 +401,24 @@ sub alien_load_pkgconfig {
   my $dir = $self->config_data('build_share_dir');
   my $pc_files = $self->rscan_dir( $dir, qr/\.pc$/ );
 
-  return unless @$pc_files;  
-
   my %pc_objects = map { 
     my $pc = Alien::Base::PkgConfig->new($_);
     $pc->make_abstract( alien_dist_dir => $dir );
     ($pc->{package}, $pc)
   } @$pc_files;
+
+  my $manual_pc = Alien::Base::PkgConfig->new({
+    package  => $self->alien_name,
+    vars     => {
+      alien_dist_dir => $dir,
+    },
+    keywords => {
+      Cflags  => $self->alien_provides_cflags || '',
+      Libs    => '-L${alien_dist_dir} ' . ($self->alien_provides_libs() || ''),
+    },
+  });
+
+  $pc_objects{_manual} = $manual_pc;
 
   $self->config_data( pkgconfig => \%pc_objects );
   return \%pc_objects;
