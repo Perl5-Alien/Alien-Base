@@ -1,4 +1,5 @@
 Build.PL
+Changes
 examples/Alien-DontPanic/Build.PL
 examples/Alien-DontPanic/inc/dontpanic-1.01.tar.gz
 examples/Alien-DontPanic/lib/Alien/DontPanic.pm
@@ -16,6 +17,7 @@ examples/Ford-Prefect/MANIFEST
 lib/Alien/Base.pm
 lib/Alien/Base/Authoring.pod
 lib/Alien/Base/ModuleBuild.pm
+lib/Alien/Base/ModuleBuild/API.pod
 lib/Alien/Base/ModuleBuild/Cabinet.pm
 lib/Alien/Base/ModuleBuild/File.pm
 lib/Alien/Base/ModuleBuild/Repository.pm
@@ -25,10 +27,17 @@ lib/Alien/Base/ModuleBuild/Repository/Local.pm
 lib/Alien/Base/ModuleBuild/Utils.pm
 lib/Alien/Base/PkgConfig.pm
 MANIFEST			This list of files
+META.json
+META.yml
 README
 t/builder.t
 t/cabinet.t
 t/file.t
+t/find_lib.t
+t/find_lib/include/mylib.h
+t/find_lib/include/otherlib.h
+t/find_lib/lib/libmylib.so
+t/find_lib/lib/libotherlib.so
 t/http.t
 t/interpolate.t
 t/local_repo.t
@@ -45,5 +54,3 @@ t/version.t
 t/yy-system_installed.t
 t/zz-example.t
 TODO
-META.yml
-META.json
