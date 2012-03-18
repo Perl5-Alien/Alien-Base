@@ -14,6 +14,7 @@ use File::Spec;
 use Carp;
 use Archive::Extract;
 use Sort::Versions;
+use List::MoreUtils qw/uniq/;
 
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -407,21 +408,90 @@ sub alien_load_pkgconfig {
     ($pc->{package}, $pc)
   } @$pc_files;
 
+  my $manual_pc = $self->alien_generate_manual_pkgconfig($dir);
+
+  $pc_objects{_manual} = $manual_pc;
+
+  $self->config_data( pkgconfig => \%pc_objects );
+  return \%pc_objects;
+}
+
+sub alien_generate_manual_pkgconfig {
+  my $self = shift;
+  my ($dir) = @_;
+
+  my $paths = $self->alien_find_lib_paths($dir);
+
+  my @L = 
+    map { File::Spec->catdir( '-L${alien_dist_dir}', $_ ) }
+    @{$paths->{lib}};
+
+  my $provides_libs = $self->alien_provides_libs;
+
+  #if no provides_libs then generate -l list from found files
+  unless ($provides_libs) {
+    my @files = map { "-l$_" } @{$paths->{files}};
+    $provides_libs = join( ' ', @files );
+  } 
+
+  my $libs = join( ' ', @L, $provides_libs );
+
+  my @I = 
+    map { File::Spec->catdir( '-I${alien_dist_dir}', $_ ) }
+    @{$paths->{inc}};
+
+  my $provides_cflags = $self->alien_provides_cflags;
+  push @I, $provides_cflags if $provides_cflags;
+  my $cflags = join( ' ', @I );
+
   my $manual_pc = Alien::Base::PkgConfig->new({
     package  => $self->alien_name,
     vars     => {
       alien_dist_dir => $dir,
     },
     keywords => {
-      Cflags  => $self->alien_provides_cflags || '',
-      Libs    => '-L${alien_dist_dir} ' . ($self->alien_provides_libs() || ''),
+      Cflags  => $cflags,
+      Libs    => $libs,
     },
   });
 
-  $pc_objects{_manual} = $manual_pc;
+  return $manual_pc;
+}
 
-  $self->config_data( pkgconfig => \%pc_objects );
-  return \%pc_objects;
+sub alien_find_lib_paths {
+  my $self = shift;
+  my ($dir) = @_;
+
+  my $libs = $self->alien_provides_libs;
+  my @libs;
+  @libs = map { /-l(.*)/ ? $1 : () } split /\s+/, $libs if $libs;
+  $libs[0] = '' unless @libs; #find all so files if no provides_libs;
+
+  my $ext = $self->config('so'); #platform specific .so extension
+
+  my @so_files = sort #easier testing
+    map { File::Spec->abs2rel( $_, $dir ) } # make relative to $dir
+    map { @{ $self->rscan_dir($dir, qr/$_\.$ext$/) } } #find all .so
+    @libs;
+
+  my @lib_paths = uniq
+    map { File::Spec->catdir($_) } # remove trailing /
+    map { ( File::Spec->splitpath($_) )[1] } # get only directory
+    @so_files;
+
+  @so_files = 
+    map { my $file = $_; $file =~ s/^(?:lib)?(.*?)\.$ext$/$1/; $file }
+    map { ( File::Spec->splitpath($_) )[2] } 
+    @so_files;
+
+  my @inc_paths = uniq
+    map { File::Spec->catdir($_) } # remove trailing /
+    map { ( File::Spec->splitpath($_) )[1] } # get only directory
+    map { File::Spec->abs2rel( $_, $dir ) } # make relative to $dir
+    map { @{ $self->rscan_dir($dir, qr/$_\.h$/) } } #find all .so
+    @libs;
+
+  return { lib => \@lib_paths, inc => \@inc_paths, so_files => \@so_files };
 }
 
 1;

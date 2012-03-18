@@ -57,7 +57,7 @@ A command to run to check the version of the library installed on the system. Th
 
 [version 0.001]
 
-These parameters, if specified, augment the information found by F<pkg-config>. They both are empty by default.
+These parameters, if specified, augment the information found by F<pkg-config>. If no package config data is found, these are used to generate the necessary information. In that case, if these are not specified, they are attempted to be created from found shared-object files and header files. They both are empty by default.
 
 =item alien_repository
 
