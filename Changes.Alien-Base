@@ -1,8 +1,9 @@
 Revision history for Perl module Alien::Base.
 
-0.000_002  
+0.000_002  Mar 18, 2012
 	- More documentation
-	- Slightly smarter in handling user-provided pkg-config data
+	- Smarter in handling user-provided pkg-config data
+	- Generates pkg-config data from file structure if not defined
 
 0.000_001  Mar 15, 2012
 	- Initial pre-alpha release, mostly to see CPANtesters results
