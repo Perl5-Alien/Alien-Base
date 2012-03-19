@@ -9,6 +9,11 @@ local $CWD;
 push @CWD, qw/examples Alien-DontPanic/;
 
 my $builder = do 'Build.PL' or warn $@;
+
+unless( $builder->have_c_compiler ) {
+  plan skip_all => "Need C compiler";
+}
+
 isa_ok( $builder, 'Module::Build' );
 isa_ok( $builder, 'Alien::Base::ModuleBuild' );
 
