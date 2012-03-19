@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 use File::chdir;
+use List::Util qw/shuffle/;
 
 use Test::More;
 use Alien::Base::ModuleBuild;
@@ -18,11 +19,26 @@ if ( $? ) {
   plan skip_all => "Cannot use pkg-config: $?";
 }
 
-my @installed = map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
-my $lib = $installed[0];
+my @installed = shuffle map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
 
-my $cflags = `pkg-config --cflags $lib`;
-my $libs = `pkg-config --libs $lib`;
+my ($lib, $cflags, $libs);
+
+while (1) {
+  $lib = shift @installed;
+
+  chomp( $cflags = `pkg-config --cflags $lib` );
+  chomp( $libs = `pkg-config --libs $lib` );
+
+  $cflags =~ s/\s*$//;
+  $libs   =~ s/\s*$//;
+
+  if ($cflags and $libs) {
+    last;
+  } else {
+    undef $cflags;
+    undef $libs;
+  }
+}
 
 my $builder = Alien::Base::ModuleBuild->new( 
   module_name => 'MyTest', 

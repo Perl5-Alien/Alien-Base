@@ -13,6 +13,7 @@ use File::ShareDir ();
 use Scalar::Util qw/blessed/;
 use Perl::OSType qw/is_os_type/;
 use Config;
+use Capture::Tiny qw/capture_merged/;
 
 sub import {
   my $class = shift;
@@ -62,8 +63,13 @@ sub _keyword {
   my $type = $self->config('install_type');
   if ($type eq 'system') {
     my $name = $self->config('name');
-    my $pcdata = `pkg-config --\L$keyword\E $name`;
+    my $command = "pkg-config --\L$keyword\E $name";
+
+    chomp ( my $pcdata = capture_merged { system( $command ) } );
     croak "Could not call pkg-config: $!" if $!;
+
+    $pcdata =~ s/\s*$//;
+
     return $pcdata;
   }
 
@@ -99,6 +105,7 @@ sub config {
   
   my $config = $class . '::ConfigData';
   eval "require $config";
+  warn $@ if $@;
 
   return $config->config(@_);
 }
