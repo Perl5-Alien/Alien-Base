@@ -18,6 +18,8 @@ use Capture::Tiny qw/capture_merged/;
 sub import {
   my $class = shift;
 
+  return if $class->install_type('system');
+
   my $libs = $class->libs;
 
   my @L = $libs =~ /-L(\S+)/g;
@@ -55,13 +57,18 @@ sub libs {
   return $self->_keyword('Libs', @_);
 }
 
+sub install_type {
+  my $self = shift;
+  my $type = $self->config('install_type');
+  return @_ ? $type eq $_[0] : $type;
+}
+
 sub _keyword {
   my $self = shift;
   my $keyword = shift;
 
   # use pkg-config if installed system-wide
-  my $type = $self->config('install_type');
-  if ($type eq 'system') {
+  if ($self->install_type('system')) {
     my $name = $self->config('name');
     my $command = "pkg-config --\L$keyword\E $name";
 
