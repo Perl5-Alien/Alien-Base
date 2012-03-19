@@ -21,24 +21,13 @@ if ( $? ) {
 
 my @installed = shuffle map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
 
-my ($lib, $cflags, $libs);
+my $lib = shift @installed;
 
-while (1) {
-  $lib = shift @installed;
+chomp( my $cflags = `pkg-config --cflags $lib` );
+chomp( my $libs = `pkg-config --libs $lib` );
 
-  chomp( $cflags = `pkg-config --cflags $lib` );
-  chomp( $libs = `pkg-config --libs $lib` );
-
-  $cflags =~ s/\s*$//;
-  $libs   =~ s/\s*$//;
-
-  if ($cflags and $libs) {
-    last;
-  } else {
-    undef $cflags;
-    undef $libs;
-  }
-}
+$cflags =~ s/\s*$//;
+$libs   =~ s/\s*$//;
 
 my $builder = Alien::Base::ModuleBuild->new( 
   module_name => 'MyTest', 
