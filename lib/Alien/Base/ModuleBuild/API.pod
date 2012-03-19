@@ -1,6 +1,6 @@
 =head1 NAME
  
-Module::Build::API - API Reference for Alien:: Authors
+Alien::Base::ModuleBuild::API - API Reference for Alien:: Authors
  
 =head1 DESCRIPTION
 
