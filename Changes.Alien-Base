@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.000_003  Mar 18, 2012
+	- Require safer File::chdir
+	- Fixed "Bad File Descriptor" bug calling pkg-config
+
 0.000_002  Mar 18, 2012
 	- More documentation
 	- Smarter in handling user-provided pkg-config data
