@@ -94,6 +94,9 @@ sub pkgconfig {
   my $self = shift;
   my %all = %{ $self->config('pkgconfig') };
 
+  croak "No Alien::Base::PkgConfig objects are stored!"
+    unless keys %all;
+
   return @all{@_} if @_;
 
   my $manual = delete $all{_manual};

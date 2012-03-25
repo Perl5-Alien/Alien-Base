@@ -408,7 +408,8 @@ sub alien_load_pkgconfig {
     ($pc->{package}, $pc)
   } @$pc_files;
 
-  my $manual_pc = $self->alien_generate_manual_pkgconfig($dir);
+  my $manual_pc = $self->alien_generate_manual_pkgconfig($dir)
+    or croak "Could not autogenerate pkgconfig information";
 
   $pc_objects{_manual} = $manual_pc;
 
