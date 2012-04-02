@@ -8,6 +8,7 @@ $VERSION = eval $VERSION;
 
 use Carp;
 
+use HTTP::Tiny;
 use URI;
 
 use Alien::Base::ModuleBuild::Utils;
