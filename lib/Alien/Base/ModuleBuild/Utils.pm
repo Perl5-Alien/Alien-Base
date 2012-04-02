@@ -37,7 +37,7 @@ sub extract_href {
     $text =~ s/^$delim//;
     $text =~ s/$delim$//;
     return $text;
-  } elsif ($tag =~ /href=(.*?)(?:\s|\n|>)/) {
+  } elsif ($tag =~ /href=(.*?)(?:\s|\n|>)/i) {
     return $1;
   } else {
     return ();

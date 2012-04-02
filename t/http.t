@@ -8,8 +8,8 @@ use_ok('Alien::Base::ModuleBuild::Repository::HTTP');
 my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new;
 
 # replicated in utils.t
-my $html = q#Some <a href=link>link text</a> stuff. And a little <A HREF="link2">different link text</a>. <!--  <a href="dont_follow.html">you can't see me!</a> -->#;
-my $correct = [qw/link link2/];
+my $html = q#Some <a href=link>link text</a> stuff. And a little <A HREF="link2">different link text</a>. AN ALL CAPS TAG <A HREF="link3">ALL CAPS</A> <A HREF=link4>ALL CAPS NO QUOTES</A>. <!--  <a href="dont_follow.html">you can't see me!</a> -->#;
+my $correct = [qw/link link2 link3 link4/];
 
 SKIP: {
   no warnings 'once';
