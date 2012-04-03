@@ -26,11 +26,11 @@ sub import {
 
   #TODO investigate using Env module for this (VMS problems?)
   my $var = is_os_type('Windows') ? 'PATH' : 'LD_RUN_PATH';
-  my @LL = @L;
-  unshift @LL, $ENV{$var} if $ENV{$var};
+
+  unshift @L, $ENV{$var} if $ENV{$var};
 
   no strict 'refs';
-  $ENV{$var} = join( $Config::Config{path_sep}, @LL ) 
+  $ENV{$var} = join( $Config::Config{path_sep}, @L ) 
     unless ${ $class . "::AlienEnv" }{$var}++;
     # %Alien::MyLib::AlienEnv has keys like ENV_VAR => int (true if loaded)
 
