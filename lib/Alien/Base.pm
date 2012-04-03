@@ -39,9 +39,10 @@ sub import {
 sub dist_dir {
   my $class = shift;
 
-  my $dist = $class;
+  my $dist = blessed $class || $class;
   $dist =~ s/::/-/g;
 
+  # This line will not work as expected when upgrading (i.e. when a version is already installed, but installing a new version)
   my $dist_dir = eval { File::ShareDir::dist_dir($dist) } || $class->config('build_share_dir');
 
   return $dist_dir;
