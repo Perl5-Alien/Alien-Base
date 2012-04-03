@@ -96,6 +96,12 @@ sub pkgconfig {
 
   croak "No Alien::Base::PkgConfig objects are stored!"
     unless keys %all;
+  
+  # Run through all pkgconfig objects and ensure that their modules are loaded:
+  for my $pkg_obj (values %all) {
+    my $perl_module_name = blessed $pkg_obj;
+    eval "require $perl_module_name"; 
+  }
 
   return @all{@_} if @_;
 
