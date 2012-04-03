@@ -99,6 +99,13 @@ sub _interpolate_vars {
   my $self = shift;
   my ($string, $override) = @_;
 
+  $override ||= {};
+
+  foreach my $key (keys %$override) {
+    carp "Overriden pkg-config variable $key, contains no data" 
+      unless $override->{$key};
+  }
+
   1 while $string =~ s/\$\{(.*?)\}/$override->{$1} || $self->{vars}{$1}/e;
 
   return $string;
