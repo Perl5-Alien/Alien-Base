@@ -42,7 +42,9 @@ sub dist_dir {
   my $dist = $class;
   $dist =~ s/::/-/g;
 
-  return eval { File::ShareDir::dist_dir $dist } or $class->{build_share_dir};
+  my $dist_dir = eval { File::ShareDir::dist_dir($dist) } || $class->config('build_share_dir');
+
+  return $dist_dir;
 }
 
 sub new { return bless {}, $_[0] }
