@@ -271,7 +271,9 @@ sub ACTION_alien {
   $self->config_data( install_type => 'share' );
 
   my $pc = $self->alien_load_pkgconfig;
-  my $pc_version = $pc->{$self->alien_name}->keyword('Version');
+  my $pc_version = (
+    $pc->{$self->alien_name} || $pc->{_manual}
+  )->keyword('Version');
 
   if (! $version and ! $pc_version) {
     carp "Library looks like it installed, but no version was determined";
