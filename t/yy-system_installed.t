@@ -21,13 +21,33 @@ if ( $? ) {
 
 my @installed = shuffle map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
 
-my $lib = shift @installed;
+my ($lib, $cflags, $libs);
 
-chomp( my $cflags = `pkg-config --cflags $lib` );
-chomp( my $libs = `pkg-config --libs $lib` );
+my $i = 1;
 
-$cflags =~ s/\s*$//;
-$libs   =~ s/\s*$//;
+while (1) {
+
+  $lib = shift @installed;
+
+  chomp( $cflags = `pkg-config --cflags $lib` );
+  chomp( $libs = `pkg-config --libs $lib` );
+
+  $cflags =~ s/\s*$//;
+  $libs   =~ s/\s*$//;
+
+  if ($lib and $cflags and $libs) {
+    last;
+  } 
+
+  if ($i++ == 3) {
+    plan skip_all => "Could not find a suitable library for testing";
+    last;
+  }
+
+  $lib    = undef;
+  $cflags = undef;
+  $libs   = undef;
+}
 
 my $builder = Alien::Base::ModuleBuild->new( 
   module_name => 'MyTest', 
