@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild;
 use strict;
 use warnings;
 
-our $VERSION = '0.000_004';
+our $VERSION = '0.000_005';
 $VERSION = eval $VERSION;
 
 use parent 'Module::Build';
@@ -451,8 +451,9 @@ sub alien_generate_manual_pkgconfig {
       alien_dist_dir => $dir,
     },
     keywords => {
-      Cflags  => $cflags,
-      Libs    => $libs,
+      Cflags  => $cflags || '',
+      Libs    => $libs || '',
+      Version => '',
     },
   });
 
