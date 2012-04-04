@@ -40,11 +40,11 @@ C<Alien::MyLibrary> is called by C<Some::Library::MyLibrary>'s build script, eit
  use Alien::MyLibrary;
 
  my $alien = Alien::MyLibrary->new;
- my $builder = Module::Build->new({
+ my $builder = Module::Build->new(
    ...
    extra_compiler_flags => $alien->cflags(),
    extra_linker_flags   => $alien->libs(),
- });
+ );
  $builder->create_build_script;
 
 Additional information can be gotten from the C<config> method.
@@ -66,9 +66,10 @@ Finally, C<Alien::MyLibrary> must also be called by C<Some::Library::MyLibrary> 
  package Some::Module::MyLibrary;
 
  use Alien::MyLibrary;
+ our $VERSION = '0.54';
 
  require XSLoader;
- XSLoader::load();
+ XSLoader::load('Some::Module::MyLibrary', $VERSION);
 
  # your code
 
