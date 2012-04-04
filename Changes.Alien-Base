@@ -1,6 +1,6 @@
 Revision history for Perl module Alien::Base.
 
-0.000_007
+0.000_007  Apr 4, 2012
 	- Don't rebuild library on repeated M::B::dispatch
 	- More bugfixes
 
