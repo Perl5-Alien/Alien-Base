@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.000_006  Apr 3, 2012
+	- Yet anther bugfix(?) release 
+
 0.000_005  Apr 2, 2012
 	- Bugfix: A::B::PkgConfig _manual key shouldn't emit undef values
 
