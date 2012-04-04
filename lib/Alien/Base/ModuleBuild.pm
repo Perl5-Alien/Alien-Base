@@ -209,7 +209,7 @@ sub alien_init_temp_dir {
 
 sub ACTION_code {
   my $self = shift;
-  $self->depends_on('alien');
+  $self->depends_on('alien') unless $self->notes('ACTION_alien_completed');
   $self->SUPER::ACTION_code;
 }
 
@@ -286,6 +286,9 @@ sub ACTION_alien {
   } 
 
   $self->config_data( version => $pc_version || $version );
+
+  # prevent building multiple times (on M::B::dispatch)
+  $self->notes( 'ACTION_alien_completed' => 1 );
   return;
 }
 
