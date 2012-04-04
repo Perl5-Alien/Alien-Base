@@ -431,7 +431,7 @@ sub alien_generate_manual_pkgconfig {
 
   #if no provides_libs then generate -l list from found files
   unless ($provides_libs) {
-    my @files = map { "-l$_" } @{$paths->{files}};
+    my @files = map { "-l$_" } @{$paths->{so_files}};
     $provides_libs = join( ' ', @files );
   } 
 
