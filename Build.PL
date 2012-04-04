@@ -23,6 +23,7 @@ my $builder = Module::Build->new(
     'URI'              => 0,
     'File::ShareDir'   => 0,
     'Archive::Extract' => 0,
+    'HTTP::Tiny'       => 0,
   },
   recommends => {
     'HTML::LinkExtor' => 0,
