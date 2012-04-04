@@ -40,11 +40,11 @@ C<Alien::MyLibrary> is called by C<Some::Library::MyLibrary>'s build script, eit
  use Alien::MyLibrary;
 
  my $alien = Alien::MyLibrary->new;
- my $builder = Module::Build->new({
+ my $builder = Module::Build->new(
    ...
    extra_compiler_flags => $alien->cflags(),
    extra_linker_flags   => $alien->libs(),
- });
+ );
  $builder->create_build_script;
 
 Additional information can be gotten from the C<config> method.
