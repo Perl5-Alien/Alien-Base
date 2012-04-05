@@ -29,6 +29,8 @@ sub import {
 
   unshift @L, $ENV{$var} if $ENV{$var};
 
+  #TODO check if existsin $ENV{$var} to prevent "used once" warnings
+
   no strict 'refs';
   $ENV{$var} = join( $Config::Config{path_sep}, @L ) 
     unless ${ $class . "::AlienEnv" }{$var}++;
