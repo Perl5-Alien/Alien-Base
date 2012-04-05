@@ -164,6 +164,36 @@ Holder for C<alien_name> as needed by pkg-config.
 
 =back
 
+=head2 COMMAND INTERPOLATION
+
+Before L<Alien::Base::ModuleBuild> executes system commands, it replaces a few special escape sequences with useful data. This is needed especially for referencing the full path to the C<alien_share_dir> before this path is known. The availble sequences are:
+
+=over
+
+=item %s
+
+The full path to the share directory (C<alien_share_dir>). This is where the library should install itself; for autoconf style installs this will look like 
+
+ --prefix=%s
+
+=item %p
+
+Platform independent "local command prefix". On *nix systems this is C<./>, on Windows it is an empty string.
+
+ %pconfigure
+
+=item %n
+
+Shortcut for the name stored in C<alien_name>
+
+ pkg-config --modversion %n
+
+=item %%
+
+A literal C<%>.
+
+=back
+
 =head1 AUTHOR
 
 Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
