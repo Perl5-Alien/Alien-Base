@@ -198,7 +198,7 @@ sub alien_init_temp_dir {
 
   # if install_dir does not exist, create AND mark for add_to_cleanup
   unless ( -d $install_dir ) {
-    mkdir $install_dir;
+    mkdir $install_dir or croak "Could not create temporary directory $install_dir";
     $self->add_to_cleanup( $install_dir );
   }
 }
