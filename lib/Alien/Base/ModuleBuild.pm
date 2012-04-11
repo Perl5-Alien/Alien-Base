@@ -353,6 +353,8 @@ sub alien_build {
 sub do_system {
   my $self = shift;
   local $CWD; # prevent global changes to working directory from system command
+  # note: if this doesn't fix the solaris problems, try storing this in a temp
+  #       variable and restore at end of method manually
 
   my @args = map { $self->alien_interpolate($_) } @_;
   if (wantarray) {
