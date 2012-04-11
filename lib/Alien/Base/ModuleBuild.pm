@@ -352,6 +352,8 @@ sub alien_build {
 # also captures output if called in list context (returning a hash)
 sub do_system {
   my $self = shift;
+  local $CWD; # prevent global changes to working directory from system command
+
   my @args = map { $self->alien_interpolate($_) } @_;
   if (wantarray) {
     my ($out, $err, $success) = capture { $self->SUPER::do_system(@args) };
