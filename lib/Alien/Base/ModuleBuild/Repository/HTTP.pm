@@ -42,7 +42,7 @@ sub get_file {
   my $host = $self->{host};
   my $from = $self->location;
 
-  my $response = $self->connection->mirror( $host . $from . $file, $file );
+  my $response = $self->connection->mirror('http://' . $host . $from . '/' . $file, $file );
   croak "Download failed: " . $response->{reason} unless $response->{success};
 
   return 1;
@@ -52,18 +52,17 @@ sub list_files {
   my $self = shift;
 
   my $host = $self->host;
-  my $uri = URI->new($host);
+  my $location = $self->location;
+  my $uri = URI->new('http://' . $host . $location);
 
-  my $res = $self->connection->get($uri->abs($self->location));
+  my $res = $self->connection->get($uri);
 
   unless ($res->{success}) {
     carp $res->{reason};
     return ();
   }
 
-  my @links = 
-    map { $uri->abs($_) }
-    $self->find_links($res->{content});
+  my @links = $self->find_links($res->{content});
 
   return @links;  
 }
