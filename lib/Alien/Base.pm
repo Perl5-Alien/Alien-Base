@@ -19,6 +19,8 @@ use Capture::Tiny qw/capture_merged/;
 sub import {
   my $class = shift;
 
+  return if $class->install_type('system');
+
   # get a reference to %Alien::MyLibrary::AlienLoaded
   # which contains names of already loaded libraries
   # this logic may be replaced by investigating the DynaLoader arrays
@@ -26,8 +28,6 @@ sub import {
     no strict 'refs';
     \%{ $class . "::AlienLoaded" };
   };
-
-  return if $class->install_type('system');
 
   my $libs = $class->libs;
 
