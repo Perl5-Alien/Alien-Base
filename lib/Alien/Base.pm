@@ -7,6 +7,7 @@ our $VERSION = '0.000_008';
 $VERSION = eval $VERSION;
 
 use Carp;
+use DynaLoader ();
 
 use File::chdir;
 use File::ShareDir ();
@@ -23,17 +24,28 @@ sub import {
   my $libs = $class->libs;
 
   my @L = $libs =~ /-L(\S+)/g;
+  my @l = $libs =~ /(-l\S+)/g;
+
+  push @DynaLoader::dl_library_path, @L;
+  my @libpaths = map { DynaLoader::dl_findfile( $_ ) } @l;
+  my @unresolved = grep { ! -e } @libpaths;
+  carp "Could not resolve libraries @unresolved" if @unresolved;
+
+  push @DynaLoader::dl_resolve_using, @libpaths;
+
+  my @librefs = map { DynaLoader::dl_load_file( $_ ) } @libpaths;
+  push @DynaLoader::dl_librefs, @librefs;
 
   #TODO investigate using Env module for this (VMS problems?)
-  my $var = is_os_type('Windows') ? 'PATH' : 'LD_RUN_PATH';
+  #my $var = is_os_type('Windows') ? 'PATH' : 'LD_RUN_PATH';
 
-  unshift @L, $ENV{$var} if $ENV{$var};
+  #unshift @L, $ENV{$var} if $ENV{$var};
 
   #TODO check if existsin $ENV{$var} to prevent "used once" warnings
 
-  no strict 'refs';
-  $ENV{$var} = join( $Config::Config{path_sep}, @L ) 
-    unless ${ $class . "::AlienEnv" }{$var}++;
+  #no strict 'refs';
+  #$ENV{$var} = join( $Config::Config{path_sep}, @L ) 
+  #  unless ${ $class . "::AlienEnv" }{$var}++;
     # %Alien::MyLib::AlienEnv has keys like ENV_VAR => int (true if loaded)
 
 }
