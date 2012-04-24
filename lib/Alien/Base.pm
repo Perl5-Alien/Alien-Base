@@ -19,6 +19,14 @@ use Capture::Tiny qw/capture_merged/;
 sub import {
   my $class = shift;
 
+  # get a reference to %Alien::MyLibrary::AlienLoaded
+  # which contains names of already loaded libraries
+  # this logic may be replaced by investigating the DynaLoader arrays
+  my $loaded = do {
+    no strict 'refs';
+    \%{ $class . "::AlienLoaded" };
+  };
+
   return if $class->install_type('system');
 
   my $libs = $class->libs;
@@ -27,26 +35,25 @@ sub import {
   my @l = $libs =~ /(-l\S+)/g;
 
   push @DynaLoader::dl_library_path, @L;
-  my @libpaths = map { DynaLoader::dl_findfile( $_ ) } @l;
-  my @unresolved = grep { ! -e } @libpaths;
-  carp "Could not resolve libraries @unresolved" if @unresolved;
+
+  my @libpaths;
+  foreach my $l (@l) {
+    next if $loaded->{$l};
+
+    my $path = DynaLoader::dl_findfile( $l );
+    unless ($path) {
+      carp "Could not resolve $l";
+      next;
+    }
+
+    push @libpaths, $path;
+    $loaded->{$l} = $path;
+  }
 
   push @DynaLoader::dl_resolve_using, @libpaths;
 
   my @librefs = map { DynaLoader::dl_load_file( $_ ) } @libpaths;
   push @DynaLoader::dl_librefs, @librefs;
-
-  #TODO investigate using Env module for this (VMS problems?)
-  #my $var = is_os_type('Windows') ? 'PATH' : 'LD_RUN_PATH';
-
-  #unshift @L, $ENV{$var} if $ENV{$var};
-
-  #TODO check if existsin $ENV{$var} to prevent "used once" warnings
-
-  #no strict 'refs';
-  #$ENV{$var} = join( $Config::Config{path_sep}, @L ) 
-  #  unless ${ $class . "::AlienEnv" }{$var}++;
-    # %Alien::MyLib::AlienEnv has keys like ENV_VAR => int (true if loaded)
 
 }
 
