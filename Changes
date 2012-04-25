@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.000_011  Apr 25, 2012
+	- I'm starting to believe the bug is in the dontpanic library build chain
+	- Die on more warnings in that build chain. This won't fix anything,
+		but may show where the true problem lies
+
 0.000_010  Apr 24, 2012
 	- Prevent build process from cwd-ing from underneath us (hopefully)
 
