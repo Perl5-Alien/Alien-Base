@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.000_010  Apr 24, 2012
+	- Prevent build process from cwd-ing from underneath us (hopefully)
+
 0.000_009  Apr 24, 2012
 	- Note: Released from 'dlopen' branch
 	- Uses new dynamic loading mechanism via DynaLoader

@@ -352,11 +352,14 @@ sub alien_build {
 # also captures output if called in list context (returning a hash)
 sub do_system {
   my $self = shift;
-  local $CWD; # prevent global changes to working directory from system command
-  # note: if this doesn't fix the solaris problems, try storing this in a temp
-  #       variable and restore at end of method manually
+
+  # prevent build process from cwd-ing from underneath us
+  local $CWD;
+  my $initial_cwd = $CWD;
 
   my @args = map { $self->alien_interpolate($_) } @_;
+
+  # list context
   if (wantarray) {
     my ($out, $err, $success) = capture { $self->SUPER::do_system(@args) };
     my %return = (
@@ -365,9 +368,17 @@ sub do_system {
       success => $success,
       command => join(' ', @args),
     );
+
+    # restore wd
+    $CWD = $initial_cwd;
     return %return;
   }
-  return $self->SUPER::do_system(@args);
+
+  # scalar context
+  my $status = $self->SUPER::do_system(@args);
+  # restore wd
+  $CWD = $initial_cwd;
+  return $status;
 }
 
 sub alien_interpolate {

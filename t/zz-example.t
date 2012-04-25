@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More;
+use Test::More tests => 16;
 
 use File::chdir;
 
@@ -17,15 +17,22 @@ unless( $builder->have_c_compiler ) {
 isa_ok( $builder, 'Module::Build' );
 isa_ok( $builder, 'Alien::Base::ModuleBuild' );
 
+my $previous_wd = "$CWD";
 $builder->depends_on('alien');
+is( "$CWD", $previous_wd, "working directory is unchanged after ACTION_alien" );
+
 ok( -d '_install', "ACTION_alien creates _install (share) directory" );
 ok( -d '_alien',   "ACTION_alien creates _alien (build) directory" );
 {
   local $CWD = '_install';
+
+  ok( -d 'lib', "ACTION_alien creates 'lib' dir" );
   {
     local $CWD = 'lib';
     ok( -e 'libdontpanic.so', "ACTION_alien installs lib" );
   }
+
+  ok( -d 'include', "ACTION_alien creates 'include' dir" );
   {
     local $CWD = 'include';
     ok( -e 'libdontpanic.h', "ACTION_alien installs header" );
@@ -78,4 +85,3 @@ ok( ! -e 'Build'   , "realclean removes Build script" );
 ok( ! -d '_install', "realclean removes _install (share) directory" );
 ok( ! -d '_alien'  , "realclean removes _alien (build) directory" );
 
-done_testing;
