@@ -303,7 +303,7 @@ sub alien_check_installed_version {
   my %result = $self->do_system($command);
 
   if ($Verbose and not $result{success}) {
-    print "Command `$result{command}` failed with message: $result{stderr}";
+    print "Command '$result{command}' failed with message: $result{stderr}";
   }
 
   my $version = $result{stdout} || 0;
