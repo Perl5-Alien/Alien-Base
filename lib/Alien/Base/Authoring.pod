@@ -51,7 +51,7 @@ Additional information can be gotten from the C<config> method.
 
 =head3 Alien::Base for Run-Time Provision
 
-C<Alien::MyLibrary> must be a subclass of C<Alien::Base>. This provides the C<import> method, which does the run-time provisioning so that when the XS file is loaded, it can find F<libmylibrary.so>. The C<import> method does this by appending to C<$ENV{LD_RUN_PATH}> or your system's equivalent environment variable (PLEASE file a bug if this should fail on your system).
+C<Alien::MyLibrary> must be a subclass of C<Alien::Base>. This provides the C<import> method, which does the run-time provisioning so that when the XS file is loaded, it can find F<libmylibrary.so>. The C<import> method does this by pre-loading the library via C<DynaLoader::dl_load_file> which is a platform-independent wrapper for C<dlopen> or your system's equivalent. It no longer appends to C<$ENV{LD_RUN_PATH}>.
 
  # file: Alien-MyLibrary/lib/Alien/MyLibrary.pm
  package Alien::MyLibrary;
