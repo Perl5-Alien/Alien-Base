@@ -27,6 +27,7 @@ my $builder = Module::Build->new(
   },
   recommends => {
     'HTML::LinkExtor' => 0,
+    'ExtUtils::LibBuilder' => 0,
   },
   meta_merge => {
     resources  => {

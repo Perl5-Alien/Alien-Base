@@ -1,9 +1,13 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More;
 
 use File::chdir;
+
+unless( eval { use ExtUtils::LibBuilder; 1 } ) {
+  plan skip_all => "libdontpanic requires ExtUtils::LibBuilder"; 
+}
 
 local $CWD;
 push @CWD, qw/examples Alien-DontPanic/;
@@ -13,6 +17,8 @@ my $builder = do 'Build.PL' or warn $@;
 unless( $builder->have_c_compiler ) {
   plan skip_all => "Need C compiler";
 }
+
+plan tests => 16;
 
 isa_ok( $builder, 'Module::Build' );
 isa_ok( $builder, 'Alien::Base::ModuleBuild' );
