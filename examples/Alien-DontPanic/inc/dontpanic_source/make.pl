@@ -33,7 +33,7 @@ my $action = shift || 'build';
 
 my $config = _load_options();
 
-$config->{prefix} ||= $prefix;
+$config->{prefix} = $prefix if defined $prefix;
 
 my $sub = __PACKAGE__->can($action) or die "Unknown action: $action";
 $sub->();
