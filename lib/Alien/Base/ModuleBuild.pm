@@ -256,7 +256,10 @@ sub ACTION_alien {
     print "Done\n";
 
     print "Building library ... ";
-    $self->alien_build;
+    unless ($self->alien_build) {
+      print "Failed\n";
+      croak "Build not completed";
+    }
     print "Done\n";
 
   }
