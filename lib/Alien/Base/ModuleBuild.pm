@@ -295,11 +295,6 @@ sub alien_check_installed_version {
   my $command = $self->alien_version_check;
 
   my %result = $self->do_system($command);
-
-  if ($Verbose and not $result{success}) {
-    print "Command '$result{command}' failed with message: $result{stderr}";
-  }
-
   my $version = $result{stdout} || 0;
 
   return $version;
@@ -343,7 +338,7 @@ sub alien_build {
 }
 
 # wrapper for M::B::do_system which interpolates alien_ vars first
-# also captures output if called in list context (returning a hash)
+# futher it either captures or tees depending on the value of $Verbose
 sub do_system {
   my $self = shift;
 
