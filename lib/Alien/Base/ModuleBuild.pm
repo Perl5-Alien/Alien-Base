@@ -8,7 +8,7 @@ $VERSION = eval $VERSION;
 
 use parent 'Module::Build';
 
-use Capture::Tiny qw/capture capture_merged/;
+use Capture::Tiny qw/capture tee/;
 use File::chdir;
 use File::Spec;
 use Carp;
@@ -257,13 +257,7 @@ sub ACTION_alien {
 
     print "Building library ... ";
     #TODO capture and log?
-    my $build = sub { $self->alien_build };
-    my $log;
-    if ($Verbose) {
-      $build->();
-    } else {
-      $log = capture_merged { $build->() };
-    }
+    $self->alien_build;
     print "Done\n";
 
   }
@@ -359,26 +353,23 @@ sub do_system {
 
   my @args = map { $self->alien_interpolate($_) } @_;
 
-  # list context
-  if (wantarray) {
-    my ($out, $err, $success) = capture { $self->SUPER::do_system(@args) };
-    my %return = (
-      stdout => $out,
-      stderr => $err,
-      success => $success,
-      command => join(' ', @args),
-    );
+  my ($out, $err, $success) = 
+    $Verbose
+    ? tee     { $self->SUPER::do_system(@args) }
+    : capture { $self->SUPER::do_system(@args) }
+  ;
 
-    # restore wd
-    $CWD = $initial_cwd;
-    return %return;
-  }
+  my %return = (
+    stdout => $out,
+    stderr => $err,
+    success => $success,
+    command => join(' ', @args),
+  );
 
-  # scalar context
-  my $status = $self->SUPER::do_system(@args);
   # restore wd
   $CWD = $initial_cwd;
-  return $status;
+
+  return wantarray ? %return : $return{status};
 }
 
 sub alien_interpolate {
