@@ -369,7 +369,7 @@ sub do_system {
   # restore wd
   $CWD = $initial_cwd;
 
-  return wantarray ? %return : $return{status};
+  return wantarray ? %return : $return{success};
 }
 
 sub alien_interpolate {
