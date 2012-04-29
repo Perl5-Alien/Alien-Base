@@ -256,7 +256,6 @@ sub ACTION_alien {
     print "Done\n";
 
     print "Building library ... ";
-    #TODO capture and log?
     $self->alien_build;
     print "Done\n";
 
