@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 
 use File::chdir;
 
@@ -29,7 +29,10 @@ ok( -d '_alien',   "ACTION_alien creates _alien (build) directory" );
   ok( -d 'lib', "ACTION_alien creates 'lib' dir" );
   {
     local $CWD = 'lib';
-    ok( -e 'libdontpanic.so', "ACTION_alien installs lib" );
+    ok( -e 'dontpanic.pc', "ACTION_alien installs .pc file" );
+    opendir(my $dh, $CWD);
+    my @files = grep { /^libdontpanic/ } readdir $dh;
+    ok( @files, "ACTION_aline installs shared object" );
   }
 
   ok( -d 'include', "ACTION_alien creates 'include' dir" );
