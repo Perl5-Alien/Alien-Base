@@ -51,9 +51,11 @@ sub build {
     push @{ $config->{clean}{src} }, $o;
 
     # Link
+    my $so = "libdontpanic$libbuilder->{libext}";
     my $lib = $libbuilder->link(
-      objects => [ $o ],
-      extra_linker_flags => '-soname libdontpanic.so',
+      objects  => [ $o ],
+      extra_linker_flags => "-Wl,-soname,$so",
+      lib_file => $so,
     );
     push @{ $config->{clean}{src} }, $lib;
     push @{ $config->{install}{lib} }, $lib;
