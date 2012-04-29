@@ -14,6 +14,7 @@ use ExtUtils::LibBuilder;
 
 my $config_file = 'config';
 my $base_config = {
+  prefix => undef,
   clean => {
      src => [], 
      '.' => [$config_file],
@@ -33,8 +34,6 @@ my $action = shift || 'build';
 
 my $config = _load_options();
 
-$config->{prefix} = $prefix if defined $prefix;
-
 my $sub = __PACKAGE__->can($action) or die "Unknown action: $action";
 $sub->();
 
@@ -47,13 +46,14 @@ sub build {
     # Compile
     my $o = $libbuilder->compile(
       source => 'libdontpanic.c',
-      extra_compiler_flags => ['-fPIC'],
+      extra_compiler_flags => '-fPIC',
     );
     push @{ $config->{clean}{src} }, $o;
 
     # Link
     my $lib = $libbuilder->link(
       objects => [ $o ],
+      extra_linker_flags => '-soname libdontpanic.so',
     );
     push @{ $config->{clean}{src} }, $lib;
     push @{ $config->{install}{lib} }, $lib;
