@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.000_012  Apr 29, 2012
+	- Simplified capture mechanism, this should prevent warnings from being suppressed
+	- Check the return status of alien_build, die if necessary
+
 0.000_011  Apr 25, 2012
 	- I'm starting to believe the bug is in the dontpanic library build chain
 	- Die on more warnings in that build chain. This won't fix anything,
