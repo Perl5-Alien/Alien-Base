@@ -8,7 +8,7 @@ $VERSION = eval $VERSION;
 
 use parent 'Module::Build';
 
-use Capture::Tiny qw/capture capture_merged/;
+use Capture::Tiny qw/capture tee/;
 use File::chdir;
 use File::Spec;
 use Carp;
@@ -256,13 +256,9 @@ sub ACTION_alien {
     print "Done\n";
 
     print "Building library ... ";
-    #TODO capture and log?
-    my $build = sub { $self->alien_build };
-    my $log;
-    if ($Verbose) {
-      $build->();
-    } else {
-      $log = capture_merged { $build->() };
+    unless ($self->alien_build) {
+      print "Failed\n";
+      croak "Build not completed";
     }
     print "Done\n";
 
@@ -301,11 +297,6 @@ sub alien_check_installed_version {
   my $command = $self->alien_version_check;
 
   my %result = $self->do_system($command);
-
-  if ($Verbose and not $result{success}) {
-    print "Command '$result{command}' failed with message: $result{stderr}";
-  }
-
   my $version = $result{stdout} || 0;
 
   return $version;
@@ -349,7 +340,7 @@ sub alien_build {
 }
 
 # wrapper for M::B::do_system which interpolates alien_ vars first
-# also captures output if called in list context (returning a hash)
+# futher it either captures or tees depending on the value of $Verbose
 sub do_system {
   my $self = shift;
 
@@ -359,26 +350,23 @@ sub do_system {
 
   my @args = map { $self->alien_interpolate($_) } @_;
 
-  # list context
-  if (wantarray) {
-    my ($out, $err, $success) = capture { $self->SUPER::do_system(@args) };
-    my %return = (
-      stdout => $out,
-      stderr => $err,
-      success => $success,
-      command => join(' ', @args),
-    );
+  my ($out, $err, $success) = 
+    $Verbose
+    ? tee     { $self->SUPER::do_system(@args) }
+    : capture { $self->SUPER::do_system(@args) }
+  ;
 
-    # restore wd
-    $CWD = $initial_cwd;
-    return %return;
-  }
+  my %return = (
+    stdout => $out,
+    stderr => $err,
+    success => $success,
+    command => join(' ', @args),
+  );
 
-  # scalar context
-  my $status = $self->SUPER::do_system(@args);
   # restore wd
   $CWD = $initial_cwd;
-  return $status;
+
+  return wantarray ? %return : $return{success};
 }
 
 sub alien_interpolate {
