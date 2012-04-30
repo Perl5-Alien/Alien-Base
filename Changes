@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.000_013  Apr 30, 2012
+	- libdontpanic build chain should be more x-plat. Uses EU::LibBuilder
+
 0.000_012  Apr 29, 2012
 	- Simplified capture mechanism, this should prevent warnings from being suppressed
 	- Check the return status of alien_build, die if necessary
