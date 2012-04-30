@@ -50,6 +50,7 @@ provides:
     file: lib/Alien/Base/PkgConfig.pm
     version: 0.000_012
 recommends:
+  ExtUtils::LibBuilder: 0
   HTML::LinkExtor: 0
 requires:
   Archive::Extract: 0

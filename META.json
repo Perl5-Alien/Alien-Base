@@ -30,6 +30,7 @@
       },
       "runtime" : {
          "recommends" : {
+            "ExtUtils::LibBuilder" : "0",
             "HTML::LinkExtor" : "0"
          },
          "requires" : {
