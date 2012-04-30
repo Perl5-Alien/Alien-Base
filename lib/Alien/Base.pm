@@ -53,7 +53,7 @@ sub import {
 
   push @DynaLoader::dl_resolve_using, @libpaths;
 
-  my @librefs = map { DynaLoader::dl_load_file( $_ ) } @libpaths;
+  my @librefs = map { DynaLoader::dl_load_file( $_, 0x01 ) } @libpaths;
   push @DynaLoader::dl_librefs, @librefs;
 
 }
