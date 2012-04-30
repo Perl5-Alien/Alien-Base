@@ -23,6 +23,8 @@ plan tests => 17;
 isa_ok( $builder, 'Module::Build' );
 isa_ok( $builder, 'Alien::Base::ModuleBuild' );
 
+$Alien::Base::ModuleBuild::Verbose = 1 if $ENV{AUTOMATED_TESTING};
+
 my $previous_wd = "$CWD";
 $builder->depends_on('alien');
 is( "$CWD", $previous_wd, "working directory is unchanged after ACTION_alien" );

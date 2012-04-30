@@ -331,7 +331,7 @@ sub alien_build {
   foreach my $command (@$commands) {
     my $success = $self->do_system( $command );
     unless ($success) {
-      print "External command ($command) failed! Error: $?\n";
+      carp "External command ($command) failed! Error: $?\n";
       return 0;
     }
   }
