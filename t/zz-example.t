@@ -18,7 +18,7 @@ unless( $builder->have_c_compiler ) {
   plan skip_all => "Need C compiler";
 }
 
-plan tests => 16;
+plan tests => 17;
 
 isa_ok( $builder, 'Module::Build' );
 isa_ok( $builder, 'Alien::Base::ModuleBuild' );
@@ -35,7 +35,10 @@ ok( -d '_alien',   "ACTION_alien creates _alien (build) directory" );
   ok( -d 'lib', "ACTION_alien creates 'lib' dir" );
   {
     local $CWD = 'lib';
-    ok( -e 'libdontpanic.so', "ACTION_alien installs lib" );
+    ok( -e 'dontpanic.pc', "ACTION_alien installs .pc file" );
+    opendir(my $dh, $CWD);
+    my @files = grep { /^libdontpanic/ } readdir $dh;
+    ok( @files, "ACTION_aline installs shared object" );
   }
 
   ok( -d 'include', "ACTION_alien creates 'include' dir" );
