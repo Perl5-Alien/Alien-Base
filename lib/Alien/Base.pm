@@ -26,6 +26,7 @@ sub import {
   # this logic may be replaced by investigating the DynaLoader arrays
   my $loaded = do {
     no strict 'refs';
+    no warnings 'once';
     \%{ $class . "::AlienLoaded" };
   };
 
