@@ -52,13 +52,14 @@ sub build {
 
     # Link
     my $so = "libdontpanic$libbuilder->{libext}";
-    my $lib = $libbuilder->link(
+    $libbuilder->link(
       objects  => [ $o ],
       extra_linker_flags => "-Wl,-soname,$so",
       lib_file => $so,
     );
-    push @{ $config->{clean}{src} }, $lib;
-    push @{ $config->{install}{lib} }, $lib;
+	
+    push @{ $config->{clean}{src} }, $so;
+    push @{ $config->{install}{lib} }, $so;
   }
 
   _store_options($config);
@@ -70,6 +71,9 @@ sub configure {
 }
 
 sub install {
+  die "Cannot install without running $0 configure" 
+    unless defined $config->{prefix};
+
   my %files = do {
     local $CWD = 'src';
     map {
