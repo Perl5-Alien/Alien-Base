@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.000_014  May 1, 2012
+	- bugfix on dontpanic build chain (t/zz-example.t)
+
 0.000_013  Apr 30, 2012
 	- libdontpanic build chain should be more x-plat. Uses EU::LibBuilder
 
