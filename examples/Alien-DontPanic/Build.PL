@@ -24,9 +24,9 @@ my $builder = Alien::Base::ModuleBuild->new(
     pattern  => qr/^dontpanic-([\d\.]+)\.tar\.gz$/,
   },
   alien_build_commands => [
-    'perl make.pl --prefix=%s configure', 
-    'perl make.pl',
-    'perl make.pl install'
+    '%x make.pl --prefix=%s configure', 
+    '%x make.pl',
+    '%x make.pl install'
   ],
 );
 $builder->create_build_script;
