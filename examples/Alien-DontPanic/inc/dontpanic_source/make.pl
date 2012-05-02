@@ -52,9 +52,10 @@ sub build {
 
     # Link
     my $so = "libdontpanic$libbuilder->{libext}";
+    my $soname = $^O eq 'darwin' ? '-install_name' : '-soname';
     $libbuilder->link(
       objects  => [ $o ],
-      extra_linker_flags => "-Wl,-soname,$so",
+      extra_linker_flags => "-Wl,$soname,$so",
       lib_file => $so,
     );
 	
