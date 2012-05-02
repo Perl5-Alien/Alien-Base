@@ -188,6 +188,10 @@ Shortcut for the name stored in C<alien_name>
 
  pkg-config --modversion %n
 
+=item %x
+
+The current Perl interpreter (aka $^X)
+
 =item %%
 
 A literal C<%>.
