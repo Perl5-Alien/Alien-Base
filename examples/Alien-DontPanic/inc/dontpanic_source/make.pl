@@ -109,17 +109,19 @@ sub _load_options {
   return $base_config unless -e $config_file;
 
   my $config = do $config_file;
+  $config ||= $base_config;
   return $config;
 }
 
 sub _store_options {
   my $opts = shift;
-  open my $fh, '>', $config_file;
+  open my $fh, '>', $config_file or die "Could not open $config_file";
   print $fh Dumper $opts;
 }
 
 sub _write_pc {
-  open my $fh, '>', 'dontpanic.pc';
+  my $pc_file = 'dontpanic.pc';
+  open my $fh, '>', $pc_file or die "Could not open $pc_file";
 
   my $prefix = $config->{prefix};
 
