@@ -1,7 +1,8 @@
 Revision history for Perl module Alien::Base.
 
-0.000_015
+0.000_015  May 2, 2012
 	- interpolation %x is current Perl interpreter ($^X)
+	- platform specific bugfixes
 
 0.000_014  May 1, 2012
 	- bugfix on dontpanic build chain (t/zz-example.t)
