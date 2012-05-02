@@ -329,9 +329,13 @@ sub alien_build {
   my $commands = $self->alien_build_commands;
 
   foreach my $command (@$commands) {
-    my $success = $self->do_system( $command );
-    unless ($success) {
+    my %result = $self->do_system( $command );
+    unless ($result{success}) {
       carp "External command ($command) failed! Error: $?\n";
+      # diagnostic to be removed later
+      require Data::Dumper;
+      warn Dumper \%result;
+      # # # #
       return 0;
     }
   }
