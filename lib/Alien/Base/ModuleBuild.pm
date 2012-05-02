@@ -385,7 +385,8 @@ sub alien_interpolate {
   #   library name (ph: %n)
   $string =~ s/(?<!\%)\%n/$name/g;
   #   current interpreter ($^X) (ph: %x)
-  $string =~ s/(?<!\%)\%x/$^X/g;
+  my $perl = $self->perl;
+  $string =~ s/(?<!\%)\%x/$perl/g;
 
   #remove escapes (%%)
   $string =~ s/\%(?=\%)//g;

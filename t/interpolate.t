@@ -18,7 +18,8 @@ my $path = rel2abs "_install";
 is( $builder->alien_interpolate('thing other=%s'), "thing other=$path", 'share_dir interpolation');
 is( $builder->alien_interpolate('thing other=%%s'), 'thing other=%s', 'no share_dir interpolation with escape');
 
-is( $builder->alien_interpolate('%x'), "$^X", '%x is current interpreter' );
+my $perl = $builder->perl;
+is( $builder->alien_interpolate('%x'), $perl, '%x is current interpreter' );
 
 done_testing;
 
