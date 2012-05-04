@@ -97,7 +97,8 @@ $builder->depends_on('build');
 # Windows cannot delete loaded files, therefore these tests are removed
 # perhaps they should just be skipped on $^O, but I think they aren't really needed
 
-$builder->depends_on('realclean');
+eval{ $builder->depends_on('realclean'); 1 } 
+  or warn "Could not clean up after tests, this isn't a big problem" ;
 #ok( ! -e 'Build'   , "realclean removes Build script" );
 #ok( ! -d '_install', "realclean removes _install (share) directory" );
 #ok( ! -d '_alien'  , "realclean removes _alien (build) directory" );
