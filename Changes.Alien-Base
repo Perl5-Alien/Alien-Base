@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.000_016  May 6, 2012
+	- remove dependence on EU::LibBuilder (Mac Bundle)
+	- t/zz-example.t shouldn't die on failure to cleanup
+	- Capture::Tiny needs some min version, using newest but perhaps less is ok
+
 0.000_015  May 2, 2012
 	- interpolation %x is current Perl interpreter ($^X)
 	- platform specific bugfixes
