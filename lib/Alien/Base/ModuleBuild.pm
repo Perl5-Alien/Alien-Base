@@ -332,10 +332,6 @@ sub alien_build {
     my %result = $self->do_system( $command );
     unless ($result{success}) {
       carp "External command ($command) failed! Error: $?\n";
-      # diagnostic to be removed later
-      require Data::Dumper;
-      carp Data::Dumper(\%result);
-      # # # #
       return 0;
     }
   }
