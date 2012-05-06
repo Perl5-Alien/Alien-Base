@@ -8,7 +8,7 @@ $VERSION = eval $VERSION;
 
 use parent 'Module::Build';
 
-use Capture::Tiny qw/capture tee/;
+use Capture::Tiny 0.17 qw/capture tee/;
 use File::chdir;
 use File::Spec;
 use Carp;

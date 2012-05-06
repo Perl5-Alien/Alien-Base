@@ -14,7 +14,7 @@ use File::ShareDir ();
 use Scalar::Util qw/blessed/;
 use Perl::OSType qw/is_os_type/;
 use Config;
-use Capture::Tiny qw/capture_merged/;
+use Capture::Tiny 0.17 qw/capture_merged/;
 
 sub import {
   my $class = shift;
