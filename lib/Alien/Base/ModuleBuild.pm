@@ -334,7 +334,7 @@ sub alien_build {
       carp "External command ($command) failed! Error: $?\n";
       # diagnostic to be removed later
       require Data::Dumper;
-      warn Data::Dumper(\%result);
+      carp Data::Dumper(\%result);
       # # # #
       return 0;
     }
