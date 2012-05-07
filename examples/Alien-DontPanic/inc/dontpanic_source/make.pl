@@ -13,7 +13,7 @@ use Perl::OSType qw/is_os_type/;
 
 { 
   package Local::CBuilder;
-  use base 'ExtUtils::LibBuilder';
+  use base 'ExtUtils::CBuilder';
   sub need_prelink { 0 }
   sub extra_link_args_after_prelink { return }
 }
