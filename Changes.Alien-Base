@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.000_017  May 6, 2012
+	- typo **faceplant**
+
 0.000_016  May 6, 2012
 	- remove dependence on EU::LibBuilder (Mac Bundle)
 	- t/zz-example.t shouldn't die on failure to cleanup
