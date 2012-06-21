@@ -9,14 +9,8 @@ use Data::Dumper;
 use File::chdir;
 use File::Spec;
 use File::Copy qw/copy/;
-use Perl::OSType qw/is_os_type/;
 
-{ 
-  package Local::CBuilder;
-  use base 'ExtUtils::LibBuilder';
-  sub need_prelink { 0 }
-  sub extra_link_args_after_prelink { return }
-}
+use ExtUtils::LibBuilder;
 
 my $config_file = 'config';
 my $base_config = {
@@ -47,26 +41,22 @@ sub build {
   {
     local $CWD = 'src';
 
-    my $builder = Local::CBuilder->new();
+    my $libbuilder = ExtUtils::LibBuilder->new() or die "EU::LibBuilder object creation failed";
 
     # Compile
-    my $o = $builder->compile(
+    my $o = $libbuilder->compile(
       source => 'libdontpanic.c',
       extra_compiler_flags => '-fPIC',
     );
     push @{ $config->{clean}{src} }, $o;
 
     # Link
-    my $so = $builder->lib_file($o);
-    my %link_args;
-    if (is_os_type 'Unix') {
-      $link_args{extra_linker_flags} = "-Wl,-soname,$so";
-    }
-    
-    $builder->link(
+    my $so = "libdontpanic$libbuilder->{libext}";
+    my $soname = $^O eq 'darwin' ? '-install_name' : '-soname';
+    $libbuilder->link(
       objects  => [ $o ],
+      extra_linker_flags => "-Wl,$soname,$so",
       lib_file => $so,
-      %link_args,
     );
 	
     push @{ $config->{clean}{src} }, $so;
