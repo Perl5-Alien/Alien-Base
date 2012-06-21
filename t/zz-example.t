@@ -5,6 +5,10 @@ use Test::More;
 
 use File::chdir;
 
+unless( eval { use ExtUtils::LibBuilder; 1 } ) {
+  plan skip_all => "libdontpanic requires ExtUtils::LibBuilder";
+}
+
 local $CWD;
 push @CWD, qw/examples Alien-DontPanic/;
 
