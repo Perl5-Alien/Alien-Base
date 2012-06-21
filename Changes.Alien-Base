@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.000_019  Jun 21, 2012
+	- REALLY return to EU::LibBuilder
+
 0.000_018  Jun 21, 2012
 	- return to EU::LibBuilder
 
