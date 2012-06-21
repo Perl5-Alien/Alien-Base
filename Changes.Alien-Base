@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.000_018  Jun 21, 2012
+	- return to EU::LibBuilder
+
 0.000_017  May 6, 2012
 	- typo **faceplant**
 
