@@ -518,7 +518,7 @@ sub copy_if_modified {
   return $to_path unless $to_path =~ /\.dylib$/;
 
   # handle dylib path relocalization
-  print 'Handling Mac dylib paths';
+  print "Todo: Handling Mac dylib paths\n";
 
   return $to_path;
 }
