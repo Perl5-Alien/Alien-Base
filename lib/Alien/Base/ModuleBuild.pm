@@ -514,7 +514,11 @@ sub copy_if_modified {
   my $self = shift;
   my $to_path = $self->SUPER::copy_if_modified(@_);
 
+  return $to_path unless $self->os_type() eq 'MacOS';
+  return $to_path unless $to_path =~ /\.dylib$/;
+
   # handle dylib path relocalization
+  print 'Handling Mac dylib paths';
 
   return $to_path;
 }
