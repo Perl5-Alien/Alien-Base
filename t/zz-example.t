@@ -91,14 +91,15 @@ $builder->depends_on('build');
   warn $@ if $@;
   is( $answer, 42, "Ford::Prefect knows the answer" );
 
-  $ford_builder->depends_on('realclean');
+  eval{ $ford_builder->depends_on('realclean'); 1 }
+    or warn "Could not clean up after tests (Ford::Prefect), this isn't a big problem" ;
 }
 
 # Windows cannot delete loaded files, therefore these tests are removed
 # perhaps they should just be skipped on $^O, but I think they aren't really needed
 
 eval{ $builder->depends_on('realclean'); 1 } 
-  or warn "Could not clean up after tests, this isn't a big problem" ;
+  or warn "Could not clean up after tests (Alien::Base), this isn't a big problem" ;
 #ok( ! -e 'Build'   , "realclean removes Build script" );
 #ok( ! -d '_install', "realclean removes _install (share) directory" );
 #ok( ! -d '_alien'  , "realclean removes _alien (build) directory" );
