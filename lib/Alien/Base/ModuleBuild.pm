@@ -505,6 +505,20 @@ sub alien_find_lib_paths {
   return { lib => \@lib_paths, inc => \@inc_paths, so_files => \@so_files };
 }
 
+###########################
+#  Final Install Methods  #
+###########################
+
+# overload c_i_m to handle Mac's dylib relocalization
+sub copy_if_modified {
+  my $self = shift;
+  my $to_path = $self->SUPER::copy_if_modified(@_);
+
+  # handle dylib path relocalization
+
+  return $to_path;
+}
+
 1;
 
 __END__
