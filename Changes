@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.000_020  Jun 22, 2012
+	- Windows now passes the test suite (another cleanup error trapped)
+	- Begin overloading copy_if_modified for relocalizing dylibs on mac 
+            (this is not working yet, this release is for windows testers)
+
 0.000_019  Jun 21, 2012
 	- REALLY return to EU::LibBuilder (sorry for the noise)
 
