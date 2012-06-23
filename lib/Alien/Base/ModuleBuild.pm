@@ -518,7 +518,9 @@ sub copy_if_modified {
   return $to_path unless $to_path =~ /\.dylib$/;
 
   # handle dylib path relocalization
-  print "Todo: Handling Mac dylib paths\n";
+  # circumvent Alien::Base::MB's interpolation engine
+  $self->SUPER::do_system("install_name_tool", "-id $to_path", $to_path)
+    or carp("dylib localization failed");
 
   return $to_path;
 }
