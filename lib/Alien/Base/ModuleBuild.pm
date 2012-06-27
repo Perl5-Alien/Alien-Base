@@ -331,17 +331,20 @@ sub alien_build {
   foreach my $command (@$commands) {
 
     # hack Mac LDFLAGS
-    if ($self->os_type() eq 'MacOS' and $command =~ /\bmake(?:\.pl)?$/) {
+    if ($self->os_type() eq 'MacOS' && $command =~ /\bmake(?:\.pl)?$/) {
       # probe for LDFLAGS variable in make database
       my $vars = `make -p -n` || '';
-      my ($ldflags) = $vars =~ /\s*LDFLAGS\s*=\s*(.*)$/m;
-      $ldflags ||= '';
-      print "Found LDFLAGS = $ldflags\n";
+      my $ldflags = '';
+      if ($vars =~ /LDFLAGS\s*=\s*(.*)$/m) {
+        $ldflags = $1;
+        print STDERR "Found LDFLAGS = $ldflags\n";
+        $ldflags .= ' ';
+      }
 
       # add needed flag and set LDFLAGS env var
-      $ldflags .= ' -header-pad_max_install_names';
+      $ldflags .= '-header-pad_max_install_names';
       $ENV{LDFLAGS} = $ldflags;
-      print "Using LDFLAGS = $ldflags\n";
+      print STDERR "Using LDFLAGS = $ldflags\n";
 
       # tell make to use the env vars over internal variables
       $command .= ' -e';
