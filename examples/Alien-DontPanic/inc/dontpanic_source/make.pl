@@ -53,7 +53,7 @@ sub build {
     # Link
     my $so = "libdontpanic$libbuilder->{libext}";
     my $soname = $^O eq 'darwin' ? '-install_name' : '-soname';
-    my $lflags = "-Wl,$soname,$so";
+    my $ldflags = "-Wl,$soname,$so";
 
     if ( $ENV{LDFLAGS} ) {
       $ldflags .= $ENV{LDFLAGS};
