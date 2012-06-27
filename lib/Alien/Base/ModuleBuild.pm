@@ -331,7 +331,7 @@ sub alien_build {
   foreach my $command (@$commands) {
 
     # hack Mac LDFLAGS
-    if ($self->os_type() eq 'MacOS' and $command =~ /^make(?:\.pl)?\b/) {
+    if ($self->os_type() eq 'MacOS' and $command =~ /\bmake(?:\.pl)?$/) {
       # probe for LDFLAGS variable in make database
       my $vars = `make -p -n` || '';
       my ($ldflags) = $vars =~ /\s*LDFLAGS\s*=\s*(.*)$/m;
