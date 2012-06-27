@@ -331,7 +331,7 @@ sub alien_build {
   foreach my $command (@$commands) {
 
     # hack Mac LDFLAGS
-    if ($self->os_type() eq 'MacOS' && $command =~ /\bmake(?:\.pl)?$/) {
+    if (($^O eq 'darwin') and ($command =~ /\bmake(?:\.pl)?$/)) {
       # probe for LDFLAGS variable in make database
       my $vars = `make -p -n` || '';
       my $ldflags = '';
@@ -535,7 +535,7 @@ sub copy_if_modified {
   my $self = shift;
   my $to_path = $self->SUPER::copy_if_modified(@_);
 
-  return $to_path unless $self->os_type() eq 'MacOS';
+  return $to_path unless $^O eq 'darwin';
   return $to_path unless $to_path =~ /\.dylib$/;
 
   # handle dylib path relocalization
