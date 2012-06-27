@@ -9,6 +9,7 @@ use Data::Dumper;
 use File::chdir;
 use File::Spec;
 use File::Copy qw/copy/;
+use File::Basename;
 
 use ExtUtils::LibBuilder;
 
@@ -99,7 +100,9 @@ sub install {
     foreach my $file (@{$files{$folder}}) {
       copy $file, $CWD or die "Could not copy file $file";
       if ($file =~ /\.dylib$/) {
-        system("install_name_tool -id $file $file") == 1 or warn "Could not install dylib";
+        my $filename = fileparse($file);
+        $filename = File::Spec->rel2abs($filename);
+        system("install_name_tool -id $filename $filename") == 0 or warn "Could not install dylib";
       }
     }
     _write_pc() if $folder eq 'lib';
