@@ -98,6 +98,9 @@ sub install {
     local $CWD = $folder;
     foreach my $file (@{$files{$folder}}) {
       copy $file, $CWD or die "Could not copy file $file";
+      if ($file =~ /\.dylib$/) {
+        system("install_name_tool -id $file $file") == 1 or warn "Could not install dylib";
+      }
     }
     _write_pc() if $folder eq 'lib';
   }
