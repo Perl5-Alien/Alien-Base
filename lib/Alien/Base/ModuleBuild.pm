@@ -541,7 +541,7 @@ sub copy_if_modified {
   # handle dylib path relocalization
   # circumvent Alien::Base::MB's interpolation engine
   $to_path = File::Spec->rel2abs($to_path);
-  $self->SUPER::do_system("install_name_tool", "-id $to_path", $to_path)
+  $self->SUPER::do_system("install_name_tool -id $to_path $to_path")
     or carp("dylib localization failed");
 
   return $to_path;
