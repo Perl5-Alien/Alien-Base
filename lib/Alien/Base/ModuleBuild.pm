@@ -335,14 +335,15 @@ sub alien_build {
       # probe for LDFLAGS variable in make database
       my $vars = `make -p -n` || '';
       my $ldflags = '';
-      if ($vars =~ /LDFLAGS\s*=\s*(.*)$/m) {
+      if ($vars =~ /^\s*LDFLAGS\h*=\h*(.*)$/m) {
         $ldflags = $1;
         print STDERR "Found LDFLAGS = $ldflags\n";
         $ldflags .= ' ';
+        
       }
 
       # add needed flag and set LDFLAGS env var
-      $ldflags .= '-header-pad_max_install_names';
+      $ldflags .= '-headerpad_max_install_names';
       $ENV{LDFLAGS} = $ldflags;
       print STDERR "Using LDFLAGS = $ldflags\n";
 
@@ -533,7 +534,7 @@ sub alien_find_lib_paths {
 # overload c_i_m to handle Mac's dylib relocalization
 sub copy_if_modified {
   my $self = shift;
-  my $to_path = $self->SUPER::copy_if_modified(@_);
+  my $to_path = $self->SUPER::copy_if_modified(@_) or return;
 
   return $to_path unless $^O eq 'darwin';
   return $to_path unless $to_path =~ /\.dylib$/;
