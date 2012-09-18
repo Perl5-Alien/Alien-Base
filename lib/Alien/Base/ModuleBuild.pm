@@ -54,7 +54,7 @@ __PACKAGE__->add_property( alien_temp_dir => '_alien' );
 # alien_share_dir: folder name for the "install" of the library
 # this is added (unshifted) to the @{share_dir->{dist}}  
 # N.B. is reset during constructor to be full folder name 
-__PACKAGE__->add_property('alien_share_dir'); # default => '_install'
+__PACKAGE__->add_property('alien_share_dir' => '_install' );
 
 # alien_selection_method: name of method for selecting file: (todo: newest, manual)
 #   default is specified later, when this is undef (see alien_check_installed_version)
@@ -63,7 +63,20 @@ __PACKAGE__->add_property( alien_selection_method => 'newest' );
 # alien_build_commands: arrayref of commands for building
 __PACKAGE__->add_property( 
   alien_build_commands => 
-  default => [ '%pconfigure --prefix=%s', 'make', 'make install' ],
+  default => [ '%pconfigure --prefix=%s', 'make' ],
+);
+
+# alien_test_commands: arrayref of commands for testing the library
+# note that this might be better tacked onto the build-time commands
+__PACKAGE__->add_property( 
+  alien_test_commands => 
+  default => [ ],
+);
+
+# alien_build_commands: arrayref of commands for installing the library
+__PACKAGE__->add_property( 
+  alien_install_commands => 
+  default => [ 'make install' ],
 );
 
 # alien_version_check: command to execute to check if install/version
@@ -107,39 +120,21 @@ sub new {
   my $class = shift;
   my %args = @_;
 
-  my $install_dir = ($args{alien_share_dir} ||= '_install');
-
   # merge default and user-defined repository classes
   $args{alien_repository_class}{$_} ||= $default_repository_class{$_} 
     for keys %default_repository_class;
 
-  # initialize M::B property share_dir 
-  if (! defined $args{share_dir}) {
-    # no share_dir property
-    $args{share_dir} = $install_dir;
-  } elsif (! ref $args{share_dir}) {
-    # share_dir is a scalar, meaning dist
-    $args{share_dir} = { dist => [$install_dir, $args{share_dir}] };
-  } elsif (! ref $args{share_dir}{dist}) {
-    # share_dir is like {dist => scalar}, so upconvert to arrayref
-    $args{share_dir} = { dist => [$install_dir, $args{share_dir}{dist}] };
-  } else {
-    # share_dir is like {dist => [...]}, so unshift
-    unshift @{$args{share_dir}{dist}}, $install_dir;
-  }
-
   my $self = $class->SUPER::new(%args);
 
-  # store full path to alien_share_dir, used in interpolate
-  $self->config_data( 
-    build_share_dir => File::Spec->catdir( $self->base_dir(), $install_dir )
-  );
+  # setup additional temporary directories, and yes we have to add File::ShareDir manually
+  $self->_add_prereq( 'requires', 'File::ShareDir', '1.00' );
+  $self->alien_init_temp_dir;
 
   # force newest for all automated testing 
   #TODO (this probably should be checked for "input needed" rather than blindly assigned)
   if ($ENV{AUTOMATED_TESTING}) {
     $self->alien_selection_method('newest');
-  } 
+  }
 
   return $self;
 }
@@ -186,7 +181,7 @@ sub alien_create_repositories {
 sub alien_init_temp_dir {
   my $self = shift;
   my $dir_name = $self->alien_temp_dir;
-  my $install_dir = $self->config_data('build_share_dir');
+  my $install_dir = $self->alien_share_dir;
 
   # make sure we are in base_dir
   local $CWD = $self->base_dir;
@@ -197,10 +192,20 @@ sub alien_init_temp_dir {
   $self->add_to_cleanup( $dir_name );
 
   # if install_dir does not exist, create AND mark for add_to_cleanup
+  # store full path to alien_share_dir, used in interpolate
+  $self->config_data( 
+    build_share_dir => File::Spec->catdir( $self->base_dir(), $install_dir )
+  );
+
   unless ( -d $install_dir ) {
     mkdir $install_dir or croak "Could not create temporary directory $install_dir";
     $self->add_to_cleanup( $install_dir );
   }
+
+  # add share dir to share dir list
+  my $share_dirs = $self->share_dir;
+  unshift @{ $share_dirs->{dist} }, $install_dir;
+  $self->share_dir( $share_dirs );
 }
 
 ####################
@@ -228,7 +233,6 @@ sub ACTION_alien {
     return;
   }
 
-  $self->alien_init_temp_dir;
   my @repos = $self->alien_create_repositories;
 
   my $cabinet = Alien::Base::ModuleBuild::Cabinet->new;
