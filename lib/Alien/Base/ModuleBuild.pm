@@ -137,7 +137,7 @@ sub new {
     $self->alien_selection_method('newest');
   }
 
-  $self->config_data->( 'finished_installing' => 0 );
+  $self->config_data( 'finished_installing' => 0 );
 
   return $self;
 }
