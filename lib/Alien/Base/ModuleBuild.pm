@@ -229,7 +229,7 @@ sub ACTION_alien {
     print "Done\n";
 
     my $extract_path = $ae->extract_path;
-    $self->alien_temp_dir( $extract_path );
+    $self->notes( working_directory => $extract_path );
     $CWD = $extract_path;
 
     print "Building library ... ";
@@ -269,7 +269,7 @@ sub ACTION_test {
   my $self = shift;
   $self->SUPER::ACTION_test;
 
-  local $CWD = $self->alien_temp_dir;
+  local $CWD = $self->notes( 'working_directory' );
   print "Testing library (if applicable) ... ";
   $self->alien_do_commands('test') or die "Failed\n";
   print "Done\n";
@@ -292,7 +292,7 @@ sub ACTION_install {
   }
 
   {
-    local $CWD = $self->alien_temp_dir;
+    local $CWD = $self->notes( 'working_directory' );
     print "Installing library ... ";
     $self->alien_do_commands('install') or die "Failed\n";
     print "Done\n";
@@ -474,7 +474,7 @@ sub alien_exec_prefix {
 sub alien_load_pkgconfig {
   my $self = shift;
 
-  my $dir = $self->alien_temp_dir;
+  my $dir = $self->notes( 'working_directory' );
   my $pc_files = $self->rscan_dir( $dir, qr/\.pc$/ );
 
   my %pc_objects = map { 
