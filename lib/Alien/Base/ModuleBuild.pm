@@ -334,27 +334,6 @@ sub alien_build {
 
   foreach my $command (@$commands) {
 
-    # hack Mac LDFLAGS
-    if (($^O eq 'darwin') and ($command =~ /\bmake(?:\.pl)?$/)) {
-      # probe for LDFLAGS variable in make database
-      my $vars = `make -p -n` || '';
-      my $ldflags = '';
-      if ($vars =~ /^\s*LDFLAGS\h*=\h*(.*)$/m) {
-        $ldflags = $1;
-        print STDERR "Found LDFLAGS = $ldflags\n";
-        $ldflags .= ' ';
-        
-      }
-
-      # add needed flag and set LDFLAGS env var
-      $ldflags .= '-headerpad_max_install_names';
-      $ENV{LDFLAGS} = $ldflags;
-      print STDERR "Using LDFLAGS = $ldflags\n";
-
-      # tell make to use the env vars over internal variables
-      $command .= ' -e';
-    }
-
     my %result = $self->do_system( $command );
     unless ($result{success}) {
       carp "External command ($command) failed! Error: $?\n";
@@ -529,27 +508,6 @@ sub alien_find_lib_paths {
     @libs;
 
   return { lib => \@lib_paths, inc => \@inc_paths, so_files => \@so_files };
-}
-
-###########################
-#  Final Install Methods  #
-###########################
-
-# overload c_i_m to handle Mac's dylib relocalization
-sub copy_if_modified {
-  my $self = shift;
-  my $to_path = $self->SUPER::copy_if_modified(@_) or return;
-
-  return $to_path unless $^O eq 'darwin';
-  return $to_path unless $to_path =~ /\.dylib$/;
-
-  # handle dylib path relocalization
-  # circumvent Alien::Base::MB's interpolation engine
-  $to_path = File::Spec->rel2abs($to_path);
-  $self->SUPER::do_system("install_name_tool -id $to_path $to_path")
-    or carp("dylib localization failed");
-
-  return $to_path;
 }
 
 1;
