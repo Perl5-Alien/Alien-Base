@@ -111,6 +111,7 @@ __PACKAGE__->add_property( 'alien_repository_class'   => {} );
 # Cflags: holder for cflags if manually specified
 # Libs:   same but libs
 # name: holder for name as needed by pkg-config
+# finished_installing: set to true once ACTION_install is finished, this helps testing now and real checks later
 
 ############################
 #  Initialization Methods  #
@@ -135,6 +136,8 @@ sub new {
   if ($ENV{AUTOMATED_TESTING}) {
     $self->alien_selection_method('newest');
   }
+
+  $self->config_data->( 'finished_installing' => 0 );
 
   return $self;
 }
@@ -293,6 +296,7 @@ sub ACTION_install {
   }
 
   $self->alien_refresh_manual_pkgconfig( $self->alien_library_destination );
+  $self->config_data( 'finished_installing' => 1 );
 
   # to refresh config_data
   $self->SUPER::ACTION_config_data;
