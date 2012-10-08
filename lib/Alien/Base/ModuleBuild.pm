@@ -270,7 +270,7 @@ sub alien_check_installed_version {
   my $self = shift;
   my $command = $self->alien_version_check;
 
-  my %result = $self->do_system($command);
+  my %result = $self->do_system($command, {verbose => 0});
   my $version = $result{stdout} || 0;
 
   return $version;
@@ -345,7 +345,7 @@ sub alien_build {
 
     my %result = $self->do_system( $command );
     unless ($result{success}) {
-      carp "External command ($command) failed! Error: $?\n";
+      carp "External command ($result{command}) failed! Error: $?\n";
       return 0;
     }
   }
@@ -357,6 +357,9 @@ sub alien_build {
 # futher it either captures or tees depending on the value of $Verbose
 sub do_system {
   my $self = shift;
+  my $opts = ref $_[-1] ? pop : { verbose => 1 };
+
+  my $verbose = $Verbose || $opts->{verbose};
 
   # prevent build process from cwd-ing from underneath us
   local $CWD;
@@ -365,7 +368,7 @@ sub do_system {
   my @args = map { $self->alien_interpolate($_) } @_;
 
   my ($out, $err, $success) = 
-    $Verbose
+    $verbose
     ? tee     { $self->SUPER::do_system(@args) }
     : capture { $self->SUPER::do_system(@args) }
   ;
