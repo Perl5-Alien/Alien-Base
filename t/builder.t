@@ -43,22 +43,6 @@ sub builder { return Alien::Base::ModuleBuild->new( %basic, @_ ) }
 }
 
 {
-  mkdir '_share';
-
-  my $builder = builder;
-
-  $builder->alien_init_temp_dir;
-  ok( -d '_alien', "Creates _alien dir");
-  ok( -d '_share', "Creates _share dir");
-
-  $builder->depends_on('clean');
-  ok( ! -d '_alien', "Removes _alien dir");
-  ok( -d '_share', "Clean does not remove _share dir if it existed");
-
-  unlink qw/_alien _share/;
-}
-
-{
   unlink qw/_test_temp _test_share/;
 
   my $builder = builder(
