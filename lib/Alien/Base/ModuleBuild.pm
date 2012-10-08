@@ -230,7 +230,7 @@ sub ACTION_alien {
     print "Done\n";
 
     print "Building library ... ";
-    unless ($self->alien_build) {
+    unless ($self->alien_do_commands('build') {
       print "Failed\n";
       croak "Build not completed";
     }
@@ -260,6 +260,16 @@ sub ACTION_alien {
   # prevent building multiple times (on M::B::dispatch)
   $self->notes( 'ACTION_alien_completed' => 1 );
   return;
+}
+
+sub ACTION_test {
+  my $self = shift;
+  $self->SUPER::ACTION_test;
+
+  local $CWD = $self->alien_temp_dir;
+  print "Testing library (if applicable) ... ";
+  $self->alien_do_commands('test') or die "Failed\n";
+  print "Done\n";
 }
 
 #######################
@@ -336,10 +346,12 @@ sub alien_validate_repo {
 #  Build Methods  #
 ###################
 
-sub alien_build {
+sub alien_do_commands {
   my $self = shift;
+  my $phase = shift;
 
-  my $commands = $self->alien_build_commands;
+  my $attr = "alien_${phase}_commands";
+  my $commands = $self->$attr();
 
   foreach my $command (@$commands) {
 
