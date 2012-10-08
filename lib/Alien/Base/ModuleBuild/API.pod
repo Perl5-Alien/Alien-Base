@@ -31,7 +31,7 @@ The name of the temporary folder which will house the library when it is downloa
 
 [version 0.001]
 
-The name of the folder which will both serve as the "install" directory (i.e. <--prefix>) for C<make install> as well as a share directory via L<Module::Build>'s C<share_dir>/C<dist_dir> parameter. This directory is added in a smart manner which attempts not to interfere with other author-defined C<share_dir>s. The default name is C<_install>.
+The name of the folder which will both serve as the "install" directory (i.e. <--prefix>) for C<make install> as well as a share directory via L<Module::Build>'s C<share_dir>/C<dist_dir> parameter. This directory is added in a smart manner which attempts not to interfere with other author-defined C<share_dir>s. The default name is C<_share>.
 
 =item alien_selection_method
 
