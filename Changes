@@ -1,11 +1,15 @@
 Revision history for Perl module Alien::Base.
 
-0.000_021  Oct 8, 2012
+0.000_022  Oct 8, 2012
 	- Major refactoring
 		- separate alien_{x}_commands where x = build, test, install
 		- removed mac specific code
 		- no longer test provisioning (it never worked anyway)
 		- directly allow library to install to final share_dir destination
+	- Moved Alien::DontPanic and Ford::Prefect to CPAN under Acme:: namespaces
+
+0.000_021  Jul 25, 2012
+	- Some fixes for Mac, not sure its working yet
 
 0.000_020  Jun 22, 2012
 	- Windows now passes the test suite (another cleanup error trapped)

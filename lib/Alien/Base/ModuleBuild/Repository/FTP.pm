@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild::Repository::FTP;
 use strict;
 use warnings;
 
-our $VERSION = '0.000_021';
+our $VERSION = '0.000_022';
 $VERSION = eval $VERSION;
 
 use parent 'Alien::Base::ModuleBuild::Repository';
