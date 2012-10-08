@@ -1,19 +1,11 @@
 Build.PL
 Changes
-examples/Alien-DontPanic/Build.PL
-examples/Alien-DontPanic/inc/dontpanic-1.01.tar.gz
-examples/Alien-DontPanic/lib/Alien/DontPanic.pm
-examples/Alien-DontPanic/MANIFEST
 examples/Alien-GSL/Build.PL
 examples/Alien-GSL/lib/Alien/GSL.pm
 examples/Alien-GSL/MANIFEST
 examples/Alien-Nettle/Build.PL
 examples/Alien-Nettle/lib/Alien/Nettle.pm
 examples/Alien-Nettle/MANIFEST
-examples/Ford-Prefect/Build.PL
-examples/Ford-Prefect/lib/Ford/Prefect.pm
-examples/Ford-Prefect/lib/Ford/Prefect.xs
-examples/Ford-Prefect/MANIFEST
 lib/Alien/Base.pm
 lib/Alien/Base/Authoring.pod
 lib/Alien/Base/ModuleBuild.pm
@@ -39,6 +31,7 @@ t/find_lib/include/otherlib.h
 t/find_lib/lib/libmylib.so
 t/find_lib/lib/libotherlib.so
 t/http.t
+t/install_destination.t
 t/interpolate.t
 t/local_repo.t
 t/pkgconfig.t
