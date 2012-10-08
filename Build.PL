@@ -24,12 +24,9 @@ my $builder = Module::Build->new(
     'File::ShareDir'   => 0,
     'Archive::Extract' => 0,
     'HTTP::Tiny'       => 0,
-    # t/zz-example.t requires EU::LibBuilder, CPANtesters should require it	  	
-    ( $ENV{AUTOMATED_TESTING} ? ('ExtUtils::LibBuilder' => 0) : () ),
   },
   recommends => {
     'HTML::LinkExtor' => 0,
-    'ExtUtils::LibBuilder' => 0,
   },
   meta_merge => {
     resources  => {
