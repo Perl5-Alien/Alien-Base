@@ -139,45 +139,6 @@ sub new {
   return $self;
 }
 
-sub alien_create_repositories {
-  my $self = shift;
-
-  ## get repository specs
-  my $repo_default = $self->alien_repository_default;
-  my $repo_specs = $self->alien_repository;
-
-  # upconvert to arrayref if a single hashref is passed
-  if (ref $repo_specs eq 'HASH') {
-    $repo_specs = [ $repo_specs ];
-  }
-
-  my @repos;
-  foreach my $repo ( @$repo_specs ) {
-    #merge defaults into spec
-    foreach my $key ( keys %$repo_default ) {
-      next if defined $repo->{$key};
-      $repo->{$key} = $repo_default->{$key};
-    }
-
-    $repo->{platform} = 'src' unless defined $repo->{platform};
-    my $protocol = $repo->{protocol} || 'default';
-
-    push @repos, $self->alien_repository_class($protocol)->new( $repo );
-  }
-
-  # check validation, including c compiler for src type
-  @repos = 
-    grep { $self->alien_validate_repo($_) }
-    @repos;
-
-  unless (@repos) {
-    croak "No valid repositories available";
-  }
-
-  return @repos;
-
-}
-
 sub alien_init_temp_dir {
   my $self = shift;
   my $dir_name = $self->alien_temp_dir;
@@ -313,6 +274,45 @@ sub alien_check_installed_version {
   my $version = $result{stdout} || 0;
 
   return $version;
+}
+
+sub alien_create_repositories {
+  my $self = shift;
+
+  ## get repository specs
+  my $repo_default = $self->alien_repository_default;
+  my $repo_specs = $self->alien_repository;
+
+  # upconvert to arrayref if a single hashref is passed
+  if (ref $repo_specs eq 'HASH') {
+    $repo_specs = [ $repo_specs ];
+  }
+
+  my @repos;
+  foreach my $repo ( @$repo_specs ) {
+    #merge defaults into spec
+    foreach my $key ( keys %$repo_default ) {
+      next if defined $repo->{$key};
+      $repo->{$key} = $repo_default->{$key};
+    }
+
+    $repo->{platform} = 'src' unless defined $repo->{platform};
+    my $protocol = $repo->{protocol} || 'default';
+
+    push @repos, $self->alien_repository_class($protocol)->new( $repo );
+  }
+
+  # check validation, including c compiler for src type
+  @repos = 
+    grep { $self->alien_validate_repo($_) }
+    @repos;
+
+  unless (@repos) {
+    croak "No valid repositories available";
+  }
+
+  return @repos;
+
 }
 
 sub alien_validate_repo {
