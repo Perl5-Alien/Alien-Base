@@ -104,8 +104,8 @@ __PACKAGE__->add_property( 'alien_repository_class'   => {} );
 #  ConfigData  #
 ################
 
-# build_share_dir: full path to the shared directory specified in alien_share_dir
-# pkgconfig: hashref of A::B::PkgConfig objects created from .pc file found in build_share_dir
+# working_directory: full path to the extracted source or binary of the library
+# pkgconfig: hashref of A::B::PkgConfig objects created from .pc file found in working_directory
 # install_type: either system or share
 # version: version number installed or available
 # Cflags: holder for cflags if manually specified
@@ -151,12 +151,6 @@ sub alien_init_temp_dir {
     mkdir $temp_dir or croak "Could not create temporary directory $temp_dir";
   }
   $self->add_to_cleanup( $temp_dir );
-
-  # if install_dir does not exist, create AND mark for add_to_cleanup
-  # store full path to alien_share_dir, used in interpolate
-  $self->config_data( 
-    build_share_dir => File::Spec->catdir( $self->base_dir(), $share_dir )
-  );
 
   unless ( -d $share_dir ) {
     mkdir $share_dir or croak "Could not create temporary directory $share_dir";
@@ -229,7 +223,7 @@ sub ACTION_alien {
     print "Done\n";
 
     my $extract_path = $ae->extract_path;
-    $self->notes( working_directory => $extract_path );
+    $self->config_data( working_directory => $extract_path );
     $CWD = $extract_path;
 
     print "Building library ... ";
@@ -269,7 +263,7 @@ sub ACTION_test {
   my $self = shift;
   $self->SUPER::ACTION_test;
 
-  local $CWD = $self->notes( 'working_directory' );
+  local $CWD = $self->config_data( 'working_directory' );
   print "Testing library (if applicable) ... ";
   $self->alien_do_commands('test') or die "Failed\n";
   print "Done\n";
@@ -292,7 +286,7 @@ sub ACTION_install {
   }
 
   {
-    local $CWD = $self->notes( 'working_directory' );
+    local $CWD = $self->config_data( 'working_directory' );
     print "Installing library ... ";
     $self->alien_do_commands('install') or die "Failed\n";
     print "Done\n";
@@ -474,7 +468,7 @@ sub alien_exec_prefix {
 sub alien_load_pkgconfig {
   my $self = shift;
 
-  my $dir = $self->notes( 'working_directory' );
+  my $dir = $self->config_data( 'working_directory' );
   my $pc_files = $self->rscan_dir( $dir, qr/\.pc$/ );
 
   my %pc_objects = map { 
