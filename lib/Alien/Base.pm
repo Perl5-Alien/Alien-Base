@@ -15,6 +15,7 @@ use Scalar::Util qw/blessed/;
 use Perl::OSType qw/is_os_type/;
 use Config;
 use Capture::Tiny 0.17 qw/capture_merged/;
+use Text::ParseWords qw/shellwords/;
 
 sub import {
   my $class = shift;
@@ -30,10 +31,12 @@ sub import {
     \%{ $class . "::AlienLoaded" };
   };
 
-  my $libs = $class->libs;
+  my @libs = shellwords( $class->libs );
 
-  my @L = $libs =~ /-L(\S+)/g;
-  my @l = $libs =~ /(-l\S+)/g;
+  my @L = grep { s/^-L// } @libs;
+  my @l = grep { /^-l/ } @libs;
+
+  warn "Found paths @L\n";
 
   push @DynaLoader::dl_library_path, @L;
 
