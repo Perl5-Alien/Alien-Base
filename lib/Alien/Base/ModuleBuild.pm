@@ -230,7 +230,7 @@ sub ACTION_alien {
     print "Done\n";
 
     print "Building library ... ";
-    unless ($self->alien_do_commands('build') {
+    unless ($self->alien_do_commands('build')) {
       print "Failed\n";
       croak "Build not completed";
     }
