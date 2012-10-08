@@ -275,6 +275,25 @@ sub ACTION_test {
 sub ACTION_install {
   my $self = shift;
   $self->SUPER::ACTION_install;
+
+  {
+    my $target = $self->alien_library_destination;
+    local $CWD = $target;
+
+    # The only form of introspection that exists is to see that the README file
+    # which was placed in the share_dir (default _share) exists where we expect 
+    # after installation.
+    unless ( -e 'README' ) {
+      die "share_dir mismatch detected ($target)\n"
+    }
+  }
+
+  {
+    local $CWD = $self->alien_temp_dir;
+    print "Installing library ... ";
+    $self->alien_do_commands('install') or die "Failed\n";
+    print "Done\n";
+  }
 }
 
 #######################
@@ -347,6 +366,14 @@ sub alien_validate_repo {
   return $self->os_type eq $platform;
 }
 
+sub alien_library_destination {
+  my $self = shift;
+  my $lib_dir = $self->install_destination('lib');
+  my $dist_name = $self->dist_name;
+  my $dest = File::Spec->catdir( $lib_dir, qw/auto share dist/, $dist_name );
+  return $dest;
+}
+
 ###################
 #  Build Methods  #
 ###################
@@ -408,7 +435,7 @@ sub alien_interpolate {
   my ($string) = @_;
 
   my $prefix = $self->alien_exec_prefix;
-  my $share  = $self->config_data('build_share_dir');
+  my $share  = $self->alien_library_destination;
   my $name   = $self->alien_name;
 
   # substitute:
