@@ -14,7 +14,7 @@ my $builder = Alien::Base::ModuleBuild->new(
 is( $builder->alien_interpolate('%phello'), $builder->alien_exec_prefix . 'hello', 'prefix interpolation');
 is( $builder->alien_interpolate('%%phello'), '%phello', 'no prefix interpolation with escape');
 
-my $path = rel2abs "_install";
+my $path = rel2abs "_share";
 is( $builder->alien_interpolate('thing other=%s'), "thing other=$path", 'share_dir interpolation');
 is( $builder->alien_interpolate('thing other=%%s'), 'thing other=%s', 'no share_dir interpolation with escape');
 

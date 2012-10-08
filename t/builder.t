@@ -23,7 +23,7 @@ sub builder { return Alien::Base::ModuleBuild->new( %basic, @_ ) }
 ###########################
 
 {
-  unlink qw/_alien _install/;
+  unlink qw/_alien _share/;
 
   my $builder = builder;
 
@@ -33,29 +33,29 @@ sub builder { return Alien::Base::ModuleBuild->new( %basic, @_ ) }
 
   $builder->alien_init_temp_dir;
   ok( -d '_alien', "Creates _alien dir");
-  ok( -d '_install', "Creates _install dir");
+  ok( -d '_share', "Creates _share dir");
 
   $builder->depends_on('clean');
   ok( ! -d '_alien', "Removes _alien dir");
-  ok( ! -d '_install', "Removes _install dir");
+  ok( ! -d '_share', "Removes _share dir");
 
-  unlink qw/_alien _install/;
+  unlink qw/_alien _share/;
 }
 
 {
-  mkdir '_install';
+  mkdir '_share';
 
   my $builder = builder;
 
   $builder->alien_init_temp_dir;
   ok( -d '_alien', "Creates _alien dir");
-  ok( -d '_install', "Creates _install dir");
+  ok( -d '_share', "Creates _share dir");
 
   $builder->depends_on('clean');
   ok( ! -d '_alien', "Removes _alien dir");
-  ok( -d '_install', "Clean does not remove _install dir if it existed");
+  ok( -d '_share', "Clean does not remove _share dir if it existed");
 
-  unlink qw/_alien _install/;
+  unlink qw/_alien _share/;
 }
 
 {

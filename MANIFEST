@@ -52,5 +52,4 @@ t/utils.t
 t/validation.t
 t/version.t
 t/yy-system_installed.t
-t/zz-example.t
 TODO
