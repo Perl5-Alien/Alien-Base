@@ -226,8 +226,11 @@ sub ACTION_alien {
     print "Extracting Archive ... ";
     my $ae = Archive::Extract->new( archive => $filename );
     $ae->extract;
-    $CWD = $ae->extract_path;
     print "Done\n";
+
+    my $extract_path = $ae->extract_path;
+    $self->alien_temp_dir( $extract_path );
+    $CWD = $extract_path;
 
     print "Building library ... ";
     unless ($self->alien_do_commands('build')) {
@@ -471,7 +474,7 @@ sub alien_exec_prefix {
 sub alien_load_pkgconfig {
   my $self = shift;
 
-  my $dir = $self->config_data('build_share_dir');
+  my $dir = $self->alien_temp_dir;
   my $pc_files = $self->rscan_dir( $dir, qr/\.pc$/ );
 
   my %pc_objects = map { 
