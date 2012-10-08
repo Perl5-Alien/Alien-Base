@@ -36,8 +36,6 @@ sub import {
   my @L = grep { s/^-L// } @libs;
   my @l = grep { /^-l/ } @libs;
 
-  warn "Found paths @L\n";
-
   push @DynaLoader::dl_library_path, @L;
 
   my @libpaths;
@@ -68,7 +66,7 @@ sub dist_dir {
   $dist =~ s/::/-/g;
 
 
-  my $dist_dir = _is_testing() ? $class->config('working_directory') : File::ShareDir::dist_dir($dist);
+  my $dist_dir = $class->config('finished_installing') ?  File::ShareDir::dist_dir($dist) : $class->config('working_directory');
 
   return $dist_dir;
 }
@@ -152,10 +150,6 @@ sub config {
   warn $@ if $@;
 
   return $config->config(@_);
-}
-
-sub _is_testing {
-  return grep { /\bblib\b/ } @INC;
 }
 
 1;
