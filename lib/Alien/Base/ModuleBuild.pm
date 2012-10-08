@@ -272,6 +272,11 @@ sub ACTION_test {
   print "Done\n";
 }
 
+sub ACTION_install {
+  my $self = shift;
+  $self->SUPER::ACTION_install;
+}
+
 #######################
 #  Pre-build Methods  #
 #######################
