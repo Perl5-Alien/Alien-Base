@@ -64,8 +64,8 @@ sub dist_dir {
   my $dist = blessed $class || $class;
   $dist =~ s/::/-/g;
 
-  # This line will not work as expected when upgrading (i.e. when a version is already installed, but installing a new version)
-  my $dist_dir = eval { File::ShareDir::dist_dir($dist) } || $class->config('build_share_dir');
+
+  my $dist_dir = _is_testing() ? $class->config('working_directory') : File::ShareDir::dist_dir($dist);
 
   return $dist_dir;
 }
@@ -149,6 +149,10 @@ sub config {
   warn $@ if $@;
 
   return $config->config(@_);
+}
+
+sub _is_testing {
+  return grep { /\bblib\b/ } @INC;
 }
 
 1;
