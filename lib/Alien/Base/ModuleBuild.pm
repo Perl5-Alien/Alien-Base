@@ -291,6 +291,12 @@ sub ACTION_install {
     $self->alien_do_commands('install') or die "Failed\n";
     print "Done\n";
   }
+
+  $self->alien_refresh_manual_pkgconfig( $self->alien_library_destination );
+
+  # to refresh config_data
+  $self->SUPER::ACTION_config_data;
+  $self->SUPER::ACTION_install;
 }
 
 #######################
@@ -482,6 +488,19 @@ sub alien_load_pkgconfig {
 
   $self->config_data( pkgconfig => \%pc_objects );
   return \%pc_objects;
+}
+
+sub alien_refresh_manual_pkgconfig {
+  my $self = shift;
+  my ($dir) = @_;
+
+  my $pc_objects = $self->config_data( 'pkgconfig' );
+  $pc_objects->{_manual} = $self->alien_generate_manual_pkgconfig($dir)
+    or croak "Could not autogenerate pkgconfig information";
+  
+  $self->config_data( pkgconfig => $pc_objects );
+
+  return 1;
 }
 
 sub alien_generate_manual_pkgconfig {
