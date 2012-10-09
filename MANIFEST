@@ -1,3 +1,4 @@
+_share/README
 Build.PL
 Changes
 examples/Alien-GSL/Build.PL
@@ -28,7 +29,9 @@ t/file.t
 t/find_lib.t
 t/find_lib/include/mylib.h
 t/find_lib/include/otherlib.h
+t/find_lib/lib/libmylib.0.so
 t/find_lib/lib/libmylib.so
+t/find_lib/lib/libmylib.so.0
 t/find_lib/lib/libotherlib.so
 t/http.t
 t/install_destination.t
