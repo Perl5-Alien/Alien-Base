@@ -21,34 +21,34 @@ no_index:
 provides:
   Alien::Base:
     file: lib/Alien/Base.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::ModuleBuild:
     file: lib/Alien/Base/ModuleBuild.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::ModuleBuild::Cabinet:
     file: lib/Alien/Base/ModuleBuild/Cabinet.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::ModuleBuild::File:
     file: lib/Alien/Base/ModuleBuild/File.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::ModuleBuild::Repository:
     file: lib/Alien/Base/ModuleBuild/Repository.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::ModuleBuild::Repository::FTP:
     file: lib/Alien/Base/ModuleBuild/Repository/FTP.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::ModuleBuild::Repository::HTTP:
     file: lib/Alien/Base/ModuleBuild/Repository/HTTP.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::ModuleBuild::Repository::Local:
     file: lib/Alien/Base/ModuleBuild/Repository/Local.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::ModuleBuild::Utils:
     file: lib/Alien/Base/ModuleBuild/Utils.pm
-    version: 0.000_022
+    version: 0.001
   Alien::Base::PkgConfig:
     file: lib/Alien/Base/PkgConfig.pm
-    version: 0.000_022
+    version: 0.001
 recommends:
   HTML::LinkExtor: 0
 requires:
@@ -68,4 +68,4 @@ resources:
   bugtracker: http://github.com/jberger/Alien-Base/issues
   license: http://dev.perl.org/licenses/
   repository: http://github.com/jberger/Alien-Base
-version: 0.000_022
+version: 0.001
