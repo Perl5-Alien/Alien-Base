@@ -72,5 +72,7 @@
 # Avoid archives of this distribution
 \bAlien-Base-[\d\.\_]+
 
-# Avoid the untarred source of libdontpanic
-dontpanic_source
+# Avoid the temporary directories created by Alien::Base
+\b_alien/
+\b_share/
+
