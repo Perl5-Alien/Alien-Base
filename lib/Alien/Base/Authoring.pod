@@ -8,7 +8,7 @@ Congratulations! You have made the decision to help the Perl community by provid
 
 =head1 STATUS
 
-L<Alien::Base> is under heavy development and is currently pre-alpha. The author hopes that the API will stabilize soon, but currently there are no promises that ANY PART of the API will remain as-is. Please resist the temptation to use it for production code until the warning is removed. Of course you are welcomed, and in fact encouraged, to test it with for your favorite library; if you do, you are more than welcome to share your experience with me.
+L<Alien::Base> is under active development and is currently beta release. The author hopes that the API has stabilized, but will not promise that it has. Please resist the temptation to use it for production code until the warning is removed. Of course you are welcomed, and in fact encouraged, to test it with for your favorite library; if you do, you are more than welcome to share your experience with me.
 
 =head1 ECOSYSTEM
 
@@ -25,7 +25,9 @@ L<Alien::Base::ModuleBuild> provides a base class, utility methods and configura
 
 This is just like you would do for L<Module::Build>, except that there will be a few additional configuration parameters (see L<Alien::Base::ModuleBuild::API>).
 
-L<Alien::Base::ModuleBuild> adds the additional build action C<alien>. This action need never be run directly, the usual C<build> action (usually seen as C<./Build>) will call it for you. The C<alien> action is responsible for finding, downloading, extracting and building the external libary. It also prepares it for installation with your C<Alien::> module.
+L<Alien::Base::ModuleBuild> adds the additional build action C<alien>. This action need never be run directly, the usual C<build> action (usually seen as C<./Build>) will call it for you. The C<alien> action is responsible for finding, downloading, extracting and building the external libary (the commands specified in builder parameter C<alien_build_commands>). 
+
+The C<./Build test> command will invoke any library tests specified in C<alien_test_commands>, though none are defined by default. Finally C<./Build install> will invoke whatever C<alien_install_commands> were specified.
 
 =head2 Alien::Base
 
@@ -75,19 +77,19 @@ Finally, C<Alien::MyLibrary> must also be called by C<Some::Library::MyLibrary> 
 
 =head1 EXAMPLES
 
-For more examples, see the F<examples> directory in the L<Alien::Base> distribution. Two of the example distributions are used in the test suite (see F<t/zz-examples.t>). Those are:
+The example code that was housed in this distribution during alpha phase has been moved to two different CPAN distributions. Those are:
 
 =over
 
 =item *
 
-C<Alien::DontPanic> -- An example C<Alien::> module which provides F<libdontpanic.so>. It provides the C function C<answer> which is simply:
+L<Acme::Alien::DontPanic> -- An example C<Alien::> module which provides F<libdontpanic.so>. It provides the C function C<answer> which is simply:
 
  int answer () { return 42 }
 
 =item *
 
-C<Ford::Prefect> -- An XS module which provides the Perl-level access to C<answer>. It relies on F<libdontpanic.so> and uses C<Alien::DontPanic> to locate/load it.
+L<Acme::Ford::Prefect> -- An XS module which provides the Perl-level access to C<answer>. It relies on F<libdontpanic.so> and uses L<Acme::Alien::DontPanic> to locate/load it.
 
 =back
 
