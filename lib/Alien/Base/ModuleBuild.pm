@@ -571,8 +571,14 @@ sub alien_find_lib_paths {
     map { ( File::Spec->splitpath($_) )[1] } # get only directory
     @so_files;
 
-  @so_files = 
-    map { my $file = $_; $file =~ s/^(?:lib)?(.*?)\.$ext$/$1/; $file }
+  @so_files = uniq
+    map { 
+      my $file = $_;
+      1 while $file =~ s/\.\d+$//;
+      $file =~ s/^(?:lib)?(.*?)\.$ext$/$1/;
+      1 while $file =~ s/\.\d+$//;
+      $file 
+    }
     map { ( File::Spec->splitpath($_) )[2] } 
     @so_files;
 
