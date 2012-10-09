@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.001  Oct 9, 2012
+	- First Beta release!
+	- Documentation updated
+	- Better autogeneration of pkgconfig information (run4flat++)
+
 0.000_022  Oct 8, 2012
 	- Major refactoring
 		- separate alien_{x}_commands where x = build, test, install

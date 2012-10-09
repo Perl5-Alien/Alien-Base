@@ -25,13 +25,13 @@ The name of the primary library which will be provided. This should be in the fo
 
 [version 0.001]
 
-The name of the temporary folder which will house the library when it is downloaded and built. This folder will always be removed by the C<clean> action. The default name is C<_alien>.
+The name of the temporary folder which will house the library when it is downloaded and built. The default name is C<_alien>.
 
 =item alien_share_dir
 
 [version 0.001]
 
-The name of the folder which will both serve as the "install" directory (i.e. <--prefix>) for C<make install> as well as a share directory via L<Module::Build>'s C<share_dir>/C<dist_dir> parameter. This directory is added in a smart manner which attempts not to interfere with other author-defined C<share_dir>s. The default name is C<_share>.
+The name of the folder which will both serve a stub share directory via L<Module::Build>'s C<share_dir>/C<dist_dir> parameter. This directory is added in a smart manner which attempts not to interfere with other author-defined C<share_dir>s. The default name is C<_share>. This folder will hold a README file which is then installed to the target installed share location. It is THAT location that the library will be installed to.
 
 =item alien_selection_method
 
@@ -43,7 +43,13 @@ This is intended to choose the mechanism for selecting one file from many. The d
 
 [version 0.001]
 
-An arrayref of commands used to build the library and install it to the directory specified in C<alien_share_dir>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ '%pconfigure --prefix=%s', 'make', 'make install' ]>.
+An arrayref of commands used to build the library in the directory specified in C<alien_temp_dir>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ '%pconfigure --prefix=%s', 'make' ]>.
+
+=item alien_install_commands
+
+[version 0.001]
+
+An arrayref of commands used to install it to the share directory specified by interpolation var C<%s>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ 'make install' ]>.
 
 =item alien_version_check
 
@@ -124,7 +130,7 @@ A few global variables are used to set gross behavior. For each pair of variable
 
 =item $ENV{ALIEN_VERBOSE}
 
-Setting the either to a true value will output a little more info from within the module itself, plus is will not suppress the messages from the library-build phase (i.e. make etc.). 
+Setting the either to a true value will output a little more info from within the module itself. At this point L<Alien::Base> is going to be fairly verbose without this enabled. 
 
 =item $Alien::Base::ModuleBuild::Force
 
@@ -142,13 +148,13 @@ Config keys of interest are:
 
 =over
 
-=item build_share_dir
+=item working_directory
 
-Holder for the full path to the shared directory specified in C<alien_share_dir> builder object parameter. This is used to munge the pkg-config data later on.
+Holder for the full path to the extracted source of the library. This is used to munge the pkg-config data later on.
 
 =item pkgconfig
 
-A hashref of Alien::Base::PkgConfig objects created from F<.pc> files found in C<build_share_dir>. One extra object (whose key is C<_manual> is created from the C<alien_provides_*> information.
+A hashref of Alien::Base::PkgConfig objects created from F<.pc> files found in C<working_directory>. One extra object (whose key is C<_manual> is created from the C<alien_provides_*> information.
 
 =item install_type
 
@@ -172,7 +178,7 @@ Before L<Alien::Base::ModuleBuild> executes system commands, it replaces a few s
 
 =item %s
 
-The full path to the share directory (C<alien_share_dir>). This is where the library should install itself; for autoconf style installs this will look like 
+The full path to the final installed location of the share directory (builder method C<alien_library_destination>). This is where the library should install itself; for autoconf style installs this will look like 
 
  --prefix=%s
 
