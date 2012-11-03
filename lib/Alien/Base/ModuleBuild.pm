@@ -563,7 +563,7 @@ sub alien_find_lib_paths {
 
   my @so_files = sort #easier testing
     map { File::Spec->abs2rel( $_, $dir ) } # make relative to $dir
-    map { @{ $self->rscan_dir($dir, qr/$_\.$ext$/) } } #find all .so
+    map { @{ $self->rscan_dir($dir, qr/$_(.*?)\.$ext/) } } #find all .so
     @libs;
 
   my @lib_paths = uniq
