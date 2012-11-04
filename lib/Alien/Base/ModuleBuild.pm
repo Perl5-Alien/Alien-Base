@@ -560,14 +560,22 @@ sub alien_find_lib_paths {
   my $libs = $self->alien_provides_libs;
   my @libs;
   @libs = map { /-l(.*)/ ? $1 : () } split /\s+/, $libs if $libs;
-  $libs[0] = '' unless @libs; #find all so files if no provides_libs;
 
   my $ext = $self->config('so'); #platform specific .so extension
 
-  my @so_files = sort #easier testing
+  my @lib_patterns;
+  if ( @libs ) {
+    @lib_patterns = map { qr/\b(?:lib)?$_\.(.*?)$ext\b/ } @libs;
+  } else {
+    #find all so files if no provides_libs
+    @lib_patterns = ( qr/\.$ext\b/ );
+    @libs = ('');
+  }
+
+  my @so_files = sort
     map { File::Spec->abs2rel( $_, $dir ) } # make relative to $dir
-    map { @{ $self->rscan_dir($dir, qr/$_\.$ext$/) } } #find all .so
-    @libs;
+    map { @{ $self->rscan_dir($dir, $_) } } #find all .so
+    @lib_patterns;
 
   my @lib_paths = uniq
     map { File::Spec->catdir($_) } # remove trailing /
@@ -575,15 +583,11 @@ sub alien_find_lib_paths {
     @so_files;
 
   @so_files = uniq
-    map { 
-      my $file = $_;
-      1 while $file =~ s/\.\d+$//;
-      $file =~ s/^(?:lib)?(.*?)\.$ext$/$1/;
-      1 while $file =~ s/\.\d+$//;
-      $file 
-    }
+    map { /^(?:lib)?([^.]+)/ ? $1 : () }
     map { ( File::Spec->splitpath($_) )[2] } 
     @so_files;
+
+  @so_files = sort @so_files;
 
   my @inc_paths = uniq
     map { File::Spec->catdir($_) } # remove trailing /
