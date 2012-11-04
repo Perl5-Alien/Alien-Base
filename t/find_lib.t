@@ -26,7 +26,7 @@ my $builder = Alien::Base::ModuleBuild->new(
 $builder->config( so => 'so' );
 
 {  # Find from file structure
-  local $expected->{so_files} = [qw/mylib otherlib/];
+  local $expected->{so_files} = [sort qw/mylib onlypostdot onlypredot otherlib prepostdot/];
   my $paths = $builder->alien_find_lib_paths($dir);
   is_deeply( $paths, $expected, "found paths from extensions only" ); 
 

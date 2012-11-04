@@ -561,9 +561,9 @@ sub alien_find_lib_paths {
 
   my $ext = $self->config('so'); #platform specific .so extension
 
-  my @so_files = sort #easier testing
+  my @so_files = sort
     map { File::Spec->abs2rel( $_, $dir ) } # make relative to $dir
-    map { @{ $self->rscan_dir($dir, qr/$_(.*?)\.$ext/) } } #find all .so
+    map { @{ $self->rscan_dir($dir, qr/\b(?:lib)?$_\.(.*?)$ext/) } } #find all .so
     @libs;
 
   my @lib_paths = uniq
@@ -575,6 +575,8 @@ sub alien_find_lib_paths {
     map { /^(?:lib)?([^.]+)/ ? $1 : () }
     map { ( File::Spec->splitpath($_) )[2] } 
     @so_files;
+
+  @so_files = sort @so_files;
 
   my @inc_paths = uniq
     map { File::Spec->catdir($_) } # remove trailing /
