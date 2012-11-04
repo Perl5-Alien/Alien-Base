@@ -9,11 +9,8 @@ $VERSION = eval $VERSION;
 use Carp;
 use DynaLoader ();
 
-use File::chdir;
 use File::ShareDir ();
 use Scalar::Util qw/blessed/;
-use Perl::OSType qw/is_os_type/;
-use Config;
 use Capture::Tiny 0.17 qw/capture_merged/;
 use Text::ParseWords qw/shellwords/;
 
