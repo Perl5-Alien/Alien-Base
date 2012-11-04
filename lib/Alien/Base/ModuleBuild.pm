@@ -603,9 +603,10 @@ sub alien_refresh_packlist {
   my $packlist = $inst->packlist( $self->module_name );
 
   my $changed = 0;
-  my @files = $self->rscan_dir($dir);
-  for my $file (@files) {
+  my $files = $self->rscan_dir($dir);
+  for my $file (@$files) {
     next if $packlist->{$file};
+    print "Adding $file to packlist\n"; 
     $changed++;
     $packlist->{$file}++;
   };
