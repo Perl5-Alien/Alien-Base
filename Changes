@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.001_001  Nov 4, 2012
+	- Improved library detection
+	- Library files are added to packlist
+	- Note: released from "packlist" branch
+
 0.001  Oct 9, 2012
 	- First Beta release!
 	- Documentation updated
