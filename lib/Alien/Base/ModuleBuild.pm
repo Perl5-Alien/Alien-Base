@@ -297,13 +297,15 @@ sub ACTION_install {
   }
 
   # refresh metadata after library installation
-  $self->alien_refresh_packlist( $self->alien_library_destination );
   $self->alien_refresh_manual_pkgconfig( $self->alien_library_destination );
   $self->config_data( 'finished_installing' => 1 );
 
   # to refresh config_data
   $self->SUPER::ACTION_config_data;
   $self->SUPER::ACTION_install;
+
+  # refresh the packlist
+  $self->alien_refresh_packlist( $self->alien_library_destination );
 }
 
 #######################
@@ -605,6 +607,7 @@ sub alien_refresh_packlist {
 
   my $inst = ExtUtils::Installed->new;
   my $packlist = $inst->packlist( $self->module_name );
+  print "Using " .  $packlist->packlist_file . "\n";
 
   my $changed = 0;
   my $files = $self->rscan_dir($dir);
