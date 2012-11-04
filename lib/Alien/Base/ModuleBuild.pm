@@ -15,6 +15,7 @@ use Carp;
 use Archive::Extract;
 use Sort::Versions;
 use List::MoreUtils qw/uniq/;
+use ExtUtils::Installed;
 
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -295,6 +296,8 @@ sub ACTION_install {
     print "Done\n";
   }
 
+  # refresh metadata after library installation
+  $self->alien_refresh_packlist( $self->alien_library_destination );
   $self->alien_refresh_manual_pkgconfig( $self->alien_library_destination );
   $self->config_data( 'finished_installing' => 1 );
 
@@ -590,6 +593,24 @@ sub alien_find_lib_paths {
     @libs;
 
   return { lib => \@lib_paths, inc => \@inc_paths, so_files => \@so_files };
+}
+
+sub alien_refresh_packlist {
+  my $self = shift;
+  my $dir = shift || croak "Must specify a directory to include in packlist";
+
+  my $inst = ExtUtils::Installed->new;
+  my $packlist = $inst->packlist( $self->module_name );
+
+  my $changed = 0;
+  my @files = $self->rscan_dir($dir);
+  for my $file (@files) {
+    next if $packlist->{$file};
+    $changed++;
+    $packlist->{$file}++;
+  };
+
+  $packlist->write if $changed;
 }
 
 1;
