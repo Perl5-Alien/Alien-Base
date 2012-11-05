@@ -11,6 +11,7 @@ use parent 'Module::Build';
 use Capture::Tiny 0.17 qw/capture tee/;
 use File::chdir;
 use File::Spec;
+use File::Basename qw/fileparse/;
 use Carp;
 use Archive::Extract;
 use Sort::Versions;
@@ -555,48 +556,54 @@ sub alien_generate_manual_pkgconfig {
   return $manual_pc;
 }
 
+sub _alien_file_pattern {
+  my $self = shift;
+  my $ext = $self->config('so'); #platform specific .so extension
+  return qr/\.[\d.]*(?<=\.)$ext[\d.]*(?<!\.)|\.h$/;
+};
+
 sub alien_find_lib_paths {
   my $self = shift;
   my ($dir) = @_;
 
   my $libs = $self->alien_provides_libs;
   my @libs;
-  @libs = map { /-l(.*)/ ? $1 : () } split /\s+/, $libs if $libs;
+  @libs = grep { s/^-l// } split /\s+/, $libs if $libs;
 
-  my $ext = $self->config('so'); #platform specific .so extension
+  my $file_pattern = $self->_alien_file_pattern;
 
-  my @lib_patterns;
-  if ( @libs ) {
-    @lib_patterns = map { qr/\b(?:lib)?$_\.(.*?)$ext\b/ } @libs;
-  } else {
-    #find all so files if no provides_libs
-    @lib_patterns = ( qr/\.$ext\b/ );
-    @libs = ('');
+  my @files =     
+    map { File::Spec->abs2rel( $_, $dir ) }  # make relative to $dir
+    @{ $self->rscan_dir( $dir, $file_pattern ) };
+
+  my (@so_files, @lib_paths, @inc_paths);
+  for (@files) {
+
+    my ($file, $path, $ext) = fileparse( $_, $file_pattern );
+    next unless $ext; # just in case
+
+    $path = File::Spec->catdir($path); # remove trailing /
+
+    if ($ext eq '.h') {
+      push @inc_paths, $path;
+      next;
+    }
+
+    $file =~ s/^lib//;
+
+    if (@libs) {
+      next unless grep { $file eq $_ } @libs;
+    }
+
+    push @so_files, $file;
+    push @lib_paths, $path;
   }
 
-  my @so_files = sort
-    map { File::Spec->abs2rel( $_, $dir ) } # make relative to $dir
-    map { @{ $self->rscan_dir($dir, $_) } } #find all .so
-    @lib_patterns;
-
-  my @lib_paths = uniq
-    map { File::Spec->catdir($_) } # remove trailing /
-    map { ( File::Spec->splitpath($_) )[1] } # get only directory
-    @so_files;
-
-  @so_files = uniq
-    map { /^(?:lib)?([^.]+)/ ? $1 : () }
-    map { ( File::Spec->splitpath($_) )[2] } 
-    @so_files;
-
+  @so_files = uniq @so_files;
   @so_files = sort @so_files;
 
-  my @inc_paths = uniq
-    map { File::Spec->catdir($_) } # remove trailing /
-    map { ( File::Spec->splitpath($_) )[1] } # get only directory
-    map { File::Spec->abs2rel( $_, $dir ) } # make relative to $dir
-    map { @{ $self->rscan_dir($dir, qr/$_\.h$/) } } #find all .so
-    @libs;
+  @lib_paths = uniq @lib_paths;
+  @inc_paths = uniq @inc_paths;
 
   return { lib => \@lib_paths, inc => \@inc_paths, so_files => \@so_files };
 }
