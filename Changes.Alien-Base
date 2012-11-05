@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.001_002  Nov 5, 2012
+	- Fixed some false positives in library detection
+	- Initialize temporary directories later
+
 0.001_001  Nov 4, 2012
 	- Improved library detection
 	- Library files are added to packlist
