@@ -574,6 +574,7 @@ sub alien_find_lib_paths {
 
   my @files =     
     map { File::Spec->abs2rel( $_, $dir ) }  # make relative to $dir
+    grep { ! -d }
     @{ $self->rscan_dir( $dir, $file_pattern ) };
 
   my (@so_files, @lib_paths, @inc_paths);

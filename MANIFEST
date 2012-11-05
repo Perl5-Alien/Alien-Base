@@ -28,6 +28,7 @@ t/file.t
 t/find_lib.t
 t/find_lib/include/mylib.h
 t/find_lib/include/otherlib.h
+t/find_lib/lib/dirlikelib.so/dontfindthis
 t/find_lib/lib/libmylib.0.so
 t/find_lib/lib/libmylib.so
 t/find_lib/lib/libmylib.so.0
