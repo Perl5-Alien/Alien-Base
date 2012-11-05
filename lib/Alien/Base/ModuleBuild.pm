@@ -131,7 +131,6 @@ sub new {
 
   # setup additional temporary directories, and yes we have to add File::ShareDir manually
   $self->_add_prereq( 'requires', 'File::ShareDir', '1.00' );
-  $self->alien_init_temp_dir;
 
   # force newest for all automated testing 
   #TODO (this probably should be checked for "input needed" rather than blindly assigned)
@@ -189,6 +188,7 @@ sub ACTION_code {
 
 sub ACTION_alien {
   my $self = shift;
+  $self->alien_init_temp_dir;
 
   $self->config_data( name => $self->alien_name );
 
