@@ -69,6 +69,7 @@ sub make_abstract {
   my @vars = 
     sort { length $self->{vars}{$b} <=> length $self->{vars}{$a} }
     grep { $self->{vars}{$_} !~ /\$\{.*?\}/ } # skip vars which contain vars
+    grep { defined $self->{vars}{$_} && length $self->{vars}{$_} } # skip vars which are empty
     keys %{ $self->{vars} };
 
   if ($top_var) {
