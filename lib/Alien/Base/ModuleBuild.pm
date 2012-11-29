@@ -489,7 +489,7 @@ sub alien_load_pkgconfig {
 
   my %pc_objects = map { 
     my $pc = Alien::Base::PkgConfig->new($_);
-    $pc->make_abstract( alien_dist_dir => $dir );
+    $pc->make_abstract( pcfiledir => $dir );
     ($pc->{package}, $pc)
   } @$pc_files;
 
@@ -520,7 +520,7 @@ sub alien_generate_manual_pkgconfig {
   my $paths = $self->alien_find_lib_paths($dir);
 
   my @L = 
-    map { File::Spec->catdir( '-L${alien_dist_dir}', $_ ) }
+    map { File::Spec->catdir( '-L${pcfiledir}', $_ ) }
     @{$paths->{lib}};
 
   my $provides_libs = $self->alien_provides_libs;
@@ -534,7 +534,7 @@ sub alien_generate_manual_pkgconfig {
   my $libs = join( ' ', @L, $provides_libs );
 
   my @I = 
-    map { File::Spec->catdir( '-I${alien_dist_dir}', $_ ) }
+    map { File::Spec->catdir( '-I${pcfiledir}', $_ ) }
     @{$paths->{inc}};
 
   my $provides_cflags = $self->alien_provides_cflags;
@@ -544,7 +544,7 @@ sub alien_generate_manual_pkgconfig {
   my $manual_pc = Alien::Base::PkgConfig->new({
     package  => $self->alien_name,
     vars     => {
-      alien_dist_dir => $dir,
+      pcfiledir => $dir,
     },
     keywords => {
       Cflags  => $cflags || '',

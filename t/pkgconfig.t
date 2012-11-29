@@ -42,10 +42,12 @@ is( $pc->var('prefix'), '/home/test/path', "var getter" );
 is( $pc->var(deeper => '/home/test/path/deeper'), '/home/test/path/deeper', "var setter" );
 
 # abstract vars
-$pc->make_abstract;
+$pc->make_abstract('prefix');
 
 is( $pc->{vars}{deeper}, '${prefix}/deeper', "abstract vars in terms of each other" );
 is( (split qr/\s+/, $pc->{keywords}{Libs})[0], '-L${prefix}/lib', "abstract simple" );
+
+$pc->make_abstract('deeper');
 is( $pc->{keywords}{Cflags}, '-I${deeper}/include', "abstract abstract 'nested'" );
 
 # interpolate vars into keywords

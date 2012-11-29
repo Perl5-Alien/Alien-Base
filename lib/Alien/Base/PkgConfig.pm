@@ -64,35 +64,22 @@ sub var {
 # abstract keywords and other vars in terms of "pure" vars
 sub make_abstract {
   my $self = shift;
-  my ($top_var, $top_val) = @_;
+  die "make_abstract needs a key (and possibly a value)" unless @_;
+  my ($var, $value) = @_;
 
-  my @vars = 
-    sort { length $self->{vars}{$b} <=> length $self->{vars}{$a} }
-    grep { $self->{vars}{$_} !~ /\$\{.*?\}/ } # skip vars which contain vars
-    keys %{ $self->{vars} };
-
-  if ($top_var) {
-    @vars = grep { $_ ne $top_var } @vars;
-    unshift @vars, $top_var;
-
-    $self->{vars}{$top_var} = $top_val if defined $top_val;
-  }
-
-  foreach my $var (@vars) {
-    my $value = $self->{vars}{$var};
-    next if $value =~ /\$\{.*?\}/; # skip vars which contain vars
+  $value = defined $value ? $value : $self->{vars}{$var};
     
-    # convert other vars
-    foreach my $key (keys %{ $self->{vars} }) {
-      next if $key eq $var; # don't overwrite the current var
-      $self->{vars}{$key} =~ s/$value/\$\{$var\}/g;
-    }
-
-    # convert keywords
-    foreach my $key (keys %{ $self->{keywords} }) {
-      $self->{keywords}{$key} =~ s/$value/\$\{$var\}/g;
-    }
+  # convert other vars
+  foreach my $key (keys %{ $self->{vars} }) {
+    next if $key eq $var; # don't overwrite the current var
+    $self->{vars}{$key} =~ s/\Q$value\E/\$\{$var\}/g;
   }
+
+  # convert keywords
+  foreach my $key (keys %{ $self->{keywords} }) {
+    $self->{keywords}{$key} =~ s/\Q$value\E/\$\{$var\}/g;
+  }
+
 }
 
 sub _interpolate_vars {

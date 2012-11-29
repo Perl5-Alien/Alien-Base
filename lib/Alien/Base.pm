@@ -107,7 +107,7 @@ sub _keyword {
   my $dist_dir = $self->dist_dir;
   my @pc = $self->pkgconfig(@_);
   my @strings = 
-    map { $_->keyword($keyword, { alien_dist_dir => $dist_dir }) }
+    map { $_->keyword($keyword, { pcfiledir => $dist_dir }) }
     @pc;
 
   return join( ' ', @strings );
