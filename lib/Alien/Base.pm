@@ -3,6 +3,8 @@ package Alien::Base;
 use strict;
 use warnings;
 
+use Alien::Base::PkgConfig;
+
 our $VERSION = '0.001_002';
 $VERSION = eval $VERSION;
 
@@ -120,8 +122,16 @@ sub _keyword {
 
 sub pkgconfig {
   my $self = shift;
-  my %all = %{ $self->config('pkgconfig') };
-
+  #my %all = %{ $self->config('pkgconfig') };
+  require File::Find;
+  my %all;
+  my $wanted = sub {
+    return if ( -d or not /\.pc$/ );
+    my $pkg = Alien::Base::PkgConfig->new($_);
+    $all{$pkg->{package}} = $pkg;
+  };
+  File::Find::find( $wanted, $self->dist_dir );
+    
   croak "No Alien::Base::PkgConfig objects are stored!"
     unless keys %all;
   

@@ -25,6 +25,8 @@ sub new {
 
   my ($name, $dir) = fileparse $path, '.pc';
 
+  $dir = File::Spec->catdir( $dir );  # remove trailing slash
+
   my $self = {
     package  => $name,
     vars     => { pcfiledir => $dir },
