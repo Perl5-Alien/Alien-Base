@@ -8,6 +8,7 @@ $VERSION = eval $VERSION;
 
 use Carp;
 use File::Basename qw/fileparse/;
+use File::Spec;
 
 sub new {
   my $class   = shift;
@@ -20,11 +21,13 @@ sub new {
   my ($path) = @_;
   croak "Must specify a file" unless defined $path;
 
-  my $name = fileparse $path, '.pc';
+  $path = File::Spec->rel2abs( $path );
+
+  my ($name, $dir) = fileparse $path, '.pc';
 
   my $self = {
     package  => $name,
-    vars     => {},
+    vars     => { pcfiledir => $dir },
     keywords => {},
   };
 

@@ -14,6 +14,10 @@ my $pc = Alien::Base::PkgConfig->new($file);
 isa_ok( $pc, 'Alien::Base::PkgConfig' );
 
 # read tests
+my $pcfiledir = delete $pc->{vars}{pcfiledir};
+ok( -d $pcfiledir, 'pcfiledir is a directory' );
+ok( -e File::Spec->catfile($pcfiledir, 'test.pc'), 'pcfiledir contains test.pc' );
+
 is_deeply( 
   $pc->{vars}, 
   {
