@@ -63,7 +63,10 @@ sub dist_dir {
   $dist =~ s/::/-/g;
 
 
-  my $dist_dir = $class->config('finished_installing') ?  File::ShareDir::dist_dir($dist) : $class->config('working_directory');
+  my $dist_dir = 
+    $class->config('finished_installing') 
+      ? File::ShareDir::dist_dir($dist) 
+      : $class->config('working_directory');
 
   return $dist_dir;
 }
