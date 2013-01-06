@@ -277,6 +277,7 @@ sub ACTION_test {
 sub ACTION_install {
   my $self = shift;
   $self->SUPER::ACTION_install;
+  return if $self->config_data( 'install_type' ) eq 'system';
 
   {
     my $target = $self->alien_library_destination;
