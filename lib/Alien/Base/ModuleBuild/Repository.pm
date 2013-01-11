@@ -39,7 +39,14 @@ sub probe {
 
   my $pattern = $self->{pattern};
 
-  my @files = $self->list_files();
+  my @files;
+
+  if ($self->{filename}) {
+    # if filename provided, use that specific file
+    @files = ($self->{filename});    
+  } else {
+    @files = $self->list_files();
+  }
 
   if ($pattern) {
     @files = grep { $_ =~ $pattern } @files;
