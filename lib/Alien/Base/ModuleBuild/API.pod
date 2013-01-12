@@ -93,9 +93,13 @@ This key is protocol specific. For FTP this contains the name of the folder to s
 
 This is a C<qr> regex matching acceptable files found in the C<location>. If the pattern contains a capture group, the captured string is interpreted as the version number. N.B. if no versions are found, the files are sorted by filename using version semantics, this mechanism is not likely to be as accurate as specifying a capture group.
 
-=item filename
+=item exact_filename
 
-This key should be specified when the filename of the tarball is known, in which case such a file is downloaded from the given C<host> and C<location>. When the filename contains a version number, it may be useful to also specify a C<pattern> with capture group, in order to allow the extraction of the version number from the filename.
+This key may be specified in place of C<pattern> when the filename of the tarball is known, in which case such a file is downloaded from the given C<host> and C<location>. Note that, in general, specifying a C<pattern> gives more flexibility, but there may be cases when you find more convenient to use C<exact_filename>.
+
+=item exact_version
+
+This key may be specified with the C<exact_filename> key when the version of the tarball is known.
 
 =item platform
 
