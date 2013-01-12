@@ -39,13 +39,20 @@ sub probe {
 
   my $pattern = $self->{pattern};
 
-  my @files = $self->list_files();
+  my @files;
 
-  if ($pattern) {
-    @files = grep { $_ =~ $pattern } @files;
+  if ($self->{exact_filename}) {
+    # if filename provided, use that specific file
+    @files = ($self->{exact_filename});    
+  } else {
+    @files = $self->list_files();
+
+    if ($pattern) {
+	@files = grep { $_ =~ $pattern } @files;
+    }
+
+    carp "Could not find any matching files" unless @files;
   }
-
-  carp "Could not find any matching files" unless @files;
 
   @files = map { +{ 
     repository => $self,
@@ -53,7 +60,10 @@ sub probe {
     filename   => $_,
   } } @files;
 
-  if ($pattern and pattern_has_capture_groups($pattern)) {
+  if ($self->{exact_filename} and $self->{exact_version}) {
+    # if filename and version provided, use a specific version
+    $files[0]->{version} = $self->{exact_version};
+  } elsif ($pattern and pattern_has_capture_groups($pattern)) {
     foreach my $file (@files) {
       $file->{version} = $1 
         if $file->{filename} =~ $pattern;
