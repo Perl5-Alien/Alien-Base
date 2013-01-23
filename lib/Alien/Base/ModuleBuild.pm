@@ -450,7 +450,7 @@ sub alien_interpolate {
 
   my $prefix = $self->alien_exec_prefix;
   my $share  = $self->alien_library_destination;
-  my $name   = $self->alien_name;
+  my $name   = $self->alien_name || '';
 
   # substitute:
   #   install location share_dir (placeholder: %s)
