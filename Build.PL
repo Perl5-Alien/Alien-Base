@@ -29,6 +29,7 @@ my $builder = Module::Build->new(
     'Cwd'              => 0,
     'FindBin'          => 0,
     'File::Spec'       => 0,
+    'File::Temp'       => 0,
   },
   recommends => {
     'HTML::LinkExtor' => 0,
