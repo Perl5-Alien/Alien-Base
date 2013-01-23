@@ -9,6 +9,7 @@ $VERSION = eval $VERSION;
 use Carp;
 
 use HTTP::Tiny;
+use Scalar::Util qw( blessed );
 use URI;
 
 use Alien::Base::ModuleBuild::Utils;
@@ -26,6 +27,11 @@ sub connection {
 
   # allow easy use of HTTP::Tiny subclass
   $self->{protocol_class} ||= 'HTTP::Tiny';
+  my $module = $self->{protocol_class};
+  $module =~ s{::}{/}g;
+  $module .= '.pm';
+  eval { require $module; 1 }
+    or croak "Could not load protocol_class '$self->{protocol_class}': $@";
 
   my $http = $self->{protocol_class}->new();
 
@@ -44,9 +50,10 @@ sub get_file {
 
   my $uri = $self->build_uri($host, $from, $file);
   # if it is an absolute URI, then use the filename from the URI
-  $file = ($uri->path_segments())[-1] if $file =~ /^http:/;
-  my $response = $self->connection->mirror($uri, $file);
-  croak "Download failed: " . $response->{reason} unless $response->{success};
+  $file = ($uri->path_segments())[-1] if $file =~ /^(?:http|file):/;
+  my $res = $self->connection->mirror($uri, $file);
+  my ( $is_error, $content ) = $self->check_http_response( $res );
+  croak "Download failed: " . $content if $is_error;
 
   return $file;
 }
@@ -60,12 +67,13 @@ sub list_files {
 
   my $res = $self->connection->get($uri);
 
-  unless ($res->{success}) {
-    carp $res->{reason};
+  my ( $is_error, $content ) = $self->check_http_response( $res );
+  if ( $is_error ) {
+    carp $content;
     return ();
   }
 
-  my @links = $self->find_links($res->{content});
+  my @links = $self->find_links($content);
 
   return @links;  
 }
@@ -117,7 +125,7 @@ sub build_uri {
   my $uri = URI->new($file);
   return $uri if $uri->scheme; # if an absolute URI
 
-  unless ( $host =~ m'^http://' ) {
+  unless ( $host =~ m'^(?:http|file)://' ) {
     $host = "http://$host";
   }
   $uri = URI->new( $host );
@@ -132,6 +140,22 @@ sub build_uri {
   $uri->path_segments( @segments, $file );
 
   return $uri->canonical;
+}
+
+sub check_http_response {
+  my ( $self, $res ) = @_;
+  if ( blessed $res && $res->isa( 'HTTP::Response' ) ) {
+    if ( !$res->is_success ) {
+      return ( 1, $res->status_line . " " . $res->decoded_content );
+    }
+    return ( 0, $res->decoded_content );
+  }
+  else {
+    if ( !$res->{success} ) {
+      return ( 1, $res->{reason} );
+    }
+    return ( 0, $res->{content } );
+  }
 }
 
 1;
