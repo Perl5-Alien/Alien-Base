@@ -37,6 +37,7 @@ t/find_lib/lib/onlypostdot.so.0
 t/find_lib/lib/onlypredot.0.so
 t/find_lib/lib/prepostdot.0.so.0
 t/http.t
+t/http_uri.t
 t/install_destination.t
 t/interpolate.t
 t/local_repo.t

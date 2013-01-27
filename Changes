@@ -1,6 +1,6 @@
 Revision history for Perl module Alien::Base.
 
-0.002  
+0.002  Jan 27, 2012
 	- Added exact_filename key (giatorta++)
 	- Various bugfixes
 

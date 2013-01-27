@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild::File;
 use strict;
 use warnings;
 
-our $VERSION = '0.001_003';
+our $VERSION = '0.002';
 $VERSION = eval $VERSION;
 
 sub new {

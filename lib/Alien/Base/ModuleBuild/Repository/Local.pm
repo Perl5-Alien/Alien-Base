@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild::Repository::Local;
 use strict;
 use warnings;
 
-our $VERSION = '0.001_003';
+our $VERSION = '0.002';
 $VERSION = eval $VERSION;
 
 use Carp;
