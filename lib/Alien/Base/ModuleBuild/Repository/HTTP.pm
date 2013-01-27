@@ -42,7 +42,8 @@ sub get_file {
   my $host = $self->{host};
   my $from = $self->location;
 
-  my $response = $self->connection->mirror('http://' . $host . $from . '/' . $file, $file );
+  my $uri = $self->build_uri($host, $from, $file);
+  my $response = $self->connection->mirror($uri, $file);
   croak "Download failed: " . $response->{reason} unless $response->{success};
 
   return 1;
@@ -53,7 +54,7 @@ sub list_files {
 
   my $host = $self->host;
   my $location = $self->location;
-  my $uri = URI->new('http://' . $host . $location);
+  my $uri = $self->build_uri($host, $location);
 
   my $res = $self->connection->get($uri);
 
@@ -105,6 +106,27 @@ sub find_links_textbalanced {
   my $self = shift;
   my ($html) = @_;
   return Alien::Base::ModuleBuild::Utils::find_anchor_targets($html);
+}
+
+sub build_uri {
+  my $self = shift;
+  my ($host, $path, $file) = @_;
+
+  unless ( $host =~ m'^http://' ) {
+    $host = "http://$host";
+  }
+  my $uri = URI->new( $host );
+  return $uri unless defined $path;
+
+  $path =~ s'/$'';
+  $uri->path( $path );
+  return $uri->canonical unless defined $file;
+
+  my @segments = $uri->path_segments;
+  shift @segments;
+  $uri->path_segments( @segments, $file );
+
+  return $uri->canonical;
 }
 
 1;
