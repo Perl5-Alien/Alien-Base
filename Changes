@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.002  
+	- Added exact_filename key (giatorta++)
+	- Various bugfixes
+
 0.001_003  Nov 29, 2012
 	- Improved pkg-config handling
 	- Added support for pkg-config key ${pcfiledir}
