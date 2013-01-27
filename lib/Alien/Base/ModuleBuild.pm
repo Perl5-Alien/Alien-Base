@@ -231,11 +231,14 @@ sub ACTION_alien {
     $self->config_data( working_directory => $extract_path );
     $CWD = $extract_path;
 
-    print "Building library ... ";
-    unless ($self->alien_do_commands('build')) {
-      print "Failed\n";
-      croak "Build not completed";
+    if ( $file->platform eq 'src' ) {
+      print "Building library ... ";
+      unless ($self->alien_do_commands('build')) {
+        print "Failed\n";
+        croak "Build not completed";
+      }
     }
+
     print "Done\n";
 
   }
