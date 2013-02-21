@@ -53,7 +53,7 @@ Additional information can be gotten from the C<config> method.
 
 =head3 Alien::Base for Run-Time Provision
 
-C<Alien::MyLibrary> must be a subclass of C<Alien::Base>. This provides the C<import> method, which does the run-time provisioning so that when the XS file is loaded, it can find F<libmylibrary.so>. The C<import> method does this by pre-loading the library via C<DynaLoader::dl_load_file> which is a platform-independent wrapper for C<dlopen> or your system's equivalent. It no longer appends to C<$ENV{LD_RUN_PATH}>.
+C<Alien::MyLibrary> must be a subclass of L<Alien::Base>. This provides the C<import> method, which does the run-time provisioning so that when the XS file is loaded, it can find F<libmylibrary.so>. The C<import> method does this by pre-loading the library via C<DynaLoader::dl_load_file> which is a platform-independent wrapper for C<dlopen> or your system's equivalent. It no longer appends to C<$ENV{LD_RUN_PATH}>.
 
  # file: Alien-MyLibrary/lib/Alien/MyLibrary.pm
  package Alien::MyLibrary;
@@ -93,7 +93,16 @@ L<Acme::Ford::Prefect> -- An XS module which provides the Perl-level access to C
 
 =back
 
-Also the author intends to convert L<Alien::GSL> to use this system as soon as it is production ready, so that C<Alien::> authors can see a "Code in the Wild" example. Until then, a pre-release version of this module is provided in the F<examples> directory as well.
+Additionally, there exists in-production C<Alien::> distributions that serve as de-facto tests of L<Alien::Base>'s networking components:
+
+=item *
+
+L<Alien::LibYAML> -- Builds and installs F<libyaml>, acquiring the library archive from its hosted location via C<Alien::Base::Repository::HTTP>.
+
+
+=back
+
+Also, the author intends to convert L<Alien::GSL> to use this system as soon as it is production ready, so that C<Alien::> authors can see another "Code in the Wild" example. Until then, a pre-release version of this module is provided in the F<examples> directory as well.
  
 =head1 AUTHOR
 
