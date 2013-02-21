@@ -22,9 +22,14 @@ sub has_version {
 
 sub get {
   my $self = shift;
-  my $filename = $self->filename;
-  $self->repository->get_file($filename);
-  return $filename;
+  my $repo = $self->repository;
+
+  $repo->get_file($self->filename);
+  if ( my $new_filename = $repo->{new_filename} ) {
+    $self->{filename} = $new_filename;
+  }
+
+  return $self->filename;
 }
 
 sub platform   { shift->{platform}   }
@@ -33,4 +38,3 @@ sub version    { shift->{version}    }
 sub filename   { shift->{filename}   }
 
 1;
-

@@ -44,7 +44,14 @@ sub get_file {
 
   my $uri = $self->build_uri($host, $from, $file);
   my $response = $self->connection->mirror($uri, $file);
+
   croak "Download failed: " . $response->{reason} unless $response->{success};
+  my $disposition = $response->{headers}{"content-disposition"};
+  if ( defined($disposition) && $disposition =~ /filename=(.+)/ ) {
+    my $new_filename = $1;
+    rename $file, $new_filename;
+    $self->{new_filename} = $new_filename;
+  }
 
   return 1;
 }
@@ -65,7 +72,7 @@ sub list_files {
 
   my @links = $self->find_links($res->{content});
 
-  return @links;  
+  return @links;
 }
 
 sub find_links {
@@ -74,7 +81,7 @@ sub find_links {
 
   my @links;
   if ($Has_HTML_Parser) {
-    push @links, $self->find_links_preferred($html) 
+    push @links, $self->find_links_preferred($html)
   } else {
     push @links, $self->find_links_textbalanced($html)
   }
@@ -89,7 +96,7 @@ sub find_links_preferred {
   my @links;
 
   my $extor = HTML::LinkExtor->new(
-    sub { 
+    sub {
       my ($tag, %attrs) = @_;
       return unless $tag eq 'a';
       return unless defined $attrs{href};
