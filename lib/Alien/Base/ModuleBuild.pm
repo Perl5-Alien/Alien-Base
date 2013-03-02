@@ -26,6 +26,8 @@ use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
 use Alien::Base::ModuleBuild::Repository::Local;
 
+local $| = 1; # don't buffer stdout
+
 # setup protocol specific classes
 # Alien:: author can override these defaults using alien_repository_class property
 my %default_repository_class = (
