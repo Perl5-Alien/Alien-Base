@@ -10,6 +10,8 @@ use Alien::Base::ModuleBuild;
 # Since this is not a complete distribution, it complains about missing files/folders
 local $SIG{__WARN__} = sub { warn $_[0] unless $_[0] =~ /Can't (?:stat)|(?:find)/ };
 
+$ENV{ALIEN_BLIB} = 0;
+
 local $CWD;
 push @CWD, qw/t system_installed/;
 
