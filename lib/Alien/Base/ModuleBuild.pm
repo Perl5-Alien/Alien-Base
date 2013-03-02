@@ -15,7 +15,7 @@ use File::Basename qw/fileparse/;
 use Carp;
 use Archive::Extract;
 use Sort::Versions;
-use List::MoreUtils qw/uniq/;
+use List::MoreUtils qw/uniq first_index/;
 use ExtUtils::Installed;
 
 use Alien::Base::PkgConfig;
@@ -182,11 +182,24 @@ END
 
 sub ACTION_code {
   my $self = shift;
-  $self->depends_on('alien') unless $self->notes('ACTION_alien_completed');
-  $self->SUPER::ACTION_code;
+  $self->notes( 'alien_blib_scheme' => $self->alien_detect_blib_scheme );
+
+  # PLEASE NOTE, BOTH BRANCHES CALL SUPER::ACTION_code !!!!!!!
+  if ( $self->notes('ACTION_alien_completed') ) {
+
+    $self->SUPER::ACTION_code;
+
+  } else {
+
+    $self->depends_on('alien_code');
+    $self->SUPER::ACTION_code;
+
+    # copy the compiled files into blib if running under blib scheme
+    $self->depends_on('alien_install') if $self->notes('alien_blib_scheme');
+  }
 }
 
-sub ACTION_alien {
+sub ACTION_alien_code {
   my $self = shift;
   $self->alien_init_temp_dir;
 
@@ -264,6 +277,7 @@ sub ACTION_alien {
 
   # prevent building multiple times (on M::B::dispatch)
   $self->notes( 'ACTION_alien_completed' => 1 );
+
   return;
 }
 
@@ -280,6 +294,12 @@ sub ACTION_test {
 sub ACTION_install {
   my $self = shift;
   $self->SUPER::ACTION_install;
+  $self->depends_on('alien_install');
+}
+
+sub ACTION_alien_install {
+  my $self = shift;
+
   return if $self->config_data( 'install_type' ) eq 'system';
 
   {
@@ -296,7 +316,7 @@ sub ACTION_install {
 
   {
     local $CWD = $self->config_data( 'working_directory' );
-    print "Installing library ... ";
+    print "Installing library to $CWD ... ";
     $self->alien_do_commands('install') or die "Failed\n";
     print "Done\n";
   }
@@ -307,10 +327,18 @@ sub ACTION_install {
 
   # to refresh config_data
   $self->SUPER::ACTION_config_data;
-  $self->SUPER::ACTION_install;
 
-  # refresh the packlist
-  $self->alien_refresh_packlist( $self->alien_library_destination );
+  if ( $self->notes( 'alien_blib_scheme') ) {
+    # reinstall config_data to blib
+    $self->process_files_by_extension('pm');
+
+  } else {
+    # reinstall config_data
+    $self->SUPER::ACTION_install;
+
+    # refresh the packlist
+    $self->alien_refresh_packlist( $self->alien_library_destination );
+  }
 }
 
 #######################
@@ -385,10 +413,41 @@ sub alien_validate_repo {
 
 sub alien_library_destination {
   my $self = shift;
-  my $lib_dir = $self->install_destination('lib');
+
+  # send the library into the blib if running under the blib scheme
+  my $lib_dir = 
+    $self->notes('alien_blib_scheme')
+    ? File::Spec->catdir( $self->base_dir, $self->blib, 'lib' )
+    : $self->install_destination('lib');
+
   my $dist_name = $self->dist_name;
   my $dest = File::Spec->catdir( $lib_dir, qw/auto share dist/, $dist_name );
   return $dest;
+}
+
+# CPAN testers often run tests without installing modules, but rather add
+# blib dirs to @INC, this is a problem, so here we try to deal with it
+sub alien_detect_blib_scheme {
+  my $self = shift;
+
+  return $ENV{ALIEN_BLIB} if defined $ENV{ALIEN_BLIB};
+
+  # check to see if Alien::Base::ModuleBuild is running from blib.
+  # if so it is likely that this is the blib scheme
+
+  (undef, my $dir, undef) = File::Spec->splitpath( __FILE__ );
+  my @dirs = File::Spec->splitdir($dir);
+
+  my $index = first_index { $_ eq 'blib' } @dirs;
+  return 0 if $index == -1;
+
+  if ( $dirs[$index+1] eq 'lib' ) {
+    print q{'blib' scheme is detected. Setting ALIEN_BLIB=1. If this has been done in error, please set ALIEN_BLIB and restart build process to disambiguate.};
+    return 1;
+  }
+
+  carp q{'blib' scheme is suspected, but uncertain. Please set ALIEN_BLIB and restart build process to disambiguate. Setting ALIEN_BLIB=1 for now.};
+  return 1;
 }
 
 ###################

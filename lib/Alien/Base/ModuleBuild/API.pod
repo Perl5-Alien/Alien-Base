@@ -146,6 +146,10 @@ Setting the either to a true value will output a little more info from within th
 
 Setting either to a true value will cause the builder to ignore a system-wide installation and build a local version of the library.
 
+=item $ENV{ALIEN_BLIB}
+
+Setting this to true indicates that you don't intend to actually install your Alien::Base subclass, but rather use it from the built F<blib> directory. This behavior is mostly to support automated testing from CPANtesters and should be automagically determined. If by chance you happen to trip the behavior accidentally, setting this environment variable to false (0) before building should prevent problems. 
+
 =back
 
 =head2 CONFIG DATA

@@ -25,7 +25,7 @@ L<Alien::Base::ModuleBuild> provides a base class, utility methods and configura
 
 This is just like you would do for L<Module::Build>, except that there will be a few additional configuration parameters (see L<Alien::Base::ModuleBuild::API>).
 
-L<Alien::Base::ModuleBuild> adds the additional build action C<alien>. This action need never be run directly, the usual C<build> action (usually seen as C<./Build>) will call it for you. The C<alien> action is responsible for finding, downloading, extracting and building the external libary (the commands specified in builder parameter C<alien_build_commands>). 
+L<Alien::Base::ModuleBuild> adds the additional build actions C<alien_code> and C<alien_install>. These actions need never be run directly, the usual C<build> action (usually seen as C<./Build>) and C<install> (C<./Build install>) will call them for you. The C<alien_code> action is responsible for finding, downloading, extracting and building the external libary (the commands specified in builder parameter C<alien_build_commands>). The C<alien_install> action is responsible for installing the library into its final destination.
 
 The C<./Build test> command will invoke any library tests specified in C<alien_test_commands>, though none are defined by default. Finally C<./Build install> will invoke whatever C<alien_install_commands> were specified.
 
