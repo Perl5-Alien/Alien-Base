@@ -26,8 +26,6 @@ use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
 use Alien::Base::ModuleBuild::Repository::Local;
 
-local $| = 1; # don't buffer stdout
-
 # setup protocol specific classes
 # Alien:: author can override these defaults using alien_repository_class property
 my %default_repository_class = (
@@ -203,6 +201,8 @@ sub ACTION_code {
 
 sub ACTION_alien_code {
   my $self = shift;
+  local $| = 1; # don't buffer stdout
+
   $self->alien_init_temp_dir;
 
   $self->config_data( name => $self->alien_name );
@@ -301,6 +301,8 @@ sub ACTION_install {
 
 sub ACTION_alien_install {
   my $self = shift;
+
+  local $| = 1; # don't buffer stdout
 
   return if $self->config_data( 'install_type' ) eq 'system';
 
