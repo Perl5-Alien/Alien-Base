@@ -122,9 +122,10 @@ sub _keyword {
 
 sub pkgconfig {
   my $self = shift;
-  #my %all = %{ $self->config('pkgconfig') };
+  my %all = %{ $self->config('pkgconfig') };
+
+  # merge in found pc files
   require File::Find;
-  my %all;
   my $wanted = sub {
     return if ( -d or not /\.pc$/ );
     my $pkg = Alien::Base::PkgConfig->new($_);
