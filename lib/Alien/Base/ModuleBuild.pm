@@ -444,7 +444,7 @@ sub alien_detect_blib_scheme {
   return 0 if $index == -1;
 
   if ( $dirs[$index+1] eq 'lib' ) {
-    print q{'blib' scheme is detected. Setting ALIEN_BLIB=1. If this has been done in error, please set ALIEN_BLIB and restart build process to disambiguate.};
+    print qq{'blib' scheme is detected. Setting ALIEN_BLIB=1. If this has been done in error, please set ALIEN_BLIB and restart build process to disambiguate.\n};
     return 1;
   }
 
