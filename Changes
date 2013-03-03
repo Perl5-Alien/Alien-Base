@@ -1,6 +1,15 @@
 Revision history for Perl module Alien::Base.
 
-0.002  Jan 27, 2012
+0.003  Mar 3, 2013
+	- Added 'blib scheme' detection logic
+		- Improves Mac/CPANtesters compatibility
+		- Controlled by ALIEN_BLIB env var
+	- ACTION_alien is now ACTION_alien_code
+	- Added ACTION_alien_install
+	- Fix manual .pc file bug
+	- Unbuffer STDOUT during ACTION_alien_*
+
+0.002  Jan 27, 2013
 	- Added exact_filename key (giatorta++)
 	- Various bugfixes
 
