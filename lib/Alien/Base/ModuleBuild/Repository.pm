@@ -43,7 +43,7 @@ sub probe {
 
   if ($self->{exact_filename}) {
     # if filename provided, use that specific file
-    @files = ($self->{exact_filename});    
+    @files = ($self->{exact_filename});
   } else {
     @files = $self->list_files();
 
@@ -54,7 +54,7 @@ sub probe {
     carp "Could not find any matching files" unless @files;
   }
 
-  @files = map { +{ 
+  @files = map { +{
     repository => $self,
     platform   => $self->{platform},
     filename   => $_,
@@ -65,22 +65,21 @@ sub probe {
     $files[0]->{version} = $self->{exact_version};
   } elsif ($pattern and pattern_has_capture_groups($pattern)) {
     foreach my $file (@files) {
-      $file->{version} = $1 
+      $file->{version} = $1
         if $file->{filename} =~ $pattern;
     }
   }
 
-  @files = 
+  @files =
     map { Alien::Base::ModuleBuild::File->new($_) }
     @files;
 
   return @files;
 }
 
-# subclasses are expected to provide 
+# subclasses are expected to provide
 sub connection { croak "$_[0] doesn't provide 'connection' method" }
 sub list_files { croak "$_[0] doesn't provide 'list_files' method" }
 sub get_file  { croak "$_[0] doesn't provide 'get_files' method"  }
 
 1;
-
