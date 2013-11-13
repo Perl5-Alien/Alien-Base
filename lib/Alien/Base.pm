@@ -35,7 +35,7 @@ sub import {
   my @L = grep { s/^-L// } @libs;
   my @l = grep { /^-l/ } @libs;
 
-  push @DynaLoader::dl_library_path, @L;
+  unshift @DynaLoader::dl_library_path, @L;
 
   my @libpaths;
   foreach my $l (@l) {
