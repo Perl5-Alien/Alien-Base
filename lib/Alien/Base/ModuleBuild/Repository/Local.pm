@@ -50,7 +50,7 @@ sub get_file  {
 
   copy $full_file, $CWD;
 
-  return 1;
+  return $file;
 }
 
 1;

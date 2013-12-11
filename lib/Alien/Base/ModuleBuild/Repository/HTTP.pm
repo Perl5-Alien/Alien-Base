@@ -43,10 +43,12 @@ sub get_file {
   my $from = $self->location;
 
   my $uri = $self->build_uri($host, $from, $file);
+  # if it is an absolute URI, then use the filename from the URI
+  $file = ($uri->path_segments())[-1] if $file =~ /^http:/;
   my $response = $self->connection->mirror($uri, $file);
   croak "Download failed: " . $response->{reason} unless $response->{success};
 
-  return 1;
+  return $file;
 }
 
 sub list_files {
@@ -112,10 +114,13 @@ sub build_uri {
   my $self = shift;
   my ($host, $path, $file) = @_;
 
+  my $uri = URI->new($file);
+  return $uri if $uri->scheme; # if an absolute URI
+
   unless ( $host =~ m'^http://' ) {
     $host = "http://$host";
   }
-  my $uri = URI->new( $host );
+  $uri = URI->new( $host );
   return $uri unless defined $path;
 
   $path =~ s'/$'';

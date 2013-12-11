@@ -23,7 +23,7 @@ sub has_version {
 sub get {
   my $self = shift;
   my $filename = $self->filename;
-  $self->repository->get_file($filename);
+  $filename = $self->repository->get_file($filename);
   return $filename;
 }
 
