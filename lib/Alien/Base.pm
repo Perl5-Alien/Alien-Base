@@ -61,7 +61,7 @@ sub import {
     if($^O eq 'cygwin') {
       $ENV{PATH} = "$dist_dir/bin:$ENV{PATH}";
     } else {
-      $ENV{PATH} = "$dist_dir/bin;$ENV{PATH}";
+      $ENV{PATH} = "$dist_dir\\bin;$ENV{PATH}";
     }
   }
 
