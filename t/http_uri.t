@@ -32,5 +32,15 @@ my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new;
   is $uri, 'http://host.com/path/file.ext', 'file with path';
 }
 
+{
+  my $uri = $repo->build_uri('host.com/', '/path/', 'http://host.com/other/file.ext');
+  is $uri, 'http://host.com/other/file.ext', 'absolute URI found in link';
+}
+
+{
+  my $uri = $repo->build_uri('host.com/', '/path/', 'http://example.org/other/file.ext');
+  is $uri, 'http://example.org/other/file.ext', 'absolute URI on different host';
+}
+
 done_testing;
 

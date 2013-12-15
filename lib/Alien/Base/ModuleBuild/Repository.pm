@@ -80,6 +80,7 @@ sub probe {
 # subclasses are expected to provide 
 sub connection { croak "$_[0] doesn't provide 'connection' method" }
 sub list_files { croak "$_[0] doesn't provide 'list_files' method" }
+# must return filename if different from the one passed in
 sub get_file  { croak "$_[0] doesn't provide 'get_files' method"  }
 
 1;
