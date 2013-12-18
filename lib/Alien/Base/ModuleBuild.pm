@@ -245,6 +245,7 @@ sub ACTION_alien_code {
 
     print "Downloading File: " . $file->filename . " ... ";
     my $filename = $file->get;
+    croak "Error downloading file" unless $filename;
     print "Done\n";
 
     print "Extracting Archive ... ";
