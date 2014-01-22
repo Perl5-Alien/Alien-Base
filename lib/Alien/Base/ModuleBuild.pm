@@ -232,6 +232,7 @@ sub ACTION_alien_code {
 
     my $file = $cabinet->files->[0];
     $version = $file->version;
+    $self->config_data( version => $version ); # Temporary setting, may be overridden later
 
     print "Downloading File: " . $file->filename . " ... ";
     my $filename = $file->get;
