@@ -206,6 +206,10 @@ Shortcut for the name stored in C<alien_name>
 
  pkg-config --modversion %n
 
+=item %v
+
+Captured version of the original archive.
+
 =item %x
 
 The current Perl interpreter (aka $^X)
