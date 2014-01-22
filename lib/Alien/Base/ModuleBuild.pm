@@ -529,6 +529,17 @@ sub alien_interpolate {
   my $perl = $self->perl;
   $string =~ s/(?<!\%)\%x/$perl/g;
 
+  # Version, but only if needed.  Complain if needed and not yet
+  # stored.
+  if ($string =~ /(?<!\%)\%v/) {
+    my $version = $self->config_data( 'version' );
+    if ( ! defined( $version ) ) {
+      carp "Version substution requested but unable to identify";
+    } else {
+      $string =~ s/(?<!\%)\%v/$version/g;
+    }
+  }
+
   #remove escapes (%%)
   $string =~ s/\%(?=\%)//g;
 
