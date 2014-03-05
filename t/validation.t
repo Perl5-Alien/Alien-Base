@@ -5,7 +5,9 @@ use Test::More;
 
 use_ok('Alien::Base::ModuleBuild');
 
-my $builder = bless {}, 'Alien::Base::ModuleBuild';
+my $builder = bless {
+  config => 'Module::Build::Config',
+}, 'Alien::Base::ModuleBuild';
 
 ok( $builder->alien_validate_repo( {platform => undef} ), "undef validates to true");
 
