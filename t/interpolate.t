@@ -20,5 +20,24 @@ is( $builder->alien_interpolate('thing other=%%s'), 'thing other=%s', 'no share_
 my $perl = $builder->perl;
 is( $builder->alien_interpolate('%x'), $perl, '%x is current interpreter' );
 
+# Prior to loading the version information
+{
+  my @warn             = ();
+  local $SIG{__WARN__} = sub { push @warn, @_ };
+
+  is  ( $builder->alien_interpolate('version=%v'), 'version=%v', 'version prior to setting it' );
+  isnt( join( "\n", @warn ),                       '',           'version warning prior to setting it' );
+}
+
+# After loading the version information
+{
+  my @warn             = ();
+  local $SIG{__WARN__} = sub { push @warn, @_ };
+
+  $builder->config_data( 'version', '1.2.3' );
+  is( $builder->alien_interpolate('version=%v'), "version=1.2.3", 'version after setting it' );
+  is( join( "\n", @warn ),                       '',              'version warning after setting it' );
+}
+
 done_testing;
 

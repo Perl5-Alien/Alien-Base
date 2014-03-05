@@ -232,6 +232,7 @@ sub ACTION_alien_code {
 
     my $file = $cabinet->files->[0];
     $version = $file->version;
+    $self->config_data( version => $version ); # Temporary setting, may be overridden later
 
     print "Downloading File: " . $file->filename . " ... ";
     my $filename = $file->get;
@@ -528,6 +529,17 @@ sub alien_interpolate {
   #   current interpreter ($^X) (ph: %x)
   my $perl = $self->perl;
   $string =~ s/(?<!\%)\%x/$perl/g;
+
+  # Version, but only if needed.  Complain if needed and not yet
+  # stored.
+  if ($string =~ /(?<!\%)\%v/) {
+    my $version = $self->config_data( 'version' );
+    if ( ! defined( $version ) ) {
+      carp "Version substution requested but unable to identify";
+    } else {
+      $string =~ s/(?<!\%)\%v/$version/g;
+    }
+  }
 
   #remove escapes (%%)
   $string =~ s/\%(?=\%)//g;
