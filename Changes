@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.004  Mar 5, 2014
+  - Added version token to the interpolator (MidLifeXis++)
+  - Fixed broken test (MidLifeXis++)
+
 0.003  Mar 3, 2013
 	- Added 'blib scheme' detection logic
 		- Improves Mac/CPANtesters compatibility

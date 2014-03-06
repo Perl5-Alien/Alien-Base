@@ -8,3 +8,5 @@ Special thanks go out to:
 - kmx for writing Alien::Tidyp from which I drew many of my initial ideas,
 - David Mertens (run4flat) for productive conversations about implementation,
 - Mark Nunberg (mordy, mnunberg) for graciously teaching me about rpath and dynamic loading,
+- Brian Wightman (MidLifeXis) for code contributions
+
