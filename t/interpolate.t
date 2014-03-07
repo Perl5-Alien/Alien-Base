@@ -34,7 +34,7 @@ is( $builder->alien_interpolate('%x'), $perl, '%x is current interpreter' );
   my @warn             = ();
   local $SIG{__WARN__} = sub { push @warn, @_ };
 
-  $builder->config_data( 'version', '1.2.3' );
+  $builder->config_data( 'alien_version', '1.2.3' );
   is( $builder->alien_interpolate('version=%v'), "version=1.2.3", 'version after setting it' );
   is( join( "\n", @warn ),                       '',              'version warning after setting it' );
 }
