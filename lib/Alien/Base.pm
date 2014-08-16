@@ -15,6 +15,7 @@ use File::ShareDir ();
 use Scalar::Util qw/blessed/;
 use Capture::Tiny 0.17 qw/capture_merged/;
 use Text::ParseWords qw/shellwords/;
+use Perl::OSType qw/os_type/;
 
 sub import {
   my $class = shift;
@@ -30,7 +31,7 @@ sub import {
     \%{ $class . "::AlienLoaded" };
   };
 
-  my @libs = shellwords( $class->libs );
+  my @libs = $class->split_flags( $class->libs );
 
   my @L = grep { s/^-L// } @libs;
   my @l = grep { /^-l/ } @libs;
@@ -163,6 +164,34 @@ sub config {
   warn $@ if $@;
 
   return $config->config(@_);
+}
+
+# helper method to split flags based on the OS
+sub split_flags {
+  my ($class, $line) = @_;
+  my $os = os_type();
+  if( $os eq 'Windows' ) {
+    $class->split_flags_windows($line);
+  } else {
+    # $os eq 'Unix'
+    $class->split_flags_unix($line);
+  }
+}
+
+sub split_flags_unix {
+  my ($class, $line) = @_;
+  shellwords($line);
+}
+
+sub split_flags_windows {
+  # NOTE a better approach would be to write a function that understands cmd.exe metacharacters.
+  my ($class, $line) = @_;
+
+  # Double the backslashes so that when they are unescaped by shellwords(),
+  # they become a single backslash. This should be fine on Windows since
+  # backslashes are not used to escape metacharacters in cmd.exe.
+  $line =~ s,\\,\\\\,g;
+  shellwords($line);
 }
 
 1;
