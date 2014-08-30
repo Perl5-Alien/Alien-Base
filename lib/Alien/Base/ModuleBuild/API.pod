@@ -43,7 +43,7 @@ This is intended to choose the mechanism for selecting one file from many. The d
 
 [version 0.001]
 
-An arrayref of commands used to build the library in the directory specified in C<alien_temp_dir>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ '%pconfigure --prefix=%s', 'make' ]>.
+An arrayref of commands used to build the library in the directory specified in C<alien_temp_dir>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ '%c --prefix=%s', 'make' ]>.
 
 =item alien_install_commands
 
@@ -193,6 +193,10 @@ Before L<Alien::Base::ModuleBuild> executes system commands, it replaces a few s
 The full path to the final installed location of the share directory (builder method C<alien_library_destination>). This is where the library should install itself; for autoconf style installs this will look like 
 
  --prefix=%s
+
+=item %c
+
+Platform independent incantation for running autoconf C<configure> script.  On *nix systems this is C<./configure>, on Windows this is C<sh configure>.  On windows L<Alien::MSYS> is injected as a dependency and all commands are executed in an C<MSYS> environment.
 
 =item %p
 
