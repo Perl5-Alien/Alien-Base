@@ -22,6 +22,7 @@ if ( $? ) {
 }
 
 my @installed = shuffle map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
+plan skip_all => "Could not find any library for testing" unless @installed;
 
 my ($lib, $cflags, $libs);
 
