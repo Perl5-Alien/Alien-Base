@@ -14,6 +14,7 @@ SKIP: {
   skip $skip, 2 if $skip;
 
   my @installed = map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
+  skip "pkg-config returned no packages", 2 unless @installed;
   my $lib = $installed[0];
 
   my ($builder_ok, $builder_bad) = map { 
