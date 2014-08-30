@@ -65,7 +65,7 @@ __PACKAGE__->add_property( alien_selection_method => 'newest' );
 # alien_build_commands: arrayref of commands for building
 __PACKAGE__->add_property( 
   alien_build_commands => 
-  default => [ '%pconfigure --prefix=%s', 'make' ],
+  default => [ '%c --prefix=%s', 'make' ],
 );
 
 # alien_test_commands: arrayref of commands for testing the library
@@ -131,6 +131,15 @@ sub new {
 
   # setup additional temporary directories, and yes we have to add File::ShareDir manually
   $self->_add_prereq( 'requires', 'File::ShareDir', '1.00' );
+
+  if (grep /(?<!\%)\%c/, @{ $self->alien_build_commands }) {
+    $self->config_data( 'autoconf' => 1 );
+  }
+
+  if ($^O eq 'MSWin32' && $self->config_data( 'autoconf')) {
+    $self->_add_prereq( 'build_requires', 'Alien::MSYS', '0' );
+    $self->config_data( 'msys' => 1 );
+  }
 
   # force newest for all automated testing 
   #TODO (this probably should be checked for "input needed" rather than blindly assigned)
@@ -459,6 +468,18 @@ sub alien_detect_blib_scheme {
 #  Build Methods  #
 ###################
 
+sub _msys_do_system {
+  my $self = shift;
+  my $command = shift;
+  
+  if ($self->config_data( 'msys' => 1 )) {
+    require Alien::MSYS;
+    return Alien::MSYS::msys(sub { $self->do_system( $command ) });
+  }
+  
+  $self->do_system( $command );
+}
+
 sub alien_do_commands {
   my $self = shift;
   my $phase = shift;
@@ -468,7 +489,7 @@ sub alien_do_commands {
 
   foreach my $command (@$commands) {
 
-    my %result = $self->do_system( $command );
+    my %result = $self->_msys_do_system( $command );
     unless ($result{success}) {
       carp "External command ($result{command}) failed! Error: $?\n";
       return 0;
@@ -516,6 +537,7 @@ sub alien_interpolate {
   my ($string) = @_;
 
   my $prefix = $self->alien_exec_prefix;
+  my $configure = $self->alien_configure;
   my $share  = $self->alien_library_destination;
   my $name   = $self->alien_name || '';
 
@@ -524,6 +546,8 @@ sub alien_interpolate {
   $string =~ s/(?<!\%)\%s/$share/g;
   #   local exec prefix (ph: %p)
   $string =~ s/(?<!\%)\%p/$prefix/g;
+  #   correct incantation for configure on platform
+  $string =~ s/(?<!\%)\%c/$configure/g;
   #   library name (ph: %n)
   $string =~ s/(?<!\%)\%n/$name/g;
   #   current interpreter ($^X) (ph: %x)
@@ -553,6 +577,15 @@ sub alien_exec_prefix {
     return '';
   } else {
     return './';
+  }
+}
+
+sub alien_configure {
+  my $self = shift;
+  if ($self->config_data( 'msys' )) {
+    return 'sh configure';
+  } else {
+    return './configure';
   }
 }
 
