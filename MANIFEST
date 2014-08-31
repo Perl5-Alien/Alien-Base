@@ -18,10 +18,12 @@ lib/Alien/Base/ModuleBuild/Repository/HTTP.pm
 lib/Alien/Base/ModuleBuild/Repository/Local.pm
 lib/Alien/Base/ModuleBuild/Utils.pm
 lib/Alien/Base/PkgConfig.pm
+LICENSE
 MANIFEST			This list of files
 META.json
 META.yml
 README
+t/build_flags.t
 t/builder.t
 t/cabinet.t
 t/file.t
