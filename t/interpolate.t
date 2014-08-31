@@ -30,14 +30,33 @@ is( $builder->alien_interpolate('%x'), $perl, '%x is current interpreter' );
 }
 
 # After loading the version information
+#
+# The guard used below is needed so that the configuration data
+# modified as part of the test is rolled back at the end of the test.
+#
 {
   my @warn             = ();
   local $SIG{__WARN__} = sub { push @warn, @_ };
 
-  $builder->config_data( 'version', '1.2.3' );
-  is( $builder->alien_interpolate('version=%v'), "version=1.2.3", 'version after setting it' );
-  is( join( "\n", @warn ),                       '',              'version warning after setting it' );
+  my $current_version = $builder->config_data( 'alien_version' ) ;
+  my $guard = MyGuard->new(
+      sub {
+	  my $self = shift;
+	  $builder->config_data( 'alien_version', $current_version );
+      },
+      );
+
+  my $test_version = time;
+  $builder->config_data( 'alien_version', $test_version );
+
+  is( $builder->alien_interpolate('version=%v'), "version=$test_version", 'version after setting it' );
+  is( join( "\n", @warn ),                       '',                      'version warning after setting it' );
 }
 
 done_testing;
 
+package
+    MyGuard;  # Hide from PAUSE
+
+sub new     { bless { ondie => $_[1] }, $_[0] }
+sub DESTROY { $_[0]{ondie}->() if ( $_[0]{ondie} ) }
