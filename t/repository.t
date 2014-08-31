@@ -82,9 +82,10 @@ my $default = {
   isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
   is( $files[0]->{filename}, $filename, 'the name of the object is the given filename');
   is( $files[0]->version, '1.9', 'with exact version, the version of the object if the given version');
-  is( $files[0]->{sha1}, $sha1, 'the SHA-1 hash of the given filename');
-  is( $files[0]->{sha256}, $sha256, 'the SHA-256 hash of the given filename');
-  note(%{$files[0]});
+  if (eval 'require Digest::SHA') {
+      is( $files[0]->{sha1}, $sha1, 'the SHA-1 hash of the given filename');
+      is( $files[0]->{sha256}, $sha256, 'the SHA-256 hash of the given filename');
+  }
 }
 
 done_testing;
