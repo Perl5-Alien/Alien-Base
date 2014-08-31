@@ -1,5 +1,15 @@
 Revision history for Perl module Alien::Base.
 
+  - Libraries in the share directory are preferred over the system library
+    if that is what was used during install of the Alien module (plicease++ gh#22)
+  - Better handling of paths on Windows (zmughal++ gh#41)
+  - Fix test failure when pkg-config is not available (mohawk2++ gh#44)
+  - Support for autotools on Windows (MSWin32, but not cygwin) (plicease++ gh#46)
+  - Alien::MSYS will be injected as a build_requires on Windows if autotools is detected
+  - "%c" can now be used as a platform independent way of running autotool based
+    "configure" script
+  - The new default for build uses "%c" instead of "%pconfigure"
+
 0.004  Mar 5, 2014
   - Added version token to the interpolator (MidLifeXis++)
   - Fixed broken test (MidLifeXis++)
