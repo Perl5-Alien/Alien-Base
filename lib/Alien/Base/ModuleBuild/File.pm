@@ -3,7 +3,6 @@ package Alien::Base::ModuleBuild::File;
 use strict;
 use warnings;
 use Carp;
-use Digest::SHA;
 
 our $VERSION = '0.004';
 $VERSION = eval $VERSION;
@@ -26,6 +25,7 @@ sub get {
   my $self = shift;
   my $filename = $self->filename;
   $filename = $self->repository->get_file($filename);
+  eval 'require Digest::SHA' or return $filename;
   ## verify that the SHA-1 and/or SHA-256 sums match if provided
   if (defined $self->{sha1}) {
     my $sha = Digest::SHA->new(1);
