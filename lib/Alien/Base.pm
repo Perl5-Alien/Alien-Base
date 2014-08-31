@@ -254,6 +254,14 @@ Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
 
 =item Brian Wightman (MidLifeXis)
 
+=item Graham Ollis (plicease)
+
+=item Zaki Mughal (zmughal)
+
+=item mohawk2
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2012-2014 by Joel Berger
