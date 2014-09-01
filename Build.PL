@@ -25,6 +25,11 @@ my $builder = Module::Build->new(
     'Archive::Extract' => 0,
     'HTTP::Tiny'       => 0,
   },
+  test_requires => {
+    'Cwd'              => 0,
+    'FindBin'          => 0,
+    'File::Spec'       => 0,
+  },
   recommends => {
     'HTML::LinkExtor' => 0,
   },
