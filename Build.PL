@@ -26,6 +26,7 @@ my $builder = Module::Build->new(
     'HTTP::Tiny'       => 0,
   },
   test_requires => {
+    'Test::More'       => 0.94,
     'Cwd'              => 0,
     'FindBin'          => 0,
     'File::Spec'       => 0,
