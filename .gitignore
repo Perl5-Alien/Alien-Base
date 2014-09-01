@@ -2,3 +2,5 @@ Build
 MYMETA.*
 _build/
 blib/
+*.swp
+.DS_Store
