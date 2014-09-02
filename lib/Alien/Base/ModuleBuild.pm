@@ -607,9 +607,9 @@ sub alien_exec_prefix {
 sub alien_configure {
   my $self = shift;
   if ($self->config_data( 'msys' )) {
-    return 'sh configure';
+    return 'sh configure --with-pic';
   } else {
-    return './configure';
+    return './configure --with-pic';
   }
 }
 
