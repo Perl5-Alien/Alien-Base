@@ -1,0 +1,33 @@
+language: perl
+
+install:
+  - git clone https://github.com/Perl5-Alien/Alien-Base-Extras.git
+  - tar xf Alien-Base-Extras/Acme-Alien-DontPanic/inc/dontpanic-1.0.tar.gz
+  - cd dontpanic
+  - ./configure
+  - make
+  - sudo make install
+  - cd ..
+  - cpanm --installdeps .
+
+perl:
+  - "5.8"
+  - "5.10"
+  - "5.12"
+  - "5.14"
+  - "5.16"
+  - "5.18"
+  - "5.20"
+  - "5.21"
+
+script:
+  - perl Build.PL
+  - ./Build
+  - ./Build test
+  - ./Build install
+  - cd Alien-Base-Extras/Acme-Alien-DontPanic; cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
+  - cd Alien-Base-Extras/Acme-Ford-Prefect;    cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
+
+env:
+  - ALIEN_FORCE=1
+  - ALIEN_FORCE=0
