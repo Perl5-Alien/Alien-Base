@@ -17,6 +17,7 @@ use Archive::Extract;
 use Sort::Versions;
 use List::MoreUtils qw/uniq first_index/;
 use ExtUtils::Installed;
+use File::Copy qw/move/;
 
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -101,6 +102,8 @@ __PACKAGE__->add_property( 'alien_repository'         => {} );
 __PACKAGE__->add_property( 'alien_repository_default' => {} );
 __PACKAGE__->add_property( 'alien_repository_class'   => {} );
 
+# alien_isolate_dynamic
+__PACKAGE__->add_property( 'alien_isolate_dynamic' => 0 );
 
 ################
 #  ConfigData  #
@@ -332,6 +335,25 @@ sub ACTION_alien_install {
     local $CWD = $self->config_data( 'working_directory' );
     print "Installing library to $CWD ... ";
     $self->alien_do_commands('install') or die "Failed\n";
+    print "Done\n";
+  }
+  
+  if ( $self->alien_isolate_dynamic ) {
+    local $CWD = $self->alien_library_destination;
+    print "Isolating dynamic libraries ... ";
+    mkdir 'dynamic' unless -d 'dynamic';
+    foreach my $dir (qw( bin lib )) {
+      next unless -d $dir;
+      opendir(my $dh, $dir);
+      my @dlls = grep { /\.so/ || /\.(dylib|la|dll|dll\.a)$/ } grep !/^\./, readdir $dh;
+      closedir $dh;
+      foreach my $dll (@dlls) {
+        my $from = File::Spec->catfile($dir, $dll);
+        my $to   = File::Spec->catfile('dynamic', $dll);
+        unlink $to if -e $to;
+        move($from, $to);
+      }
+    }
     print "Done\n";
   }
 
