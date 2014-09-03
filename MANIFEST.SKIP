@@ -10,6 +10,7 @@
 \B\.gitignore\b
 \b_darcs\b
 \B\.cvsignore$
+\B\.travis.yml$
 
 # Avoid VMS specific MakeMaker generated files
 \bDescrip.MMS$
