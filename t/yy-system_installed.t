@@ -4,6 +4,8 @@ use warnings;
 use File::chdir;
 use List::Util qw/shuffle/;
 
+BEGIN { $ENV{ALIEN_FORCE} = 0 }
+
 use Test::More;
 use Alien::Base::ModuleBuild;
 
