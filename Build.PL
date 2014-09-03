@@ -24,6 +24,7 @@ my $builder = Module::Build->new(
     'File::ShareDir'   => 0,
     'Archive::Extract' => 0,
     'HTTP::Tiny'       => 0,
+    'Digest::SHA'      => 0,
   },
   recommends => {
     'HTML::LinkExtor' => 0,
