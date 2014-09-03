@@ -139,6 +139,8 @@ sub new {
   if ($^O eq 'MSWin32' && $self->config_data( 'autoconf')) {
     $self->_add_prereq( 'build_requires', 'Alien::MSYS', '0' );
     $self->config_data( 'msys' => 1 );
+  } else {
+    $self->config_data( 'msys' => 0 );
   }
 
   # force newest for all automated testing 
@@ -472,7 +474,7 @@ sub _msys_do_system {
   my $self = shift;
   my $command = shift;
   
-  if ($self->config_data( 'msys' => 1 )) {
+  if ($self->config_data( 'msys' )) {
     require Alien::MSYS;
     return Alien::MSYS::msys(sub { $self->do_system( $command ) });
   }
