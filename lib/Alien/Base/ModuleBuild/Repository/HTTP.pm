@@ -48,6 +48,13 @@ sub get_file {
   my $response = $self->connection->mirror($uri, $file);
   croak "Download failed: " . $response->{reason} unless $response->{success};
 
+  my $disposition = $response->{headers}{"content-disposition"};
+  if ( defined($disposition) && ($disposition =~ /filename="([^"]+)"/ || $disposition =~ /filename=([^\s]+)/)) {
+    my $new_filename = $1;
+    rename $file, $new_filename;
+    $self->{new_filename} = $new_filename;
+  }
+
   return $file;
 }
 
