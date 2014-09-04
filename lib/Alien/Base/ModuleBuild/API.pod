@@ -77,6 +77,12 @@ A hashref or arrayref of hashrefs defining the repositories used to find and fet
 
 If set to true, then dynamic libraries will be moved from the C<lib> directory to a separate C<dynamic> directory.  This makes them available for FFI modules (see L<FFI::Raw>), while preferring static libraries when creating XS extensions.
 
+=item alien_autoconf_with_pic
+
+[version 0.005]
+
+Add C<--with-pic> option to autoconf style C<configure> script when called.  This is the default, and normally a good practice.  Normally autoconf will ignore this and any other options that it does not recognize, but some non-autoconf C<configure> scripts may complain.
+
 =over
 
 =item protocol

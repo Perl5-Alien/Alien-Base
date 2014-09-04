@@ -104,6 +104,7 @@ __PACKAGE__->add_property( 'alien_repository_class'   => {} );
 
 # alien_isolate_dynamic
 __PACKAGE__->add_property( 'alien_isolate_dynamic' => 0 );
+__PACKAGE__->add_property( 'alien_autoconf_with_pic' => 1 );
 
 ################
 #  ConfigData  #
@@ -606,11 +607,16 @@ sub alien_exec_prefix {
 
 sub alien_configure {
   my $self = shift;
+  my $configure;
   if ($self->config_data( 'msys' )) {
-    return 'sh configure --with-pic';
+    $configure = 'sh configure';
   } else {
-    return './configure --with-pic';
+    $configure = './configure';
   }
+  if ($self->alien_autoconf_with_pic) {
+    $configure .= ' --with-pic';
+  }
+  $configure;
 }
 
 ########################
