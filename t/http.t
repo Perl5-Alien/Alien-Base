@@ -7,6 +7,7 @@ use File::chdir;
 use FindBin;
 use File::Spec;
 use File::Temp;
+use URI::file;
 
 my $FILE_HOST = File::Spec->catdir( abs_path( $FindBin::Bin ), 'test_http' );
 my $INDEX_PATH = File::Spec->catfile( $FILE_HOST, 'index.html' );
@@ -108,7 +109,7 @@ subtest 'list_files()' => sub {
     plan skip_all => 'No LWP::UserAgent' unless eval { require LWP::UserAgent; 1 };
     my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new(
       protocol_class => 'LWP::UserAgent',
-      host => 'file://' . $INDEX_PATH,
+      host => URI::file->new($INDEX_PATH)->as_string,
       # location doesn't work for file:// URLs
     );
     is_deeply [ $repo->list_files ], [ 'relativepackage.txt' ];
@@ -132,7 +133,7 @@ subtest 'get_file()' => sub {
     my $tmp = File::Temp->newdir;
     local $CWD = $tmp->dirname;
 
-    my $file = $repo->get_file( 'file://' . $INDEX_PATH );
+    my $file = $repo->get_file( URI::file->new($INDEX_PATH)->as_string );
     is $file, 'index.html';
   };
 };
