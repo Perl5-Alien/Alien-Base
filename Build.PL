@@ -24,7 +24,6 @@ my $builder = Module::Build->new(
     'File::ShareDir'   => 0,
     'Archive::Extract' => 0,
     'HTTP::Tiny'       => 0,
-    'Digest::SHA'      => 0,
   },
   test_requires => {
     'Test::More'       => 0.94,
