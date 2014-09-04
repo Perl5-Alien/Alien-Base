@@ -12,6 +12,7 @@ use Carp;
 use DynaLoader ();
 
 use File::ShareDir ();
+use File::Spec;
 use Scalar::Util qw/blessed/;
 use Capture::Tiny 0.17 qw/capture_merged/;
 use Text::ParseWords qw/shellwords/;
@@ -192,6 +193,16 @@ sub split_flags_windows {
   # backslashes are not used to escape metacharacters in cmd.exe.
   $line =~ s,\\,\\\\,g;
   shellwords($line);
+}
+
+sub dynamic_lib {
+  my ($class) = @_;
+  my $dir = File::Spec->catfile($class->dist_dir, 'dynamic');
+  return unless -d $dir;
+  opendir(my $dh, $dir);
+  my @dlls = grep { /\.so/ || /\.(dylib|dll)$/ } grep !/^\./, readdir $dh;
+  closedir $dh;
+  grep { ! -l $_ } map { File::Spec->catfile($dir, $_) } @dlls;
 }
 
 1;
