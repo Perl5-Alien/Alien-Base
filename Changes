@@ -17,6 +17,8 @@ Revision history for Perl module Alien::Base.
   - Added support for LWP as an alternative to HTTP::Tiny (preaction++ gh#24)
   - Added support for content-disposition HTTP header to determine correct filename
     and determine format from that (rsimoes++ gh#27)
+  - By default run autotools style configure scripts with --with-pic and add
+    alien_autoconf_with_pic property to allow disabling that (plicease gh#47)
 
 0.004  Mar 5, 2014
   - Added version token to the interpolator (MidLifeXis++)
