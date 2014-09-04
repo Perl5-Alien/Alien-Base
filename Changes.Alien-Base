@@ -9,6 +9,14 @@ Revision history for Perl module Alien::Base.
   - "%c" can now be used as a platform independent way of running autotool based
     "configure" script
   - The new default for build uses "%c" instead of "%pconfigure"
+  - Added property alien_isolate_dynamic which allows an Alien author to
+    avoid using dynamic libraries when building XS modules (plicease gh#51)
+  - Added dynamic_libs which returns a list of dynamic libraries (.dll, .so or
+    .dylib depending on platform) which can be used for FFI modules (see FFI::Raw)
+    (plicease gh#51)
+  - Added support for LWP as an alternative to HTTP::Tiny (preaction++ gh#24)
+  - Added support for content-disposition HTTP header to determine correct filename
+    and determine format from that (rsimoes++ gh#27)
 
 0.004  Mar 5, 2014
   - Added version token to the interpolator (MidLifeXis++)
