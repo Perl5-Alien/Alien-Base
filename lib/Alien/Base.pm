@@ -100,7 +100,7 @@ sub _keyword {
   # use pkg-config if installed system-wide
   if ($self->install_type('system')) {
     my $name = $self->config('name');
-    my $command = "pkg-config --\L$keyword\E $name";
+    my $command = Alien::Base::PkgConfig->pkg_config_command . " --\L$keyword\E $name";
 
     chomp ( my $pcdata = capture_merged { system( $command ) } );
     croak "Could not call pkg-config: $!" if $!;

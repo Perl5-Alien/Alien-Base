@@ -3,7 +3,7 @@ use warnings;
 
 use Module::Build;
 
-my $builder = Module::Build->new(
+my %build_args = (
   module_name => 'Alien::Base',
   dist_abstract => 'A base class for Alien:: modules',
   dist_author => 'Joel A. Berger <joel.a.berger@gmail.com>',
@@ -47,4 +47,9 @@ my $builder = Module::Build->new(
   },
 );
 
+unless (`pkg-config --version` && $? == 0) {
+  $build_args{'requires'}->{'PkgConfig'} = 0;
+}
+
+my $builder = Module::Build->new(%build_args);
 $builder->create_build_script;
