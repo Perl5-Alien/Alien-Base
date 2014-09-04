@@ -58,6 +58,15 @@ sub import {
   my @librefs = map { DynaLoader::dl_load_file( $_, 0x01 ) } @libpaths;
   push @DynaLoader::dl_librefs, @librefs;
 
+  my $dist_dir = $class->dist_dir;
+  if($^O =~ /^(?:cygwin|MSWin32)$/ && -d "$dist_dir/bin") {
+    if($^O eq 'cygwin') {
+      $ENV{PATH} = "$dist_dir/bin:$ENV{PATH}";
+    } else {
+      $ENV{PATH} = "$dist_dir\\bin;$ENV{PATH}";
+    }
+  }
+
 }
 
 sub dist_dir {
