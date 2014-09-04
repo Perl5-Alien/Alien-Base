@@ -195,7 +195,7 @@ sub split_flags_windows {
   shellwords($line);
 }
 
-sub dynamic_lib {
+sub dynamic_libs {
   my ($class) = @_;
   my $dir = File::Spec->catfile($class->dist_dir, 'dynamic');
   return unless -d $dir;
