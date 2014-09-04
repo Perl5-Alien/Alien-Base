@@ -52,10 +52,10 @@ sub get_file {
   # if it is an absolute URI, then use the filename from the URI
   $file = ($uri->path_segments())[-1] if $file =~ /^(?:http|file):/;
   my $res = $self->connection->mirror($uri, $file);
-  my ( $is_error, $content ) = $self->check_http_response( $res );
+  my ( $is_error, $content, $headers ) = $self->check_http_response( $res );
   croak "Download failed: " . $content if $is_error;
 
-  my $disposition = $response->{headers}{"content-disposition"};
+  my $disposition = $headers->{"content-disposition"};
   if ( defined($disposition) && ($disposition =~ /filename="([^"]+)"/ || $disposition =~ /filename=([^\s]+)/)) {
     my $new_filename = $1;
     rename $file, $new_filename;
@@ -152,16 +152,17 @@ sub build_uri {
 sub check_http_response {
   my ( $self, $res ) = @_;
   if ( blessed $res && $res->isa( 'HTTP::Response' ) ) {
+    my %headers = map { lc $_ => $res->header($_) } $res->header_field_names;
     if ( !$res->is_success ) {
-      return ( 1, $res->status_line . " " . $res->decoded_content );
+      return ( 1, $res->status_line . " " . $res->decoded_content, \%headers );
     }
-    return ( 0, $res->decoded_content );
+    return ( 0, $res->decoded_content, \%headers );
   }
   else {
     if ( !$res->{success} ) {
-      return ( 1, $res->{reason} );
+      return ( 1, $res->{reason}, $res->{headers} );
     }
-    return ( 0, $res->{content } );
+    return ( 0, $res->{content}, $res->{headers} );
   }
 }
 
