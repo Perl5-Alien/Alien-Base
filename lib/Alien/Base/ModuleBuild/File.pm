@@ -30,24 +30,32 @@ sub get {
     $filename = $self->{filename} = $new_filename;
   }
 
-  eval 'require Digest::SHA' or return $filename;
-  ## verify that the SHA-1 and/or SHA-256 sums match if provided
-  if (defined $self->{sha1}) {
-    my $sha = Digest::SHA->new(1);
-    $sha->addfile($filename);
-    unless ($sha->hexdigest eq $self->{sha1}) {
-        carp "SHA-1 of downloaded $filename is ", $sha->hexdigest,
-        " Expected: ", $self->{sha1};
-        return undef;
+
+  if (defined $self->{sha1} || defined $self->{sha256}) {
+    unless (eval 'require Digest::SHA') {
+      warn "sha1 or sha256 sums are specified but cannot be checked since Digest::SHA is not installed";
+      return $filename;
     }
-  }
-  if (defined $self->{sha256}) {
-    my $sha = Digest::SHA->new(256);
-    $sha->addfile($filename);
-    unless ($sha->hexdigest eq $self->{sha256}) {
-        carp "SHA-256 of downloaded $filename is ", $sha->hexdigest,
-        " Expected: ", $self->{sha256};
-        return undef;
+  
+    eval 'require Digest::SHA' or return $filename;
+    ## verify that the SHA-1 and/or SHA-256 sums match if provided
+    if (defined $self->{sha1}) {
+      my $sha = Digest::SHA->new(1);
+      $sha->addfile($filename);
+      unless ($sha->hexdigest eq $self->{sha1}) {
+          carp "SHA-1 of downloaded $filename is ", $sha->hexdigest,
+          " Expected: ", $self->{sha1};
+          return undef;
+      }
+    }
+    if (defined $self->{sha256}) {
+      my $sha = Digest::SHA->new(256);
+      $sha->addfile($filename);
+      unless ($sha->hexdigest eq $self->{sha256}) {
+          carp "SHA-256 of downloaded $filename is ", $sha->hexdigest,
+          " Expected: ", $self->{sha256};
+          return undef;
+      }
     }
   }
 
