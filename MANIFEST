@@ -47,9 +47,11 @@ t/pkgconfig.t
 t/pkgconfig/gsl.pc
 t/pkgconfig/test.pc
 t/repository.t
+t/repository_content_disposition.t
 t/RepositoryTest.pm
 t/system_installed/lib/MyTest.pm
 t/system_installed/MANIFEST
+t/test_http/index.html
 t/utils.t
 t/validation.t
 t/version.t

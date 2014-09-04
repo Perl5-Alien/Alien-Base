@@ -2,15 +2,20 @@
 abstract: 'A base class for Alien:: modules'
 author:
   - 'Joel A. Berger <joel.a.berger@gmail.com>'
-build_requires: {}
+build_requires:
+  Cwd: '0'
+  File::Spec: '0'
+  File::Temp: '0'
+  FindBin: '0'
+  Test::More: '0.94'
 configure_requires:
-  Module::Build: 0.36
+  Module::Build: '0.36'
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4203, CPAN::Meta::Converter version 2.132830'
+generated_by: 'Module::Build version 0.4206, CPAN::Meta::Converter version 2.142060'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  version: '1.4'
 name: Alien-Base
 no_index:
   directory:
@@ -21,51 +26,51 @@ no_index:
 provides:
   Alien::Base:
     file: lib/Alien/Base.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::ModuleBuild:
     file: lib/Alien/Base/ModuleBuild.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::ModuleBuild::Cabinet:
     file: lib/Alien/Base/ModuleBuild/Cabinet.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::ModuleBuild::File:
     file: lib/Alien/Base/ModuleBuild/File.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::ModuleBuild::Repository:
     file: lib/Alien/Base/ModuleBuild/Repository.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::ModuleBuild::Repository::FTP:
     file: lib/Alien/Base/ModuleBuild/Repository/FTP.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::ModuleBuild::Repository::HTTP:
     file: lib/Alien/Base/ModuleBuild/Repository/HTTP.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::ModuleBuild::Repository::Local:
     file: lib/Alien/Base/ModuleBuild/Repository/Local.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::ModuleBuild::Utils:
     file: lib/Alien/Base/ModuleBuild/Utils.pm
-    version: 0.004
+    version: 0.004_01
   Alien::Base::PkgConfig:
     file: lib/Alien/Base/PkgConfig.pm
-    version: 0.004
+    version: 0.004_01
 recommends:
-  HTML::LinkExtor: 0
+  HTML::LinkExtor: '0'
 requires:
-  Archive::Extract: 0
-  Capture::Tiny: 0.17
-  File::ShareDir: 0
-  File::chdir: 0.1005
-  HTTP::Tiny: 0
-  List::MoreUtils: 0
-  Module::Build: 0.36
-  Perl::OSType: 0
-  Sort::Versions: 0
-  URI: 0
-  parent: 0
+  Archive::Extract: '0'
+  Capture::Tiny: '0.17'
+  File::ShareDir: '0'
+  File::chdir: '0.1005'
+  HTTP::Tiny: '0'
+  List::MoreUtils: '0'
+  Module::Build: '0.36'
+  Perl::OSType: '0'
+  Sort::Versions: '0'
+  URI: '0'
+  parent: '0'
   perl: v5.8.1
 resources:
   bugtracker: http://github.com/jberger/Alien-Base/issues
   license: http://dev.perl.org/licenses/
   repository: http://github.com/jberger/Alien-Base
-version: 0.004
+version: 0.004_01

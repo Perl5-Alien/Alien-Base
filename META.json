@@ -4,7 +4,7 @@
       "Joel A. Berger <joel.a.berger@gmail.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4203",
+   "generated_by" : "Module::Build version 0.4206",
    "license" : [
       "perl_5"
    ],
@@ -46,51 +46,60 @@
             "parent" : "0",
             "perl" : "v5.8.1"
          }
+      },
+      "test" : {
+         "requires" : {
+            "Cwd" : "0",
+            "File::Spec" : "0",
+            "File::Temp" : "0",
+            "FindBin" : "0",
+            "Test::More" : "0.94"
+         }
       }
    },
    "provides" : {
       "Alien::Base" : {
          "file" : "lib/Alien/Base.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::ModuleBuild" : {
          "file" : "lib/Alien/Base/ModuleBuild.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::ModuleBuild::Cabinet" : {
          "file" : "lib/Alien/Base/ModuleBuild/Cabinet.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::ModuleBuild::File" : {
          "file" : "lib/Alien/Base/ModuleBuild/File.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::ModuleBuild::Repository" : {
          "file" : "lib/Alien/Base/ModuleBuild/Repository.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::ModuleBuild::Repository::FTP" : {
          "file" : "lib/Alien/Base/ModuleBuild/Repository/FTP.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::ModuleBuild::Repository::HTTP" : {
          "file" : "lib/Alien/Base/ModuleBuild/Repository/HTTP.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::ModuleBuild::Repository::Local" : {
          "file" : "lib/Alien/Base/ModuleBuild/Repository/Local.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::ModuleBuild::Utils" : {
          "file" : "lib/Alien/Base/ModuleBuild/Utils.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       },
       "Alien::Base::PkgConfig" : {
          "file" : "lib/Alien/Base/PkgConfig.pm",
-         "version" : "0.004"
+         "version" : "0.004_01"
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "http://github.com/jberger/Alien-Base/issues"
@@ -102,5 +111,5 @@
          "url" : "http://github.com/jberger/Alien-Base"
       }
    },
-   "version" : "0.004"
+   "version" : "0.004_01"
 }
