@@ -9,6 +9,7 @@ $VERSION = eval $VERSION;
 use Carp;
 use File::Basename qw/fileparse/;
 use File::Spec;
+use Capture::Tiny qw( capture_stderr );
 
 sub new {
   my $class   = shift;
@@ -114,6 +115,23 @@ sub keyword {
   }
 
   return $self->_interpolate_vars( $self->{keywords}{$keyword}, $override );
+}
+
+my $pkg_config_command;
+
+sub pkg_config_command {
+  unless (defined $pkg_config_command) {
+    capture_stderr {
+      if (`pkg-config --version` && $? == 0) {
+        $pkg_config_command = 'pkg-config';
+      } else {
+        require PkgConfig;
+        $pkg_config_command = "$^X $INC{'PkgConfig.pm'}";
+      }
+    }
+  }
+  
+  $pkg_config_command;
 }
 
 1;

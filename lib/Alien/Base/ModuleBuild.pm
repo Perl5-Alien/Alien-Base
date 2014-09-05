@@ -83,7 +83,7 @@ __PACKAGE__->add_property(
 );
 
 # alien_version_check: command to execute to check if install/version
-__PACKAGE__->add_property( alien_version_check => 'pkg-config --modversion %n' );
+__PACKAGE__->add_property( alien_version_check => Alien::Base::PkgConfig->pkg_config_command . ' --modversion %n' );
 
 # pkgconfig-esque info, author provides these by hand for now, will parse .pc file eventually
 __PACKAGE__->add_property( 'alien_provides_cflags' );

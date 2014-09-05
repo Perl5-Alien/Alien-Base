@@ -2,10 +2,13 @@ use strict;
 use warnings;
 
 use Test::More;
+use Alien::Base::PkgConfig;
 use_ok('Alien::Base::ModuleBuild');
 
+my $pkg_config = Alien::Base::PkgConfig->pkg_config_command;
+
 my $skip;
-system( 'pkg-config --version' );
+system( "$pkg_config --version" );
 if ( $? ) {
   $skip = "Cannot use pkg-config: $?";
 }
@@ -13,7 +16,7 @@ if ( $? ) {
 SKIP: {
   skip $skip, 2 if $skip;
 
-  my @installed = map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
+  my @installed = map { /^(\S+)/ ? $1 : () } `$pkg_config --list-all`;
   skip "pkg-config returned no packages", 2 unless @installed;
   my $lib = $installed[0];
 

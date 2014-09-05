@@ -8,6 +8,7 @@ BEGIN { $ENV{ALIEN_FORCE} = 0 }
 
 use Test::More;
 use Alien::Base::ModuleBuild;
+use Alien::Base::PkgConfig;
 
 # Since this is not a complete distribution, it complains about missing files/folders
 local $SIG{__WARN__} = sub { warn $_[0] unless $_[0] =~ /Can't (?:stat)|(?:find)/ };
@@ -17,13 +18,15 @@ $ENV{ALIEN_BLIB} = 0;
 local $CWD;
 push @CWD, qw/t system_installed/;
 
+my $pkg_config = Alien::Base::PkgConfig->pkg_config_command;
+
 my $skip;
-system( 'pkg-config --version' );
+system( "$pkg_config --version" );
 if ( $? ) {
   plan skip_all => "Cannot use pkg-config: $?";
 }
 
-my @installed = shuffle map { /^(\S+)/ ? $1 : () } `pkg-config --list-all`;
+my @installed = shuffle map { /^(\S+)/ ? $1 : () } `$pkg_config --list-all`;
 plan skip_all => "Could not find any library for testing" unless @installed;
 
 my ($lib, $cflags, $libs);
@@ -34,8 +37,8 @@ while (1) {
 
   $lib = shift @installed;
 
-  chomp( $cflags = `pkg-config --cflags $lib` );
-  chomp( $libs = `pkg-config --libs $lib` );
+  chomp( $cflags = `$pkg_config --cflags $lib` );
+  chomp( $libs = `$pkg_config --libs $lib` );
 
   $cflags =~ s/\s*$//;
   $libs   =~ s/\s*$//;
