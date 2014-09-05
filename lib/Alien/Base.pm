@@ -271,6 +271,8 @@ Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
 
 =item mohawk2
 
+=item Vikas N Kumar (vikasnkumar)
+
 =back
 
 =head1 COPYRIGHT AND LICENSE
