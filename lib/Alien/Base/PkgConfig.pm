@@ -3,7 +3,7 @@ package Alien::Base::PkgConfig;
 use strict;
 use warnings;
 
-our $VERSION = '0.004_01';
+our $VERSION = '0.004_02';
 $VERSION = eval $VERSION;
 
 use Carp;
