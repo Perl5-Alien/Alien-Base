@@ -102,13 +102,13 @@
    "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
-         "web" : "http://github.com/jberger/Alien-Base/issues"
+         "web" : "http://github.com/Perl5-Alien/Alien-Base/issues"
       },
       "license" : [
          "http://dev.perl.org/licenses/"
       ],
       "repository" : {
-         "url" : "http://github.com/jberger/Alien-Base"
+         "url" : "http://github.com/Perl5-Alien/Alien-Base"
       }
    },
    "version" : "0.004_02"
