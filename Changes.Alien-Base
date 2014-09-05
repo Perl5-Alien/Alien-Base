@@ -4,7 +4,7 @@ Revision history for Perl module Alien::Base.
   - fixed MSWin32 specific bug introduced in 0.004_01 (plicease gh#59)
   - use pure perl PkgConfig as an alternative to pkg-config if the latter
     is not provided by operating system (plicease gh#61)
-  - support SHA-1/256 sum checks for downloads (valisnkumar++ gh#33, gh#60)
+  - support SHA-1/256 sum checks for downloads (vikasnkumar++ gh#33, gh#60)
 
 0.004_01  Sep 04, 2014
   - Libraries in the share directory are preferred over the system library
