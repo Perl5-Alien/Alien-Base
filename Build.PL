@@ -37,8 +37,8 @@ my %build_args = (
   },
   meta_merge => {
     resources  => {
-      repository => "http://github.com/jberger/Alien-Base",
-      bugtracker => "http://github.com/jberger/Alien-Base/issues",
+      repository => "http://github.com/Perl5-Alien/Alien-Base",
+      bugtracker => "http://github.com/Perl5-Alien/Alien-Base/issues",
     },
     no_index => {
       file      => [ 'README.pod' ],

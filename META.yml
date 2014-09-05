@@ -70,7 +70,7 @@ requires:
   parent: '0'
   perl: v5.8.1
 resources:
-  bugtracker: http://github.com/jberger/Alien-Base/issues
+  bugtracker: http://github.com/Perl5-Alien/Alien-Base/issues
   license: http://dev.perl.org/licenses/
-  repository: http://github.com/jberger/Alien-Base
+  repository: http://github.com/Perl5-Alien/Alien-Base
 version: 0.004_02

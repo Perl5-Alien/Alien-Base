@@ -848,7 +848,7 @@ L<Alien::Base>
 
 =head1 SOURCE REPOSITORY
 
-L<http://github.com/jberger/Alien-Base>
+L<http://github.com/Perl5-Alien/Alien-Base>
 
 =head1 AUTHOR
 
