@@ -323,8 +323,11 @@ sub ACTION_alien_install {
 
   return if $self->config_data( 'install_type' ) eq 'system';
 
+  my $destdir = $self->destdir;
+
   {
     my $target = $self->alien_library_destination;
+    $target = File::Spec->catdir($destdir, $target) if defined $destdir;
     local $CWD = $target;
 
     # The only form of introspection that exists is to see that the README file
@@ -337,13 +340,16 @@ sub ACTION_alien_install {
 
   {
     local $CWD = $self->config_data( 'working_directory' );
+    local $ENV{DESTDIR} = $destdir if defined $destdir;
     print "Installing library to $CWD ... ";
     $self->alien_do_commands('install') or die "Failed\n";
     print "Done\n";
   }
   
   if ( $self->alien_isolate_dynamic ) {
-    local $CWD = $self->alien_library_destination;
+    my $target = $self->alien_library_destination;
+    $target = File::Spec->catdir($destdir, $target) if defined $destdir;
+    local $CWD = $target;
     print "Isolating dynamic libraries ... ";
     mkdir 'dynamic' unless -d 'dynamic';
     foreach my $dir (qw( bin lib )) {
