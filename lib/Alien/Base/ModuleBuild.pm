@@ -462,6 +462,7 @@ sub alien_library_destination {
 
   my $dist_name = $self->dist_name;
   my $dest = File::Spec->catdir( $lib_dir, qw/auto share dist/, $dist_name );
+  $dest =~ s{\\}{/}g if $^O eq 'MSWin32';
   return $dest;
 }
 
