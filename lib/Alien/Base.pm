@@ -55,7 +55,7 @@ sub import {
 
   push @DynaLoader::dl_resolve_using, @libpaths;
 
-  my @librefs = map { DynaLoader::dl_load_file( $_, 0x01 ) } @libpaths;
+  my @librefs = map { DynaLoader::dl_load_file( $_, 0x01 ) } grep !/\.(a|lib)$/, @libpaths;
   push @DynaLoader::dl_librefs, @librefs;
 
 }

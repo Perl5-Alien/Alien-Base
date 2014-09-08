@@ -22,6 +22,7 @@ my $path = $builder->alien_library_destination;
 
 # this is not good enough, I really wish I could introspect File::ShareDir, then again, I wouldn't need this test!
 my $path_to_share = File::Spec->catdir( qw/auto share dist My-Test/ );
+$path_to_share =~ s{\\}{/}g if $^O eq 'MSWin32';
 like $path, qr/\Q$path_to_share\E/, 'path looks good';
 
 
