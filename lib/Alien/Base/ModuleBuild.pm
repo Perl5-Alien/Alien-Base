@@ -724,7 +724,7 @@ sub alien_find_lib_paths {
   my @files =     
     map { File::Spec->abs2rel( $_, $dir ) }  # make relative to $dir
     grep { ! -d }
-    @{ $self->rscan_dir( $dir, $file_pattern ) };
+    @{ $self->_rscan_destdir( $dir, $file_pattern ) };
 
   my (@so_files, @lib_paths, @inc_paths);
   for (@files) {
@@ -762,12 +762,18 @@ sub alien_refresh_packlist {
   my $self = shift;
   my $dir = shift || croak "Must specify a directory to include in packlist";
 
-  my $inst = ExtUtils::Installed->new;
+  my %installed_args;
+  $installed_args{extra_libs} = [map { File::Spec->catdir($self->destdir, $_) } @INC]
+    if defined $self->destdir;
+
+  my $inst = ExtUtils::Installed->new( %installed_args );
   my $packlist = $inst->packlist( $self->module_name );
   print "Using " .  $packlist->packlist_file . "\n";
 
   my $changed = 0;
-  my $files = $self->rscan_dir($dir);
+  my $files = $self->_rscan_destdir($dir);
+  $files = [ map { File::Spec->catdir($self->destdir, $_) } @$files ]
+    if defined $self->destdir;
   for my $file (@$files) {
     next if $packlist->{$file};
     print "Adding $file to packlist\n"; 
@@ -776,6 +782,16 @@ sub alien_refresh_packlist {
   };
 
   $packlist->write if $changed;
+}
+
+sub _rscan_destdir {
+  my($self, $dir, $pattern) = @_;
+  my $destdir = $self->destdir;
+  $dir = File::Spec->catdir($destdir, $dir) if defined $destdir;
+  $dir =~ s{\\}{/}g if $^O eq 'MSWin32';
+  my $files = $self->rscan_dir($dir, $pattern);
+  $files = [ map { s/^$destdir//; $_ } @$files ] if defined $destdir;
+  $files;
 }
 
 1;
