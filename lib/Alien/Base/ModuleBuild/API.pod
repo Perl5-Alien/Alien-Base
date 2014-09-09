@@ -71,18 +71,6 @@ These parameters, if specified, augment the information found by F<pkg-config>. 
 
 A hashref or arrayref of hashrefs defining the repositories used to find and fetch library tarballs (or zipballs etc.). These attributes are used to create C<Alien::Base::ModuleBuild::Repository> objects (or more likely, subclasses thereof). Which class is created is governed by the C<protocol> attribute and the C<alien_repository_class> property below. Available attributes are:
 
-=item alien_isolate_dynamic
-
-[version 0.005]
-
-If set to true, then dynamic libraries will be moved from the C<lib> directory to a separate C<dynamic> directory.  This makes them available for FFI modules (see L<FFI::Raw>), while preferring static libraries when creating XS extensions.
-
-=item alien_autoconf_with_pic
-
-[version 0.005]
-
-Add C<--with-pic> option to autoconf style C<configure> script when called.  This is the default, and normally a good practice.  Normally autoconf will ignore this and any other options that it does not recognize, but some non-autoconf C<configure> scripts may complain.
-
 =over
 
 =item protocol
@@ -118,6 +106,18 @@ This key may be specified with the C<exact_filename> key when the version of the
 This attribute is a string telling the repository validator which platform the repository serves. This may be the string C<src> (the default) for platform-independent source files, or a string which matches the L<Module::Build> method C<os_type> (e.g. "Windows", "Unix", "MacOS", "VMS").
 
 =back
+
+=item alien_isolate_dynamic
+
+[version 0.005]
+
+If set to true, then dynamic libraries will be moved from the C<lib> directory to a separate C<dynamic> directory.  This makes them available for FFI modules (see L<FFI::Raw>), while preferring static libraries when creating XS extensions.
+
+=item alien_autoconf_with_pic
+
+[version 0.005]
+
+Add C<--with-pic> option to autoconf style C<configure> script when called.  This is the default, and normally a good practice.  Normally autoconf will ignore this and any other options that it does not recognize, but some non-autoconf C<configure> scripts may complain.
 
 =item alien_repository_default
 
