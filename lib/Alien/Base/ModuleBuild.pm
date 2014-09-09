@@ -327,6 +327,8 @@ sub ACTION_alien_install {
 
   {
     my $target = $self->alien_library_destination;
+    # prefix the target directory with $destdir so that package builds
+    # can install into a fake root
     $target = File::Spec->catdir($destdir, $target) if defined $destdir;
     local $CWD = $target;
 
@@ -349,6 +351,8 @@ sub ACTION_alien_install {
   
   if ( $self->alien_isolate_dynamic ) {
     my $target = $self->alien_library_destination;
+    # prefix the target directory with $destdir so that package builds
+    # can install into a fake root
     $target = File::Spec->catdir($destdir, $target) if defined $destdir;
     local $CWD = $target;
     print "Isolating dynamic libraries ... ";
@@ -775,6 +779,11 @@ sub alien_refresh_packlist {
 
   my $changed = 0;
   my $files = $self->_rscan_destdir($dir);
+  # This is kind of strange, but MB puts the destdir paths in the
+  # packfile, when arguably it should not.  Usually you will want 
+  # to turn off packlists when you you are building an rpm anyway,
+  # but for the sake of maximum compat with MB we add the destdir
+  # back in after _rscan_destdir has stripped it out.
   $files = [ map { File::Spec->catdir($self->destdir, $_) } @$files ]
     if defined $self->destdir;
   for my $file (@$files) {
