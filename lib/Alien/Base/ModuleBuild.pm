@@ -340,7 +340,8 @@ sub ACTION_alien_install {
 
   {
     local $CWD = $self->config_data( 'working_directory' );
-    local $ENV{DESTDIR} = $destdir if defined $destdir;
+    local $ENV{DESTDIR} = $ENV{DESTDIR};
+    $ENV{DESTDIR} = $destdir if defined $destdir;
     print "Installing library to $CWD ... ";
     $self->alien_do_commands('install') or die "Failed\n";
     print "Done\n";
