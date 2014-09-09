@@ -1,6 +1,7 @@
 Revision history for Perl module Alien::Base.
 
-  - fixed test error introduced in 0.004_03 expressed on cygwin (plicease)
+0.004_04  Sep 09, 2014
+  - fixed test error introduced in 0.004_03 expressed on cygwin (plicease gh#67)
 
 0.004_03  Sep 09, 2014
   - added support for destdir (plicease gh#65, gh#39)
