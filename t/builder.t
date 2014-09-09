@@ -71,7 +71,7 @@ use warnings;
 use File::Copy qw( copy );
 
 my $cmd = shift;
-@ARGV = grep { s/DESTDIR/$ENV{DESTDIR}/eg; $_ } @ARGV;
+@ARGV = map { s/DESTDIR/$ENV{DESTDIR}/g; $_ } @ARGV;
 print "% $cmd @ARGV\n";
 if($cmd eq 'mkdir')    { mkdir shift } 
 elsif($cmd eq 'touch') { open my $fh, '>', shift; close $fh; }
