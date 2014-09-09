@@ -6,6 +6,7 @@ use Test::More;
 use Alien::Base::ModuleBuild;
 use File::chdir;
 use File::Temp ();
+use File::Path qw( rmtree );
 
 my $dir = File::Temp->newdir;
 local $CWD = "$dir";
@@ -22,8 +23,8 @@ sub builder { return Alien::Base::ModuleBuild->new( %basic, @_ ) }
 #  Temporary Directories  #
 ###########################
 
-{
-  unlink qw/_alien _share/;
+subtest 'default temp and share' => sub {
+  rmtree [qw/_alien _share/], 0, 1;
 
   my $builder = builder;
 
@@ -39,11 +40,11 @@ sub builder { return Alien::Base::ModuleBuild->new( %basic, @_ ) }
   ok( ! -d '_alien', "Removes _alien dir");
   ok( ! -d '_share', "Removes _share dir");
 
-  unlink qw/_alien _share/;
-}
+  rmtree [qw/_alien _share/], 0, 1;
+};
 
-{
-  unlink qw/_test_temp _test_share/;
+subtest 'override temp and share' => sub {
+  rmtree [qw/_test_temp _test_share/], 0, 1;
 
   my $builder = builder(
     alien_temp_dir => '_test_temp',
@@ -58,8 +59,8 @@ sub builder { return Alien::Base::ModuleBuild->new( %basic, @_ ) }
   ok( ! -d '_test_temp', "Removes _test_temp dir");
   ok( ! -d '_test_share', "Removes _test_share dir");
 
-  unlink qw/_test_temp _test_share/;
-}
+  rmtree [qw/_test_temp _test_share/], 0, 1;
+};
 
 done_testing;
 
