@@ -1,6 +1,12 @@
 Revision history for Perl module Alien::Base.
 
-0.004_01  Sep 04, 2014
+0.004_03  Sep 09, 2014
+  - added support for destdir (plicease gh#65, gh#39)
+  - no longer attempt to dl_load static libraries, which aside from being
+    wrong was triggering a dialog warning in windows (plicease gh#64)
+  - use / instead of \ on MSWin32 (plicease gh#64)
+
+0.004_02  Sep 04, 2014
   - fixed MSWin32 specific bug introduced in 0.004_01 (plicease gh#59)
   - use pure perl PkgConfig as an alternative to pkg-config if the latter
     is not provided by operating system (plicease gh#61)
