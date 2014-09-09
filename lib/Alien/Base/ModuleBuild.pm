@@ -259,7 +259,7 @@ sub ACTION_alien_code {
     $ae->extract;
     print "Done\n";
 
-    my $extract_path = $ae->extract_path;
+    my $extract_path = _catdir($ae->extract_path);
     $self->config_data( working_directory => $extract_path );
     $CWD = $extract_path;
 
@@ -472,8 +472,7 @@ sub alien_library_destination {
     : $self->install_destination('lib');
 
   my $dist_name = $self->dist_name;
-  my $dest = File::Spec->catdir( $lib_dir, qw/auto share dist/, $dist_name );
-  $dest =~ s{\\}{/}g if $^O eq 'MSWin32';
+  my $dest = _catdir( $lib_dir, qw/auto share dist/, $dist_name );
   return $dest;
 }
 
@@ -639,7 +638,7 @@ sub alien_configure {
 sub alien_load_pkgconfig {
   my $self = shift;
 
-  my $dir = $self->config_data( 'working_directory' );
+  my $dir = _catdir($self->config_data( 'working_directory' ));
   my $pc_files = $self->rscan_dir( $dir, qr/\.pc$/ );
 
   my %pc_objects = map { 
@@ -670,12 +669,13 @@ sub alien_refresh_manual_pkgconfig {
 
 sub alien_generate_manual_pkgconfig {
   my $self = shift;
-  my ($dir) = @_;
+  my ($dir) = _catdir(shift);
 
   my $paths = $self->alien_find_lib_paths($dir);
 
   my @L = 
-    map { File::Spec->catdir( '-L${pcfiledir}', $_ ) }
+    map { "-L$_" }
+    map { _catdir( '${pcfiledir}', $_ ) }
     @{$paths->{lib}};
 
   my $provides_libs = $self->alien_provides_libs;
@@ -689,7 +689,8 @@ sub alien_generate_manual_pkgconfig {
   my $libs = join( ' ', @L, $provides_libs );
 
   my @I = 
-    map { File::Spec->catdir( '-I${pcfiledir}', $_ ) }
+    map { "-I$_" }
+    map { _catdir( '${pcfiledir}', $_ ) }
     @{$paths->{inc}};
 
   my $provides_cflags = $self->alien_provides_cflags;
@@ -800,11 +801,22 @@ sub alien_refresh_packlist {
 sub _rscan_destdir {
   my($self, $dir, $pattern) = @_;
   my $destdir = $self->destdir;
-  $dir = File::Spec->catdir($destdir, $dir) if defined $destdir;
-  $dir =~ s{\\}{/}g if $^O eq 'MSWin32';
+  $dir = _catdir($destdir, $dir) if defined $destdir;
   my $files = $self->rscan_dir($dir, $pattern);
   $files = [ map { s/^$destdir//; $_ } @$files ] if defined $destdir;
   $files;
+}
+
+# File::Spec uses \ as the file separator on MSWin32, which makes sense
+# since it is the default "native" file separator, but in practice / is
+# supported everywhere that matters and is significantly less problematic
+# in a number of common use cases (e.g. shell quoting).  This is a short
+# cut _catdir for this rather common pattern where you want catdir with
+# / as the file separator on Windows.
+sub _catdir {
+  my $dir = File::Spec->catdir(@_);
+  $dir =~ s{\\}{/}g if $^O eq 'MSWin32';
+  $dir;
 }
 
 1;

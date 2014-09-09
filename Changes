@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+  - additional use / instead of \ on MSWin32 (plicease gh#68)
+
 0.004_04  Sep 09, 2014
   - fixed test error introduced in 0.004_03 expressed on cygwin (plicease gh#67)
 
