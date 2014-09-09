@@ -63,6 +63,7 @@ subtest 'override temp and share' => sub {
 };
 
 subtest 'destdir' => sub {
+  plan skip_all => 'TODO on MSWin32' if $^O eq 'MSWin32';
 
   open my $fh, '>', 'build.pl';
   print $fh <<'EOF';
@@ -83,6 +84,7 @@ EOF
   
   mkdir 'src';
   open $fh, '>', 'src/foo.tar.gz';
+  binmode $fh;
   print $fh unpack("u", 
               q{M'XL(`%)-#E0``TO+S]=GH#$P,#`P-S55`-*&YJ8&R#0<*!@:F1@8FYB8F1J:} .
               q{M*A@`.>:&#`JFM'88")06ER06`9V2GY.369R.6QTA>:@_X/00`6G`^-=+K<@L} .
