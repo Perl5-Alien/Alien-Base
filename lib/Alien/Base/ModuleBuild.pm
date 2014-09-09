@@ -762,6 +762,8 @@ sub alien_refresh_packlist {
   my $self = shift;
   my $dir = shift || croak "Must specify a directory to include in packlist";
 
+  return unless $self->create_packlist;
+
   my %installed_args;
   $installed_args{extra_libs} = [map { File::Spec->catdir($self->destdir, $_) } @INC]
     if defined $self->destdir;
