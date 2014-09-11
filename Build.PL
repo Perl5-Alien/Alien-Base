@@ -49,7 +49,7 @@ my %build_args = (
 );
 
 unless (`pkg-config --version` && $? == 0) {
-  $build_args{'requires'}->{'PkgConfig'} = 0;
+  $build_args{'requires'}->{'PkgConfig'} = '0.07520';
 }
 
 my $builder = Module::Build->new(%build_args);
