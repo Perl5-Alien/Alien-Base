@@ -134,7 +134,7 @@ sub import {
 
 =head1 METHODS
 
-In the example snipits here, C<Alien::MyLibrary> represents any
+In the example snippets here, C<Alien::MyLibrary> represents any
 subclass of L<Alien::Base>.
 
 =head2 dist_dir
@@ -142,7 +142,7 @@ subclass of L<Alien::Base>.
  my $dir = Alien::MyLibrary->dist_dir;
 
 Returns the directory that contains the install root for
-the packaged software, if it was built from install (ie if
+the packaged software, if it was built from install (i.e., if
 C<install_type> is C<share>).
 
 =cut
