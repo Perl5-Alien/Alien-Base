@@ -33,7 +33,7 @@ Alien::Base - Base classes for Alien:: modules
 
  1;
 
-(For a synopsis of the C<Build.Pl> that comes with your 
+(For a synopsis of the C<Build.PL> that comes with your
 C<Alien::MyLibrary> see L<Alien::Base::ModuleBuild>)
 
 Then an C<MyLibrary::XS> can use C<Alien::MyLibrary> in their C<Build.PL>:
