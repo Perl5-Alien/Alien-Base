@@ -33,6 +33,9 @@ Alien::Base - Base classes for Alien:: modules
 
  1;
 
+(For a synopsis of the C<Build.Pl> that comes with your 
+C<Alien::MyLibrary> see L<Alien::Base::ModuleBuild>)
+
 Then an C<MyLibrary::XS> can use C<Alien::MyLibrary> in their C<Build.PL>:
 
  use Alien::MyLibrary;
@@ -47,7 +50,7 @@ Then an C<MyLibrary::XS> can use C<Alien::MyLibrary> in their C<Build.PL>:
  
  $builder->create_build_script;
 
-Or if you prefer L<ExtUtils::MakeMaker>:
+Or if you prefer L<ExtUtils::MakeMaker>, the C<Makefile.PL>:
 
  use Alien::MyLibrary
  use ExtUtils::MakeMaker;
