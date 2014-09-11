@@ -109,7 +109,8 @@
       ],
       "repository" : {
          "url" : "http://github.com/Perl5-Alien/Alien-Base"
-      }
+      },
+      "x_MailingList" : "https://groups.google.com/forum/#!forum/perl5-alien"
    },
    "version" : "0.004_05"
 }
