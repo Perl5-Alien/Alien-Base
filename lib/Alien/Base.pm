@@ -204,7 +204,7 @@ sub libs {
   return $self->_keyword('Libs', @_);
 }
 
-=head2 instal_type
+=head2 install_type
 
  my $install_type = Alien::MyLibrary->install_type;
 
