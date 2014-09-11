@@ -18,6 +18,78 @@ use Capture::Tiny 0.17 qw/capture_merged/;
 use Text::ParseWords qw/shellwords/;
 use Perl::OSType qw/os_type/;
 
+=head1 NAME
+
+Alien::Base - Base classes for Alien:: modules
+
+=head1 SYNOPSIS
+
+ package Alien::MyLibrary;
+
+ use strict;
+ use warnings;
+
+ use parent 'Alien::Base';
+
+ 1;
+
+(For a synopsis of the C<Build.PL> that comes with your
+C<Alien::MyLibrary> see L<Alien::Base::ModuleBuild>)
+
+Then an C<MyLibrary::XS> can use C<Alien::MyLibrary> in their C<Build.PL>:
+
+ use Alien::MyLibrary;
+ use Module::Build 0.28; # need at least 0.28
+ 
+ my $builder = Module::Build->new(
+   ...
+   extra_compiler_flags => Alien::MyLibrary->cflags,
+   extra_linker_flags   => Alien::MyLibrary->libs,
+   ...
+ );
+ 
+ $builder->create_build_script;
+
+Or if you prefer L<ExtUtils::MakeMaker>, the C<Makefile.PL>:
+
+ use Alien::MyLibrary
+ use ExtUtils::MakeMaker;
+ 
+ WriteMakefile(
+   ...
+   CFLAGS => Alien::MyLibrary->cflags,
+   LIBS   => ALien::MyLibrary->libs,
+   ...
+ );
+
+In your C<MyLibrary::XS> module, you may need to use L<Alien::MyLibrary> if
+dynamic libraries are used:
+
+ package MyLibrary::XS;
+ 
+ use Alien::MyLibrary;
+ 
+ ...
+
+Or you can use it from an FFI module:
+
+ package MyLibrary::FFI;
+ 
+ use Alien::MyLibrary;
+ use FFI::Raw;
+ 
+ my($dll) = Alien::MyLibrary->dynamic_libs;
+ 
+ FFI::Raw->new($dll, 'my_library_function', FFI::Raw::void);
+
+=head1 DESCRIPTION
+
+L<Alien::Base> comprises base classes to help in the construction of C<Alien::> modules. Modules in the L<Alien> namespace are used to locate and install (if necessary) external libraries needed by other Perl modules.
+
+This is the documentation for the L<Alien::Base> module itself. To learn more about the system as a whole please see L<Alien::Base::Authoring>.
+
+=cut
+
 sub import {
   my $class = shift;
 
@@ -60,6 +132,21 @@ sub import {
 
 }
 
+=head1 METHODS
+
+In the example snipits here, C<Alien::MyLibrary> represents any
+subclass of L<Alien::Base>.
+
+=head2 dist_dir
+
+ my $dir = Alien::MyLibrary->dist_dir;
+
+Returns the directory that contains the install root for
+the packaged software, if it was built from install (ie if
+C<install_type> is C<share>).
+
+=cut
+
 sub dist_dir {
   my $class = shift;
 
@@ -77,15 +164,68 @@ sub dist_dir {
 
 sub new { return bless {}, $_[0] }
 
+=head2 cflags
+
+ my $cflags = Alien::MyLibrary->cflags;
+
+ use Text::ParseWords qw( shellwords );
+ my @cflags = shellwords( Alien::MyLibrary->cflags );
+
+Returns the C compiler flags necessary to compile an XS
+module using the alien software.  If you need this in list
+form (for example if you are calling system with a list
+argument) you can pass this value into C<shellwords> from
+the Perl core L<Text::ParseWords> module.
+
+=cut
+
 sub cflags {
   my $self = shift;
   return $self->_keyword('Cflags', @_);
 }
 
+=head2 libs
+
+ my $libs = Alien::MyLibrary->libs;
+
+ use Text::ParseWords qw( shellwords );
+ my @cflags = shellwords( Alien::MyLibrary->libs );
+
+Returns the library linker flags necessary to link an XS
+module against the alien software.  If you need this in list
+form (for example if you are calling system with a list
+argument) you can pass this value into C<shellwords> from
+the Perl core L<Text::ParseWords> module.
+
+=cut
+
 sub libs {
   my $self = shift;
   return $self->_keyword('Libs', @_);
 }
+
+=head2 install_type
+
+ my $install_type = Alien::MyLibrary->install_type;
+
+Returns the install type that was used when C<Alien::MyLibrary> was
+installed.  Types include:
+
+=over 4
+
+=item system
+
+The library was provided by the operating system
+
+=item share
+
+The library was not available when C<Alien::MyLibrary> was installed, so
+it was built from source code, either downloaded from the Internet
+or bundled with C<Alien::MyLibrary>.
+
+=back
+
+=cut
 
 sub install_type {
   my $self = shift;
@@ -155,6 +295,16 @@ sub pkgconfig {
   }
 }
 
+=head2 config
+
+ my $value = Alien::MyLibrary->config($key);
+
+Returns the configuration data as determined during the install
+of L<Alien::MyLibrary>.  For the appropriate config keys, see 
+L<Alien::Base::ModuleBuild::API#CONFIG DATA>.
+
+=cut
+
 # helper method to call Alien::MyLib::ConfigData->config(@_)
 sub config {
   my $class = shift;
@@ -195,6 +345,18 @@ sub split_flags_windows {
   shellwords($line);
 }
 
+=head2 dynamic_libs
+
+ my @dlls = Alien::MyLibrary->dynamic_libs;
+ my($dll) = Alien::MyLibrary->dynamic_libs;
+
+Returns a list of the dynamic library or shared object files for the
+alien software.  Currently this only works for when C<install_type> is
+C<share> and C<alien_isolate_dynamic> is used (See
+L<Alien::Base::ModuleBuild::API#CONSTRUCTOR> for all build arguments).
+
+=cut
+
 sub dynamic_libs {
   my ($class) = @_;
   my $dir = File::Spec->catfile($class->dist_dir, 'dynamic');
@@ -210,26 +372,34 @@ sub dynamic_libs {
 __END__
 __POD__
 
-=head1 NAME
+=head1 SUPPORT AND CONTRIBUTING
 
-Alien::Base - Base classes for Alien:: modules
+If you find a bug, please report it on the projects issue tracker on GitHub:
 
-=head1 SYNOPSIS
+=over 4
 
- package Alien::MyLibrary;
+=item L<https://github.com/Perl5-Alien/Alien-Base/issues>
 
- use strict;
- use warnings;
+=back
 
- use parent 'Alien::Base';
+Development is discussed on the projects google groups.  This is also
+a reasonable place to post a question if you don't want to open an issue
+in GitHub.
 
- 1;
+=over 4
 
-=head1 DESCRIPTION
+=item L<https://groups.google.com/forum/#!forum/perl5-alien>
 
-L<Alien::Base> comprises base classes to help in the construction of C<Alien::> modules. Modules in the L<Alien> namespace are used to locate and install (if necessary) external libraries needed by other Perl modules.
+=back
 
-This is the documentation for the L<Alien::Base> module itself. To learn more about the system as a whole please see L<Alien::Base::Authoring>.
+If you have implemented a new feature or fixed a bug, please open a pull 
+request.
+
+=over 4
+
+=item L<https://github.com/Perl5-Alien/Alien-Base/pulls>
+
+=back
 
 =head1 SEE ALSO
 
@@ -244,10 +414,6 @@ L<Module::Build>
 L<Alien>
 
 =back
-
-=head1 SOURCE REPOSITORY
-
-L<http://github.com/Perl5-Alien/Alien-Base>
 
 =head1 AUTHOR
 
