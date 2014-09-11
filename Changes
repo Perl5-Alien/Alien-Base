@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+  - improved documentation coverage
+
 0.004_05  Sep 09, 2014
   - additional use / instead of \ on MSWin32 (plicease gh#68)
 

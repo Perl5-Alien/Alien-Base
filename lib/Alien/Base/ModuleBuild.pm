@@ -830,7 +830,59 @@ Alien::Base::ModuleBuild - A Module::Build subclass for building Alien:: modules
 
 =head1 SYNOPSIS
 
+In your Build.PL:
+
+ use Alien::Base::ModuleBuild;
+ 
+ my $builder = Alien::Base::Module::Build->new(
+   module_name => 'Alien::MyLibrary',
+   
+   configure_requires => {
+     'Alien::Base' =>   '0.005',
+     'Module::Build' => '0.28'
+   },
+   requires => {
+     'Alien::Base' => '0.005',
+   },
+   
+   alien_name => 'mylibrary', # the pkg-config name if you want
+                              # to use pkg-config to discover
+                              # system version of the mylibrary
+   
+   alien_repository => {
+     protocol => 'http',
+     host     => 'myhost.org',
+     location => '/path/to/tarballs',
+     pattern  => qr{^mylibrary-([0-9\.]+)\.tar\.gz$},
+   },
+   
+   # this is the default:
+   alien_build_commands => [
+     "%c --prefix=%s", # %c is a platform independent version of ./configure
+     "make",
+   ],
+   
+   # this is the default for install:
+   alien_install_commands => [
+     "make install",
+   ],
+   
+   alien_isolate_dynamic => 1,
+ );
+
 =head1 DESCRIPTION
+
+This is a subclass of L<Module::Build>, that with L<Alien::Base> allows
+for easy creation of Alien distributions.  This module is used during the
+build step of your distribution.  When properly configured it will
+
+=over 4
+
+=item use pkg-config to find and use the system version of the library
+
+=item download, build and install the library if the system does not provide it
+
+=back
 
 =head1 GUIDE TO DOCUMENTATION
 

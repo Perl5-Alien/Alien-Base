@@ -39,6 +39,7 @@ my %build_args = (
     resources  => {
       repository => "http://github.com/Perl5-Alien/Alien-Base",
       bugtracker => "http://github.com/Perl5-Alien/Alien-Base/issues",
+      x_MailingList => 'https://groups.google.com/forum/#!forum/perl5-alien',
     },
     no_index => {
       file      => [ 'README.pod' ],
