@@ -66,6 +66,7 @@ requires:
   Module::Build: '0.36'
   Perl::OSType: '0'
   Sort::Versions: '0'
+  Text::ParseWords: '3.26'
   URI: '0'
   parent: '0'
   perl: v5.8.1

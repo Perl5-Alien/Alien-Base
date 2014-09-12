@@ -24,6 +24,7 @@ my %build_args = (
     'File::ShareDir'   => 0,
     'Archive::Extract' => 0,
     'HTTP::Tiny'       => 0,
+    'Text::ParseWords' => '3.26',
   },
   test_requires => {
     'Test::More'       => 0.94,
