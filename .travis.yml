@@ -24,10 +24,11 @@ perl:
 script:
   - perl Build.PL
   - ./Build
-  - ./Build test
+  - HARNESS_IS_VERBOSE=1 ./Build test
   - ./Build install
   - cd Alien-Base-Extras/Acme-Alien-DontPanic; cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
   - cd Alien-Base-Extras/Acme-Ford-Prefect;    cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
+  - prove -bv t/inline.t
 
 env:
   - ALIEN_FORCE=1
