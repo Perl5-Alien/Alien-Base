@@ -8,7 +8,8 @@ BEGIN {
 }
 
 use Acme::Alien::DontPanic;
-use Inline C => 'DATA', with => 'Acme::Alien::DontPanic';
+use Inline with => 'Acme::Alien::DontPanic';
+use Inline C => 'DATA';
 
 is string_answer(), "the answer to life the universe and everything is 42";
 
