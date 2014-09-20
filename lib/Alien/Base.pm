@@ -367,6 +367,15 @@ sub dynamic_libs {
   grep { ! -l $_ } map { File::Spec->catfile($dir, $_) } @dlls;
 }
 
+sub Inline {
+  my ($class, $language) = @_;
+  return if $language ne 'C';
+  return {
+    CCFLAGSEX => $class->cflags,
+    LIBS      => $class->libs,
+  };
+}
+
 1;
 
 __END__
