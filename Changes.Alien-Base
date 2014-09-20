@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+  - support for Inline 'with'
+  - fix prereqs for Text::ParseWords and PkgConfig
+
 0.005  Sep 11, 2014
   - improved documentation coverage
 
