@@ -4,7 +4,7 @@ use Test::More;
 
 BEGIN {
   eval { require Inline; require Inline::C; } || plan skip_all => 'test requires Inline and Inline::C';
-  eval { require Acme::Alien::DontPanic; } || plan skip_all => 'test requires Acme::Alien::DontPanic '.$@;
+  eval { require Acme::Alien::DontPanic; } || plan skip_all => 'test requires Acme::Alien::DontPanic';
 }
 
 use Acme::Alien::DontPanic;
