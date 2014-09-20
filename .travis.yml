@@ -8,7 +8,8 @@ install:
   - make
   - sudo make install
   - cd ..
-  - cpanm --installdeps .
+  - cpanm -n --installdeps .
+  - cpanm -n Inline::C
 
 perl:
   - "5.8"
