@@ -369,7 +369,7 @@ sub dynamic_libs {
 
 sub Inline {
   my ($class, $language) = @_;
-  return if $language ne 'C';
+  return if $language !~ /^(C|CPP)$/;
   return {
     CCFLAGSEX => $class->cflags,
     LIBS      => $class->libs,

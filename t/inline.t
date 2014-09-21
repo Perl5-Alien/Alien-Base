@@ -9,9 +9,10 @@ BEGIN {
 
 use Acme::Alien::DontPanic;
 use Inline with => 'Acme::Alien::DontPanic';
-use Inline C => 'DATA';
+use Inline C => 'DATA', ENABLE => 'AUTOWRAP';
 
-is string_answer(), "the answer to life the universe and everything is 42";
+is string_answer(), "the answer to life the universe and everything is 42", "indirect call";
+is answer(), 42, "direct call";
 
 done_testing;
 
@@ -27,3 +28,5 @@ char *string_answer()
   sprintf(buffer, "the answer to life the universe and everything is %d", answer());
   return buffer;
 }
+
+extern int answer();
