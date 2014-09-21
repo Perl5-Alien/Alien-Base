@@ -3,7 +3,7 @@ use warnings;
 use Test::More;
 
 BEGIN {
-  eval { require Inline; require Inline::CPP; } || plan skip_all => 'test requires Inline and Inline::CPP';
+  eval q{ use Inline 0.56 (); require Inline::CPP; } || plan skip_all => 'test requires Inline 0.56 and Inline::CPP';
   eval q{ use Acme::Alien::DontPanic 0.007; 1 } || plan skip_all => 'test requires Acme::Alien::DontPanic 0.007';
   plan skip_all => 'test requires that Acme::Alien::DontPanic was build with Alien::Base 0.006'
     unless defined Acme::Alien::DontPanic->Inline("CPP")->{AUTO_INCLUDE};
@@ -11,7 +11,7 @@ BEGIN {
 
 
 use Acme::Alien::DontPanic;
-use Inline with => 'Acme::Alien::DontPanic';
+use Inline 0.56 with => 'Acme::Alien::DontPanic';
 use Inline CPP => 'DATA', ENABLE => 'AUTOWRAP';
 
 is Foo->new->string_answer, "the answer to life the universe and everything is 42", 'indirect';
