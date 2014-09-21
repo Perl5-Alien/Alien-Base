@@ -54,4 +54,5 @@ unless (`pkg-config --version` && $? == 0) {
 }
 
 my $builder = Module::Build->new(%build_args);
+$builder->add_to_cleanup( '_Inline' );
 $builder->create_build_script;
