@@ -7,8 +7,6 @@ BEGIN {
   eval { require Acme::Alien::DontPanic; } || plan skip_all => 'test requires Acme::Alien::DontPanic';
 }
 
-plan skip_all => 'test is broken';
-
 use Acme::Alien::DontPanic;
 use Inline with => 'Acme::Alien::DontPanic';
 use Inline CPP => 'DATA', ENABLE => 'AUTOWRAP';
