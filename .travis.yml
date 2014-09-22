@@ -9,7 +9,7 @@ install:
   - sudo make install
   - cd ..
   - cpanm -n --installdeps .
-  - cpanm -n Inline::C
+  - cpanm -n Inline::C Inline::CPP
 
 perl:
   - "5.8"
@@ -24,12 +24,13 @@ perl:
 script:
   - perl Build.PL
   - ./Build
-  - HARNESS_IS_VERBOSE=1 ./Build test
+  - prove -bv t
   - ./Build install
   - cd Alien-Base-Extras/Acme-Alien-DontPanic; cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
   - cd Alien-Base-Extras/Acme-Ford-Prefect;    cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
-  - prove -bv t/inline.t
+  - cd ../..
+  - prove -bv t
 
 env:
-  - ALIEN_FORCE=1
-  - ALIEN_FORCE=0
+  - ALIEN_FORCE=1 LD_LIBRARY_PATH=/usr/local/lib
+  - ALIEN_FORCE=0 LD_LIBRARY_PATH=/usr/local/lib

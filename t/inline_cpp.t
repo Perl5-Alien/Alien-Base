@@ -7,14 +7,13 @@ BEGIN {
   eval { require Acme::Alien::DontPanic; } || plan skip_all => 'test requires Acme::Alien::DontPanic';
 }
 
+plan skip_all => 'test is broken';
+
 use Acme::Alien::DontPanic;
 use Inline with => 'Acme::Alien::DontPanic';
 use Inline CPP => 'DATA', ENABLE => 'AUTOWRAP';
 
-SKIP: {
-  skip "broken", 1;
-  is Foo->new->string_answer, "the answer to life the universe and everything is 42", 'indirect';
-}
+is Foo->new->string_answer, "the answer to life the universe and everything is 42", 'indirect';
 is answer(), 42, "direct";
 
 done_testing;
