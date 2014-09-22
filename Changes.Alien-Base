@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.005_01  Sep 22, 2014
   - fixes with static library detection when pkg-config is not available (plicease gh#79, gh#75)
   - support for Inline 'with' (plicease gh#71, gh#77, gh#78)
   - fix prereqs for Text::ParseWords and PkgConfig (plicease gh#73, gh#70)
