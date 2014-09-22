@@ -106,6 +106,9 @@ __PACKAGE__->add_property( 'alien_repository_class'   => {} );
 __PACKAGE__->add_property( 'alien_isolate_dynamic' => 0 );
 __PACKAGE__->add_property( 'alien_autoconf_with_pic' => 1 );
 
+# alien_inline_auto_include
+__PACKAGE__->add_property( 'alien_inline_auto_include' => [] );
+
 ################
 #  ConfigData  #
 ################
@@ -135,6 +138,10 @@ sub new {
 
   # setup additional temporary directories, and yes we have to add File::ShareDir manually
   $self->_add_prereq( 'requires', 'File::ShareDir', '1.00' );
+
+  # this just gets passed from the Build.PL to the config so that it can
+  # be used by the auto_include method
+  $self->config_data( 'inline_auto_include' => $self->alien_inline_auto_include );
 
   if (grep /(?<!\%)\%c/, @{ $self->alien_build_commands }) {
     $self->config_data( 'autoconf' => 1 );

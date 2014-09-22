@@ -77,3 +77,6 @@
 \b_alien/
 \b_share/
 
+# Avoid the temporary directory created by Inline
+\b_Inline
+

@@ -138,6 +138,12 @@ As the repositories in C<alien_repository> are converted to objects, this hash c
 
 Unlike most L<Module::Build> parameters, authors may specify only those keys which are to be overridden. If any of the above keys are not specified, the above defaults will be used.
 
+=item alien_inline_auto_include
+
+[version 0.006]
+
+Array reference containing the list of header files to be used automatically by C<Inline::C> and C<Inline::CPP>.
+
 =back
 
 =head2 PACKAGE AND ENVIRONMENT VARIABLES
