@@ -95,5 +95,33 @@ subtest 'Find with static libs only' => sub {
   ok( @files, "->keyword('Libs') finds mylib" );
 };
 
+$dir = do {
+  local $CWD;
+  push @CWD, qw/ t find_lib mixed /;
+  $CWD;
+};
+
+subtest 'Find with static libs and dynamic dir' => sub {
+  local $expected->{lib_files} = [sort qw/mylib otherlib/];
+
+  my $paths = $builder->alien_find_lib_paths($dir);
+  is_deeply( $paths, $expected, "found paths from extensions only" );
+  
+  my $pc = $builder->alien_generate_manual_pkgconfig($dir);
+  isa_ok($pc, 'Alien::Base::PkgConfig');
+
+  my $libs = $pc->keyword('Libs');
+  note "libs = $libs";
+
+  like( $libs, qr/-lmylib/, "->keyword('Libs') returns mylib" );
+
+  my ($L) = $libs =~ /-L(\S*)/g;
+  ok( -d $L,  "->keyword('Libs') finds mylib directory");
+  opendir(my $dh, $L);
+  my @files = grep { /mylib/ } readdir $dh;
+  ok( @files, "->keyword('Libs') finds mylib" );
+
+};
+
 done_testing;
 

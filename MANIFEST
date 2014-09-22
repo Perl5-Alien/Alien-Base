@@ -38,6 +38,14 @@ t/find_lib/dynamic/lib/libotherlib.so
 t/find_lib/dynamic/lib/onlypostdot.so.0
 t/find_lib/dynamic/lib/onlypredot.0.so
 t/find_lib/dynamic/lib/prepostdot.0.so.0
+t/find_lib/mixed/dynamic/libmylib.so.1.2.3
+t/find_lib/mixed/dynamic/libotherlib.so
+t/find_lib/mixed/include/mylib.h
+t/find_lib/mixed/include/otherlib.h
+t/find_lib/mixed/lib/dirlikelib.a/dontfindthis
+t/find_lib/mixed/lib/dirlikelib.so/dontfindthis
+t/find_lib/mixed/lib/libmylib.a
+t/find_lib/mixed/lib/libotherlib.a
 t/find_lib/static/include/mylib.h
 t/find_lib/static/include/otherlib.h
 t/find_lib/static/lib/dirlikelib.a/dontfindthis

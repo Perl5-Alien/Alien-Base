@@ -712,12 +712,17 @@ sub alien_generate_manual_pkgconfig {
   return $manual_pc;
 }
 
-sub _alien_file_pattern {
+sub _alien_file_pattern_dynamic {
   my $self = shift;
-  my $ext1 = $self->config('so'); #platform specific .so extension
-  my $ext2 = $self->config('lib_ext');
-  return qr/\.[\d.]*(?<=\.)$ext1[\d.]*(?<!\.)|(\.h|$ext2)$/;
+  my $ext = $self->config('so'); #platform specific .so extension
+  return qr/\.[\d.]*(?<=\.)$ext[\d.]*(?<!\.)|(\.h|$ext)$/;
 };
+
+sub _alien_file_pattern_static {
+  my $self = shift;
+  my $ext = quotemeta $self->config('lib_ext');
+  return qr/(\.h|$ext)$/;
+}
 
 sub alien_find_lib_paths {
   my $self = shift;
@@ -727,34 +732,43 @@ sub alien_find_lib_paths {
   my @libs;
   @libs = grep { s/^-l// } split /\s+/, $libs if $libs;
 
-  my $file_pattern = $self->_alien_file_pattern;
-
-  my @files =     
-    map { File::Spec->abs2rel( $_, $dir ) }  # make relative to $dir
-    grep { ! -d }
-    @{ $self->_rscan_destdir( $dir, $file_pattern ) };
-
   my (@lib_files, @lib_paths, @inc_paths);
-  for (@files) {
 
-    my ($file, $path, $ext) = fileparse( $_, $file_pattern );
-    next unless $ext; # just in case
+  foreach my $file_pattern ($self->_alien_file_pattern_static, $self->_alien_file_pattern_dynamic) {
 
-    $path = File::Spec->catdir($path); # remove trailing /
+    my @files =     
+      map { File::Spec->abs2rel( $_, $dir ) }  # make relative to $dir
+      grep { ! -d }
+      @{ $self->_rscan_destdir( $dir, $file_pattern ) };
 
-    if ($ext eq '.h') {
-      push @inc_paths, $path;
-      next;
+    use YAML ();
+    print YAML::Dump({ files => \@files });
+
+    for (@files) {
+
+      my ($file, $path, $ext) = fileparse( $_, $file_pattern );
+      next unless $ext; # just in case
+
+      $path = File::Spec->catdir($path); # remove trailing /
+
+      if ($ext eq '.h') {
+        push @inc_paths, $path;
+        next;
+      }
+
+      $file =~ s/^lib//;
+      
+      if (@libs) {
+        next unless grep { $file eq $_ } @libs;
+      }
+      
+      $DB::single = 1;
+      
+      next if grep { $file eq $_ } @lib_files;
+
+      push @lib_files, $file;
+      push @lib_paths, $path;
     }
-
-    $file =~ s/^lib//;
-
-    if (@libs) {
-      next unless grep { $file eq $_ } @libs;
-    }
-
-    push @lib_files, $file;
-    push @lib_paths, $path;
   }
 
   @lib_files = uniq @lib_files;
