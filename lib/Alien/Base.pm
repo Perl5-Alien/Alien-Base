@@ -82,6 +82,14 @@ Or you can use it from an FFI module:
  
  FFI::Raw->new($dll, 'my_library_function', FFI::Raw::void);
 
+You can even use it with L<Inline> (C and C++ languages are supported):
+
+ package MyLibrary::Inline;
+ 
+ use Alien::MyLibrary;
+ use Inline with => 'Alien::MyLibrary';
+ ...
+
 =head1 DESCRIPTION
 
 L<Alien::Base> comprises base classes to help in the construction of C<Alien::> modules. Modules in the L<Alien> namespace are used to locate and install (if necessary) external libraries needed by other Perl modules.
