@@ -682,7 +682,7 @@ sub alien_generate_manual_pkgconfig {
 
   #if no provides_libs then generate -l list from found files
   unless ($provides_libs) {
-    my @files = map { "-l$_" } @{$paths->{so_files}};
+    my @files = map { "-l$_" } @{$paths->{lib_files}};
     $provides_libs = join( ' ', @files );
   } 
 
@@ -714,8 +714,9 @@ sub alien_generate_manual_pkgconfig {
 
 sub _alien_file_pattern {
   my $self = shift;
-  my $ext = $self->config('so'); #platform specific .so extension
-  return qr/\.[\d.]*(?<=\.)$ext[\d.]*(?<!\.)|\.h$/;
+  my $ext1 = $self->config('so'); #platform specific .so extension
+  my $ext2 = $self->config('lib_ext');
+  return qr/\.[\d.]*(?<=\.)$ext1[\d.]*(?<!\.)|(\.h|$ext2)$/;
 };
 
 sub alien_find_lib_paths {
@@ -733,7 +734,7 @@ sub alien_find_lib_paths {
     grep { ! -d }
     @{ $self->_rscan_destdir( $dir, $file_pattern ) };
 
-  my (@so_files, @lib_paths, @inc_paths);
+  my (@lib_files, @lib_paths, @inc_paths);
   for (@files) {
 
     my ($file, $path, $ext) = fileparse( $_, $file_pattern );
@@ -752,17 +753,17 @@ sub alien_find_lib_paths {
       next unless grep { $file eq $_ } @libs;
     }
 
-    push @so_files, $file;
+    push @lib_files, $file;
     push @lib_paths, $path;
   }
 
-  @so_files = uniq @so_files;
-  @so_files = sort @so_files;
+  @lib_files = uniq @lib_files;
+  @lib_files = sort @lib_files;
 
   @lib_paths = uniq @lib_paths;
   @inc_paths = uniq @inc_paths;
 
-  return { lib => \@lib_paths, inc => \@inc_paths, so_files => \@so_files };
+  return { lib => \@lib_paths, inc => \@inc_paths, lib_files => \@lib_files };
 }
 
 sub alien_refresh_packlist {
