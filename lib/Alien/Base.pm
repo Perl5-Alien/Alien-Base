@@ -391,6 +391,7 @@ property.
 
 sub inline_auto_include {
   my ($class) = @_;
+  return [] unless $class->config('inline_auto_include');
   $class->config('inline_auto_include')
 }
 
