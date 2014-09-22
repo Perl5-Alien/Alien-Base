@@ -19,7 +19,6 @@ done_testing;
 __DATA__
 __CPP__
 
-#include <libdontpanic.h>
 #include <stdio.h>
 
 class Foo {

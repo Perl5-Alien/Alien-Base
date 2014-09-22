@@ -19,7 +19,6 @@ done_testing;
 __DATA__
 __C__
 
-#include <libdontpanic.h>
 #include <stdio.h>
 
 char *string_answer()
