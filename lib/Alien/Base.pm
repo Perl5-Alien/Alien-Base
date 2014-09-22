@@ -242,6 +242,7 @@ sub _keyword {
     my $name = $self->config('name');
     my $command = Alien::Base::PkgConfig->pkg_config_command . " --\L$keyword\E $name";
 
+    $! = 0;
     chomp ( my $pcdata = capture_merged { system( $command ) } );
     croak "Could not call pkg-config: $!" if $!;
 
