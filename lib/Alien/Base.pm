@@ -87,7 +87,8 @@ You can even use it with L<Inline> (C and C++ languages are supported):
  package MyLibrary::Inline;
  
  use Alien::MyLibrary;
- use Inline with => 'Alien::MyLibrary';
+ # Inline 0.56 or better is required
+ use Inline 0.56 with => 'Alien::MyLibrary';
  ...
 
 =head1 DESCRIPTION
