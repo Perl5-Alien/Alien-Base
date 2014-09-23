@@ -29,6 +29,8 @@ my @mods = qw(
 
 pass 'okay';
 
+diag sprintf "%25s %s", 'perl', $];
+
 foreach my $mod (@mods) {
   my $version = eval qq{ no warnings; require $mod; \$$mod\::VERSION };
   $version = 'undefined' unless defined $version;
