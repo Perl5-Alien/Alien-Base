@@ -29,6 +29,7 @@ my @mods = qw(
 
 pass 'okay';
 
+diag '';
 diag sprintf "%25s %s", 'perl', $];
 
 foreach my $mod (@mods) {
