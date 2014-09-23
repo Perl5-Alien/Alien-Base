@@ -13,7 +13,9 @@ use File::chdir;
 use File::Spec;
 use File::Basename qw/fileparse/;
 use Carp;
+no warnings;
 use Archive::Extract;
+use warnings;
 use Sort::Versions;
 use List::MoreUtils qw/uniq first_index/;
 use ExtUtils::Installed;
@@ -747,9 +749,6 @@ sub alien_find_lib_paths {
       map { File::Spec->abs2rel( $_, $dir ) }  # make relative to $dir
       grep { ! -d }
       @{ $self->_rscan_destdir( $dir, $file_pattern ) };
-
-    use YAML ();
-    print YAML::Dump({ files => \@files });
 
     for (@files) {
 

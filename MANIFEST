@@ -23,6 +23,7 @@ MANIFEST			This list of files
 META.json
 META.yml
 README
+t/00_diag.t
 t/build_flags.t
 t/builder.t
 t/cabinet.t
