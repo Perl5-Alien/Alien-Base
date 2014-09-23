@@ -748,9 +748,6 @@ sub alien_find_lib_paths {
       grep { ! -d }
       @{ $self->_rscan_destdir( $dir, $file_pattern ) };
 
-    use YAML ();
-    print YAML::Dump({ files => \@files });
-
     for (@files) {
 
       my ($file, $path, $ext) = fileparse( $_, $file_pattern );
