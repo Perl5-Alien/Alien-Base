@@ -17,6 +17,9 @@ my @mods = qw(
   FindBin
   HTML::LinkExtor
   HTTP::Tiny
+  Inline
+  Inline::C
+  Inline::CPP
   List::MoreUtils
   Module::Build
   Perl::OSType
