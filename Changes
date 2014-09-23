@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+  - silence Archive::Extract deprecation warning
+    (we explicitly specify it as a prereq)
+  - remove accidental undeclared dependency on YAML introduced in 0.005_01
+  - fixed test failures introduced in 0.005_01
+
 0.005_01  Sep 22, 2014
   - fixes with static library detection when pkg-config is not available (plicease gh#79, gh#75)
   - support for Inline 'with' (plicease gh#71, gh#77, gh#78)
