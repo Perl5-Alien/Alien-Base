@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.005_03  Sep 23, 2014
+  - Inline tests requires Inline 0.56 (skip elsewise)
+  - Document Inline 0.56 or better required for Inline integration
+
 0.005_02  Sep 23, 2014
   - silence Archive::Extract deprecation warning
     (we explicitly specify it as a prereq)
