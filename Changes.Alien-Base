@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.005_02  Sep 23, 2014
   - silence Archive::Extract deprecation warning
     (we explicitly specify it as a prereq)
   - remove accidental undeclared dependency on YAML introduced in 0.005_01
