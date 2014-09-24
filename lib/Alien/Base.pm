@@ -311,7 +311,7 @@ sub pkgconfig {
 
 Returns the configuration data as determined during the install
 of L<Alien::MyLibrary>.  For the appropriate config keys, see 
-L<Alien::Base::ModuleBuild::API#CONFIG DATA>.
+L<Alien::Base::ModuleBuild::API#CONFIG-DATA>.
 
 =cut
 
