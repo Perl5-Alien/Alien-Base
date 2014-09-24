@@ -768,8 +768,6 @@ sub alien_find_lib_paths {
         next unless grep { $file eq $_ } @libs;
       }
       
-      $DB::single = 1;
-      
       next if grep { $file eq $_ } @lib_files;
 
       push @lib_files, $file;
