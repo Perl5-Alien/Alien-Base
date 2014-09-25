@@ -7,6 +7,7 @@ use Alien::Base::ModuleBuild;
 use File::chdir;
 use File::Temp ();
 use File::Path qw( rmtree );
+use Capture::Tiny qw( capture );
 
 my $dir = File::Temp->newdir;
 local $CWD = "$dir";
@@ -18,6 +19,13 @@ my %basic = (
 );
 
 sub builder { return Alien::Base::ModuleBuild->new( %basic, @_ ) }
+
+sub output_to_note (&) {
+  my $sub = shift;
+  my($out, $err) = capture { $sub->() };
+  note "[out]\n$out" if $out;
+  note "[err]\n$err" if $err;
+}
 
 ###########################
 #  Temporary Directories  #
@@ -36,7 +44,7 @@ subtest 'default temp and share' => sub {
   ok( -d '_alien', "Creates _alien dir");
   ok( -d '_share', "Creates _share dir");
 
-  $builder->depends_on('clean');
+  output_to_note { $builder->depends_on('clean') };
   ok( ! -d '_alien', "Removes _alien dir");
   ok( ! -d '_share', "Removes _share dir");
 
@@ -55,7 +63,7 @@ subtest 'override temp and share' => sub {
   ok( -d '_test_temp', "Creates _test_temp dir");
   ok( -d '_test_share', "Creates _test_temp dir");
 
-  $builder->depends_on('clean');
+  output_to_note { $builder->depends_on('clean') };
   ok( ! -d '_test_temp', "Removes _test_temp dir");
   ok( ! -d '_test_share', "Removes _test_share dir");
 
@@ -112,12 +120,12 @@ EOF
 
   my $share = $builder->alien_library_destination;
   
-  $builder->depends_on('build');
+  output_to_note { $builder->depends_on('build') };
 
   $builder->destdir($destdir);  
   is $builder->destdir, $destdir, "destdir accessor";
   
-  $builder->depends_on('install');
+  output_to_note { $builder->depends_on('install') };
 
   my $foo_script = File::Spec->catfile($destdir, $share, 'bin', 'foo');
   ok -e $foo_script, "script installed in destdir $foo_script";
