@@ -26,10 +26,12 @@ sub output_to_note (&) {
   note "[err]\n$err" if $err;
 }
 
+our $mb_class = 'Alien::Base::ModuleBuild';
+
 sub builder {
   my @args = @_;
   my $builder;
-  output_to_note { $builder = Alien::Base::ModuleBuild->new( %basic, @args ) };
+  output_to_note { $builder = $mb_class->new( %basic, @args ) };
   $builder;
 }
 
@@ -201,5 +203,61 @@ subtest 'alien_bin_requires' => sub {
   rmtree [qw/ _alien /], 0, 0;
 };
 
-done_testing;
+subtest 'alien_check_built_version' => sub {
 
+  open my $fh, '>', 'build.pl';
+  print $fh <<'EOF';
+exit 0;
+EOF
+  close $fh;
+
+  mkdir 'src';
+  open $fh, '>', 'src/foo.tar.gz';
+  binmode $fh;
+  print $fh unpack("u", 
+    q{M'XL(`)"=)%0``^W1P0K",`P&X)Y]BCQ!36K2GGP8#YL,AH6UBH]OA#%DH)ZJ} .
+    q{MB/DNH;30O_W[G+>N,41,(J"3DN#C7``%)A4C$:`N)#F0UL'NSJ4>)HV2QW$H} .
+    q{MQ^?GWNW/[UCFC^BU_TLWE2&??+W6)G?H?T3F%_V'=?\<DSC`)FE6_KS_N7O8} .
+    q{50_`[SYMOYS'&&/,9-ZR`#EH`"@``}
+  );
+  close $fh;
+
+  eval q{
+    package My::ModuleBuild1;
+    
+    use base qw( Alien::Base::ModuleBuild );
+    
+    sub alien_check_built_version {
+      open my $fh, '<', 'version.txt';
+      my $txt = <$fh>;
+      close $fh;
+      $txt =~ /version = ([0-9.]+)/ ? $1 : ();
+    }
+  };
+  die $@ if $@;
+
+  local $mb_class = 'My::ModuleBuild1';
+  
+  my $builder = builder(
+    alien_name => 'foobarbazfakething',
+    alien_build_commands => [
+      "$^X $CWD/build.pl",
+    ],
+    alien_install_commands => [
+      "$^X $CWD/build.pl",
+    ],
+    alien_repository => {
+      protocol => 'local',
+      location => 'src',
+    },
+  );
+  
+  output_to_note { $builder->depends_on('build') };
+
+  is $builder->config_data( 'version' ), '2.3.4', 'version is set correctly';
+
+  unlink 'build.pl';
+  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
+};
+
+done_testing;

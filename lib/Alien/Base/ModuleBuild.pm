@@ -305,6 +305,11 @@ sub ACTION_alien_code {
     $pc->{$self->alien_name} || $pc->{_manual}
   )->keyword('Version');
 
+  unless (defined $version) {
+    local $CWD = $self->config_data( 'working_directory' );
+    $version = $self->alien_check_built_version
+  }
+
   if (! $version and ! $pc_version) {
     carp "Library looks like it installed, but no version was determined";
     $self->config_data( version => 0 );    
@@ -584,6 +589,10 @@ sub _env_do_system {
   }
   
   $self->do_system( $command );
+}
+
+sub alien_check_built_version {
+  return;
 }
 
 sub alien_do_commands {
@@ -962,6 +971,42 @@ build step of your distribution.  When properly configured it will
 =item download, build and install the library if the system does not provide it
 
 =back
+
+=head1 METHODS
+
+=head2 alien_check_instaled_version
+
+ my $version = $abmb->alien_check_installed_version;
+
+This function determines if the library is already installed as part of
+the operating system, and returns the version as a string.  If it can't
+be detected then it should return empty list.
+
+The default implementation relies on C<pkg-config>, but you will probably
+want to override this with your own implementation if the package you are
+building does not use C<pkg-config>.
+
+=head2 alien_check_built_version
+
+ my $version = $amb->alien_check_built_version;
+
+This function determines the version of the library after it has been
+built from source.  This function only gets called if the operating
+system version can not be found and the package is successfully built.
+
+The default implementation relies on C<pkg-config>, and other huristics,
+but you will probably want to override this with your own implementation
+if the package you are building does not use C<pkg-config>.
+
+When this method is called, the current working directory will be the
+build root.
+
+If you see an error message like this:
+
+ Library looks like it installed, but no version was determined
+
+After the package is built from source code then you probably need to
+provide an implementation for this method.
 
 =head1 GUIDE TO DOCUMENTATION
 
