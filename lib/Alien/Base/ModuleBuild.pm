@@ -20,6 +20,7 @@ use Sort::Versions;
 use List::MoreUtils qw/uniq first_index/;
 use ExtUtils::Installed;
 use File::Copy qw/move/;
+use Env qw( @PATH );
 
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -114,6 +115,9 @@ __PACKAGE__->add_property( 'alien_inline_auto_include' => [] );
 # use MSYS even if %c isn't found
 __PACKAGE__->add_property( 'alien_msys' => 0 );
 
+# Alien packages that provide build dependencies
+__PACKAGE__->add_property( 'alien_bin_requires' => {} );
+
 ################
 #  ConfigData  #
 ################
@@ -158,6 +162,11 @@ sub new {
   } else {
     $self->config_data( 'msys' => 0 );
   }
+  
+  while(my($tool, $version) = each %{ $self->alien_bin_requires }) {
+    $self->_add_prereq( 'build_requires', $tool, $version );
+  }
+
 
   # force newest for all automated testing 
   #TODO (this probably should be checked for "input needed" rather than blindly assigned)
@@ -517,13 +526,39 @@ sub alien_detect_blib_scheme {
 #  Build Methods  #
 ###################
 
-sub _msys_do_system {
+sub _env_do_system {
   my $self = shift;
   my $command = shift;
   
+  local $ENV{PATH} = $ENV{PATH};
+  
   if ($self->config_data( 'msys' )) {
-    require Alien::MSYS;
-    return Alien::MSYS::msys(sub { $self->do_system( $command ) });
+    $self->alien_bin_requires->{'Alien::MSYS'} ||= 0
+  }
+  
+  foreach my $mod (keys %{ $self->alien_bin_requires }) {
+    my $version = $self->alien_bin_requires->{$mod};
+    eval qq{ use $mod $version }; # should also work for version = 0
+    die $@ if $@;
+    
+    my %path;
+    
+    if ($mod eq 'Alien::MSYS') {
+      $path{Alien::MSYS->msys_path} = 1;
+    } elsif ($mod eq 'Alien::CMake') {
+      Alien::CMake->set_path;
+    } elsif ($mod eq 'Alien::TinyCC') {
+      $path{Alien::TinyCC->path_to_tcc} = 1;
+    } elsif ($mod eq 'Alien::Autotools') {
+      $path{$_} = 1 for map { Alien::Autotools->$_ } qw( autoconf_dir automake_dir libtool_dir );
+    } elsif (eval { $mod->can('bin_dir') }) {
+      $path{$_} = 1 for $mod->bin_dir;
+    }
+    
+    # remove anything already in PATH
+    delete $path{$_} for @PATH;
+    # add anything else to start of PATH
+    unshift @PATH, keys %path;
   }
   
   $self->do_system( $command );
@@ -538,7 +573,7 @@ sub alien_do_commands {
 
   foreach my $command (@$commands) {
 
-    my %result = $self->_msys_do_system( $command );
+    my %result = $self->_env_do_system( $command );
     unless ($result{success}) {
       carp "External command ($result{command}) failed! Error: $?\n";
       return 0;

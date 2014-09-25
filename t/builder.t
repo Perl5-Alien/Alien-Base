@@ -8,6 +8,7 @@ use File::chdir;
 use File::Temp ();
 use File::Path qw( rmtree );
 use Capture::Tiny qw( capture );
+use FindBin ();
 
 my $dir = File::Temp->newdir;
 local $CWD = "$dir";
@@ -18,13 +19,18 @@ my %basic = (
   dist_author  => 'Joel Berger',
 );
 
-sub builder { return Alien::Base::ModuleBuild->new( %basic, @_ ) }
-
 sub output_to_note (&) {
   my $sub = shift;
   my($out, $err) = capture { $sub->() };
   note "[out]\n$out" if $out;
   note "[err]\n$err" if $err;
+}
+
+sub builder {
+  my @args = @_;
+  my $builder;
+  output_to_note { $builder = Alien::Base::ModuleBuild->new( %basic, @args ) };
+  $builder;
 }
 
 ###########################
@@ -132,6 +138,49 @@ EOF
     
   unlink 'build.pl';
   rmtree [qw/ _alien  _share  blib  src /], 0, 0;
+};
+
+subtest 'alien_bin_requires' => sub {
+
+  my $bin = File::Spec->catdir($FindBin::Bin, 'builder', 'bin');
+  note "bin = $bin";
+
+  eval q{
+    package Alien::Libfoo;
+
+    our $VERSION = '1.00';
+    
+    $INC{'Alien/Libfoo.pm'} = __FILE__;
+
+    package Alien::ToolFoo;
+
+    our $VERSION = '0.37';
+    
+    $INC{'Alien/ToolFoo.pm'} = __FILE__;
+    
+    sub bin_dir {
+      ($bin)
+    }
+  };
+
+  my $builder = builder(
+    alien_name => 'foobarbazfakething',
+    build_requires => {
+      'Alien::Libfoo' => '1.00',
+    },
+    alien_bin_requires => {
+      'Alien::ToolFoo' => '0.37',
+    },
+  );
+
+  use YAML ();
+  note YAML::Dump($builder->build_requires);
+  is $builder->build_requires->{"Alien::Libfoo"}, '1.00',  'normal build requires';
+  is $builder->build_requires->{"Alien::ToolFoo"}, '0.37', 'alien_bin_requires implies a build requires';
+
+  my %status;
+  output_to_note { %status = $builder->_env_do_system('privateapp') };  
+  ok $status{success}, 'found privateapp in path';
 };
 
 done_testing;

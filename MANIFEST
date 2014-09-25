@@ -26,6 +26,8 @@ README
 t/00_diag.t
 t/build_flags.t
 t/builder.t
+t/builder/bin/privateapp
+t/builder/bin/privateapp.bat
 t/cabinet.t
 t/file.t
 t/find_lib.t
