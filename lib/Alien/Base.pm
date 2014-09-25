@@ -62,6 +62,15 @@ Or if you prefer L<ExtUtils::MakeMaker>, in its C<Makefile.PL>:
    ...
  );
 
+Or if you are using L<ExtUtils::Depends>:
+
+ use ExtUtils::MakeMaker;
+ my $eud = ExtUtils::Depends->new('Alien::MyLibrary');
+ WriteMakefile(
+   ...
+   $eud->get_makefile_vars
+ );
+
 In your C<MyLibrary::XS> module, you may need to use L<Alien::MyLibrary> if
 dynamic libraries are used:
 
