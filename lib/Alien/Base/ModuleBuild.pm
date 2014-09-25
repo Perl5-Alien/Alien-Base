@@ -111,6 +111,9 @@ __PACKAGE__->add_property( 'alien_autoconf_with_pic' => 1 );
 # alien_inline_auto_include
 __PACKAGE__->add_property( 'alien_inline_auto_include' => [] );
 
+# use MSYS even if %c isn't found
+__PACKAGE__->add_property( 'alien_msys' => 0 );
+
 ################
 #  ConfigData  #
 ################
@@ -149,7 +152,7 @@ sub new {
     $self->config_data( 'autoconf' => 1 );
   }
 
-  if ($^O eq 'MSWin32' && $self->config_data( 'autoconf')) {
+  if ($^O eq 'MSWin32' && ($self->config_data( 'autoconf') || $self->alien_msys)) {
     $self->_add_prereq( 'build_requires', 'Alien::MSYS', '0' );
     $self->config_data( 'msys' => 1 );
   } else {
