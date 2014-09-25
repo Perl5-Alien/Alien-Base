@@ -23,6 +23,7 @@ use File::Copy qw/move/;
 use Env qw( @PATH );
 use Shell::Guess;
 use Shell::Config::Generate;
+use File::Path qw/mkpath/;
 
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -234,6 +235,19 @@ sub ACTION_code {
 
     # copy the compiled files into blib if running under blib scheme
     $self->depends_on('alien_install') if $self->notes('alien_blib_scheme');
+  }
+  
+  my $module = $self->module_name;
+  my $file   = File::Spec->catfile($self->blib, 'lib', split /::/, "$module\::Install::Files.pm");
+  unless (-e $file) {
+    mkpath(File::Spec->catdir($self->blib, 'lib', split /::/, "$module\::Install"), { verbose => 0 });
+    open my $fh, '>', $file;
+    print $fh <<EOF;
+package $module\::Install::Files;
+use parent q($module); # inherit Inline method
+1;
+EOF
+    close $fh;
   }
 }
 
