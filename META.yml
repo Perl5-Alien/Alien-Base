@@ -65,6 +65,8 @@ requires:
   List::MoreUtils: '0'
   Module::Build: '0.36'
   Perl::OSType: '0'
+  Shell::Config::Generate: '0'
+  Shell::Guess: '0'
   Sort::Versions: '0'
   Text::ParseWords: '3.26'
   URI: '0'

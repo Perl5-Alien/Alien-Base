@@ -6,7 +6,7 @@ use Test::More;
 use Alien::Base::ModuleBuild;
 use File::chdir;
 use File::Temp ();
-use File::Path qw( rmtree );
+use File::Path qw( rmtree mkpath );
 use Capture::Tiny qw( capture );
 use FindBin ();
 
@@ -177,8 +177,24 @@ subtest 'alien_bin_requires' => sub {
   is $builder->build_requires->{"Alien::ToolFoo"}, '0.37', 'alien_bin_requires implies a build requires';
 
   my %status;
-  output_to_note { %status = $builder->_env_do_system('privateapp') };  
+  output_to_note { 
+    local $CWD;
+    my $dir = File::Spec->catdir(qw( _alien buildroot ));
+    mkpath($dir, { verbose => 0 });
+    $CWD = $dir;
+    %status = $builder->_env_do_system('privateapp');
+  };
   ok $status{success}, 'found privateapp in path';
+  if($^O eq 'MSWin32') {
+    ok -e File::Spec->catfile(qw( _alien env.cmd )), 'cmd shell helper';
+    ok -e File::Spec->catfile(qw( _alien env.bat )), 'bat shell helper';
+    ok -e File::Spec->catfile(qw( _alien env.ps1 )), 'power shell helper';
+  } else {
+    ok -e File::Spec->catfile(qw( _alien env.sh )), 'bourne shell helper';
+    ok -e File::Spec->catfile(qw( _alien env.csh )), 'c shell helper';
+  }
+
+  rmtree [qw/ _alien /], 0, 0;
 };
 
 done_testing;
