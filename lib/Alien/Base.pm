@@ -65,7 +65,8 @@ Or if you prefer L<ExtUtils::MakeMaker>, in its C<Makefile.PL>:
 Or if you are using L<ExtUtils::Depends>:
 
  use ExtUtils::MakeMaker;
- my $eud = ExtUtils::Depends->new('Alien::MyLibrary');
+ use ExtUtils::Depends;
+ my $eud = ExtUtils::Depends->new(qw( MyLibrary::XS Alien::MyLibrary ));
  WriteMakefile(
    ...
    $eud->get_makefile_vars
