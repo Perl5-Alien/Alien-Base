@@ -173,8 +173,6 @@ subtest 'alien_bin_requires' => sub {
     },
   );
 
-  use YAML ();
-  note YAML::Dump($builder->build_requires);
   is $builder->build_requires->{"Alien::Libfoo"}, '1.00',  'normal build requires';
   is $builder->build_requires->{"Alien::ToolFoo"}, '0.37', 'alien_bin_requires implies a build requires';
 
