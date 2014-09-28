@@ -1,8 +1,8 @@
 Revision history for Perl module Alien::Base.
 
 0.005_04  Sep 28, 2014
-  - added alien_bin_requires property to Alien::Base::ModuleBuild
-  - added alien_msys property to Alien::Base::ModuleBuild
+  - added alien_bin_requires property to Alien::Base::ModuleBuild (plicease gh#84, gh#88)
+  - added alien_msys property to Alien::Base::ModuleBuild (plicease gh#86)
 
 0.005_03  Sep 23, 2014
   - Inline tests requires Inline 0.56 (skip elsewise)
