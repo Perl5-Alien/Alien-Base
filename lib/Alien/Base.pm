@@ -377,6 +377,24 @@ sub dynamic_libs {
   grep { ! -l $_ } map { File::Spec->catfile($dir, $_) } @dlls;
 }
 
+=head2 bin_dir
+
+ my(@dir) = Alien::MyLibrary->bin_dir
+
+Returns a list of directories with executables in them.  For a C<system>
+install this will be an empty list.  For a C<share> install this will be
+a directory under C<dist_dir> named C<bin> if it exists.  You may wish
+to override the default behavior if you have executables or scripts that
+get installed into non-standard locations.
+
+=cut
+
+sub bin_dir {
+  my ($class) = @_;
+  my $dir = File::Spec->catfile($class->dist_dir, 'bin');
+  -d $dir ? ($dir) : ();
+}
+
 =head2 inline_auto_include
 
  my(@headers) = Alien::MyLibrary->inline_auto_include;

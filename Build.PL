@@ -25,6 +25,8 @@ my %build_args = (
     'Archive::Extract' => 0,
     'HTTP::Tiny'       => 0,
     'Text::ParseWords' => '3.26',
+    'Shell::Guess'     => 0,
+    'Shell::Config::Generate' => 0,
   },
   test_requires => {
     'Test::More'       => 0.94,
