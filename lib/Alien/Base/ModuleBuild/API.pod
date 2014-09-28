@@ -144,6 +144,18 @@ Unlike most L<Module::Build> parameters, authors may specify only those keys whi
 
 Array reference containing the list of header files to be used automatically by C<Inline::C> and C<Inline::CPP>.
 
+=item alien_msys
+
+[version 0.006]
+
+On windows wrap build and install commands in an C<MSYS> environment using L<Alien::MSYS>.  This option will automatically add L<Alien::MSYS> as a build requirement when building on Windows.
+
+=item alien_bin_requires
+
+[version 0.006]
+
+Hash reference of modules (keys) and versions (values) that specifies C<Alien> modules that provide binary tools that are required to build.  Any L<Alien::Base> module that includes binaries should work.  Also supported are L<Alien::MSYS>, L<Alien::CMake>, L<Alien::TinyCC> and L<Alien::Autotools>.
+
 =back
 
 =head2 PACKAGE AND ENVIRONMENT VARIABLES
