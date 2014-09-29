@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+  - ExtUtils::Depends integration (plicease gh#85, gh#87)
+  - added alien_check_built_version method to Alien::Base::ModuleBuild (plicease gh#83, gh#89)
+
 0.005_05  Sep 29, 2014
   - fix regression in test on MSWin32 introduced in 0.005_04
 
