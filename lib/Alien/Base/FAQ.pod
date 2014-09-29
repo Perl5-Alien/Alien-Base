@@ -1,0 +1,229 @@
+=head1 NAME
+
+Alien::Base::FAQ - Frequently Asked Questions about Alien::Base
+
+=head2 How do determine cflags and libs for packages that do not support pkg-config?
+
+FIXME
+
+=head2 How do I test my package once it is built (before it is installed)?
+
+FIXME
+
+=head2 How do I patch packages that need minor (or major) alterations?
+
+One approach is to create a unified diff for patches that you want to apply and simply run patch on them.  For 
+example, your C<Build.PL> might look like this:
+
+ # Build.PL
+ use Alien::Base::ModuleBuild;
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_build_commands => [
+     # --binary allows patches to be applied on either Unix or Windows
+     'patch --binary -p1 < ../../patch/mypackage.patch',
+     ...
+   ],
+   ...
+ )->create_build_script;
+
+Create a folder in your distribution root called C<patch> and place the C<mypackage.patch> file in there.  Since 
+the C<patch> command will be executed in the package root instead of the distribution root, you need to use a 
+relative path prefixed by C<../..>.
+
+Patch is not always available, and you may want to write some Perl code to patch / manipulate your package 
+before starting the build process.
+
+A more powerful approach to patching is to write a perl subroutine to modify the source after it has been 
+extracted.  One way to do this is to subclass L<Alien::Base::ModuleBuild>:
+
+ # inc/My/ModuleBuild.pm
+ package My::ModuleBuild;
+ 
+ use parent qw( Alien::Base::ModuleBuild );
+ 
+ sub my_patch {
+   # is executed in the package root,
+   # make what ever changes you need to
+   # to the source here.
+ }
+ 
+ 1;
+
+ # Build.PL
+ use My::ModuleBuild;
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_build_commands => [
+     "%x -I../../inc -MMy::ModuleBuild -E 'My::ModuleBuild->my_patch'",
+     ...
+   ],
+   ...
+ )->create_build_script;
+
+=head2 How do I build a package that uses I<build system>?
+
+=head3 autoconf
+
+By default L<Alien::Base::ModuleBuild> assumes a package with an autoconf style C<configure> script.  The 
+default is
+ 
+ # Build.PL
+ use Alien::Base::ModuleBuild;
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_build_commands => [
+     '%c --prefix=%s',
+     'make',
+   ],
+   alien_install_commands => [
+     'make install',
+   ],
+   ...
+ )->create_build_script;
+
+There are a couple of short cuts here, C<%c> indicates the platform independent method for executing the 
+C<configure> script, plus any normal autoconf flags that are appropriate for Perl Alien libraries. The C<%c> 
+also tells L<Alien::Base::ModuleBuild> to use L<Alien::MSYS> on Windows platforms and to add that as a 
+dependency.  The C<%s> is a placeholder for the location to which the package will be installed.  This is 
+normally in a share directory specific to your distribution.
+
+=head3 autoconf-like
+
+If you see an error like this:
+
+ Unknown option "--with-pic".
+
+It may be because your package provides a C<configure> script that provides an autoconf-style interface, but is 
+not actually autoconf.  L<Alien::Base::ModuleBuild> is aggressive in using the C<--with-pic> option because when 
+supported by autoconf it produces position independant code (important for reliably building XS extensions), and 
+when not supported autoconf simply ignores the option. Unfortunately some autoconf-style C<configure> scripts 
+consider it an error when they see options that they do not recognize.  You can tell L<Alien::Base::ModuleBuild> 
+to not use the C<--with-pic> option via the C<alien_autoconf_with_pic> property:
+
+ # Build.PL
+ use Alien::Base::ModuleBuild;
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_autoconf_with_pic => 0,
+   ...
+ )->create_build_script;
+
+=head3 CMAKE
+
+You probably cannot count on CMake being available on most platforms.  Fortunately, there is an alien 
+distribution L<Alien::CMake> which will either use the CMake provided by the operating system, or download and 
+install it for you.  You can use this from your C<Build.PL> with the C<alien_bin_requires> property:
+
+ # Build.PL
+ use Alien::Base::ModuleBuild;
+ use Config;
+ Alien::Base::ModuleBuild->new(
+   ...
+   configure_requires => {
+     'Alien::CMake' => 0,
+   },
+   alien_bin_requires => [ 'Alien::CMake' ],
+   alien_build_commands => [
+     # acutal required arguments may vary
+     "cmake -G 'Unix Makefiles' -DCMAKE_MAKE_PROGRAM=$Config{make} -DCMAKE_INSTALL_PREFIX:PATH=%s",
+     "$Config{make}",
+   ],
+   alien_install_commands => [
+     "$Config{make} install",
+   ],
+   ...
+ )->create_build_script;
+
+
+=head3 vanilla Makefiles?
+
+If you want to use the same C<make> as Perl, you can use L<Config>:
+
+ # Build.PL
+ use Alien::Base::ModuleBuild;
+ use Config;
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_build_commands => [
+     "$Config{make}",
+   ],
+   alien_install_commands => [
+     "$Config{make} install",
+   ],
+   ...
+ )->create_build_script;
+
+=head3 Gnu Makefiles?
+
+Some packages require GNU Make's unique syntax.  Perl's L<Config> provides an entry for C<gmake>, but it is 
+frequently wrong.  Do not depend on it.  Instead you can ues L<Alien::gmake> to provide a real GNU Make (either 
+from the operating system, or built from source):
+
+ # Build.PL
+ use Alien::Base::ModuleBuild;
+ use Alien::gmake;
+ my $gmake = Alien::gmake->exe;
+ Alien::Base::ModuleBuild->new(
+   ...
+   configure_requires => {
+     'Alien::gmake' => 0,
+   },
+   alien_bin_requires => [ 'Alien::gmake' ],
+   alien_build_commands => [
+     "$gmake",
+   ],
+   alien_install_commands => [
+     "$gmake install",
+   ],
+   ...
+ )->create_build_script;
+
+=head2 When debugging my package build, I get different results!
+
+If you get results from running the commands in your shell different to what happens when your C<Alien::> 
+distribution attempts to build, it may be because your environment is different than the one that your 
+distribution is using.  For example, if you use L<Alien::CMake> or L<Alien::gmake> to build with specific tools 
+that are provided by your operating system, L<Alien::Build::ModuleBuild> will adjust the path before executing 
+build and install commands.
+
+FIXME
+
+=head2 How do I build a .deb package?
+
+FIXME
+
+=head2 I have question not listed here!
+
+Please post a polite message regarding your issue to the Google Groups list for this project:
+
+=over 4
+
+=item L<https://groups.google.com/forum/#!forum/perl5-alien>
+
+=back
+ 
+=head1 SEE ALSO
+
+=over
+
+=item * 
+
+L<Alien::Base>
+
+=back
+
+=head1 AUTHOR
+
+Original author: Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
+
+Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Base> team
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2012-2015 by Joel Berger
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
