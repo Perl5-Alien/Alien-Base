@@ -23,6 +23,8 @@ my @mods = qw(
   List::MoreUtils
   Module::Build
   Perl::OSType
+  Shell::Config::Generate
+  Shell::Guess
   Sort::Versions
   Test::More
   Text::ParseWords
