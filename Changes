@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.005_05  Sep 29, 2014
+  - fix regression in test on MSWin32 introduced in 0.005_04
+
 0.005_04  Sep 28, 2014
   - added alien_bin_requires property to Alien::Base::ModuleBuild (plicease gh#84, gh#88)
   - added alien_msys property to Alien::Base::ModuleBuild (plicease gh#86)
