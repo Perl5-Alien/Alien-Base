@@ -171,9 +171,13 @@ subtest 'alien_bin_requires' => sub {
     alien_bin_requires => {
       'Alien::ToolFoo' => '0.37',
     },
+    alien_build_commands => [
+      '/bin/true',
+    ],
   );
 
-  is $builder->build_requires->{"Alien::Libfoo"}, '1.00',  'normal build requires';
+  is $builder->build_requires->{"Alien::MSYS"},     undef, 'no Alien::MSYS';
+  is $builder->build_requires->{"Alien::Libfoo"},  '1.00', 'normal build requires';
   is $builder->build_requires->{"Alien::ToolFoo"}, '0.37', 'alien_bin_requires implies a build requires';
 
   my %status;
