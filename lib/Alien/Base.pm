@@ -5,7 +5,7 @@ use warnings;
 
 use Alien::Base::PkgConfig;
 
-our $VERSION = '0.005_05';
+our $VERSION = '0.005_06';
 $VERSION = eval $VERSION;
 
 use Carp;
