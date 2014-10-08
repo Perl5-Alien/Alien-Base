@@ -247,6 +247,14 @@ package $module\::Install::Files;
 require $module;
 sub Inline { shift; $module->Inline(\@_) }
 1;
+
+=begin Pod::Coverage
+
+  Inline
+
+=end Pod::Coverage
+
+=cut
 EOF
     close $fh;
   }
