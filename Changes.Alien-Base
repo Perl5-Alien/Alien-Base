@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.005_07  Oct 13, 2014
+  - commands are printed as they are executed for easier debugging (plicease gh#91)
+  - c_compiler_required repository option (default on)
+
 0.005_06  Sep 30, 2014
   - ExtUtils::Depends integration (plicease gh#85, gh#87)
   - added alien_check_built_version method to Alien::Base::ModuleBuild (plicease gh#83, gh#89)
