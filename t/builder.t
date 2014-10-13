@@ -123,6 +123,7 @@ EOF
     alien_repository => {
       protocol => 'local',
       location => 'src',
+      c_compiler_required => 0,
     },
   );
 
@@ -249,6 +250,7 @@ EOF
     alien_repository => {
       protocol => 'local',
       location => 'src',
+      c_compiler_required => 0,
     },
   );
   

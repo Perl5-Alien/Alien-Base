@@ -17,6 +17,9 @@ sub new {
 
   my $obj = bless \%self, $class;
 
+  $obj->{c_compiler_required} = 1
+    unless defined $obj->{c_compiler_required};
+
   return $obj;
 }
 

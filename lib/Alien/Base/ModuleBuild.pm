@@ -506,7 +506,7 @@ sub alien_validate_repo {
 
   # if $valid is src, check for c compiler
   if ($platform eq 'src') {
-    return $self->have_c_compiler;
+    return !$repo->{c_compiler_required} || $self->have_c_compiler;
   }
 
   # $valid is a string (OS) to match against
