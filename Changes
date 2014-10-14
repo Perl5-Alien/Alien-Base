@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.006
+  - Production release identical to 0.005_07 release
+
 0.005_07  Oct 13, 2014
   - commands are printed as they are executed for easier debugging (plicease gh#91)
   - c_compiler_required repository option (default on)
