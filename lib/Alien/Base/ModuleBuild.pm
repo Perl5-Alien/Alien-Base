@@ -54,8 +54,11 @@ $Force = $ENV{ALIEN_FORCE} if defined $ENV{ALIEN_FORCE};
 
 ## Extra parameters in A::B::MB objects (all (toplevel) should start with 'alien_')
 
-# alien_name: name of library 
+# alien_name: name of library (pkg-config)
 __PACKAGE__->add_property('alien_name');
+
+# alien_ffi_name: name of library (the "foo" in libfoo)
+__PACKAGE__->add_property('alien_ffi_name');
 
 # alien_temp_dir: folder name for download/build
 __PACKAGE__->add_property( alien_temp_dir => '_alien' );
@@ -267,6 +270,7 @@ sub ACTION_alien_code {
   $self->alien_init_temp_dir;
 
   $self->config_data( name => $self->alien_name );
+  $self->config_data( ffi_name => $self->alien_ffi_name );
 
   my $version;
   $version = $self->alien_check_installed_version
