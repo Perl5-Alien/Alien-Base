@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.006_01  Nov 14, 2014
+  - Add support for Alien::Base dynamic_libs method for system installs
+    (previously only share install was supported)
+    This adds FFI::CheckLib as a prereq.
+
 0.006  Oct 14, 2014
   - Production release identical to 0.005_07 release
 
