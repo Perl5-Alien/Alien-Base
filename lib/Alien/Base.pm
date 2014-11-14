@@ -379,12 +379,31 @@ L<Alien::Base::ModuleBuild::API#CONSTRUCTOR> for all build arguments).
 
 sub dynamic_libs {
   my ($class) = @_;
-  my $dir = File::Spec->catfile($class->dist_dir, 'dynamic');
-  return unless -d $dir;
-  opendir(my $dh, $dir);
-  my @dlls = grep { /\.so/ || /\.(dylib|dll)$/ } grep !/^\./, readdir $dh;
-  closedir $dh;
-  grep { ! -l $_ } map { File::Spec->catfile($dir, $_) } @dlls;
+  
+  if($class->install_type('system')) {
+
+    my $name = $class->config('ffi_name');
+    unless(defined $name) {
+      $name = $class->config('name');
+      # strip leading lib from things like libarchive or libffi
+      $name =~ s/^lib//;
+      # strip trailing version numbers
+      $name =~ s/-[0-9\.]+$//;
+    }
+    
+    require FFI::CheckLib;  
+    return FFI::CheckLib::find_lib(lib => $name);
+  
+  } else {
+  
+    my $dir = File::Spec->catfile($class->dist_dir, 'dynamic');
+    return unless -d $dir;
+    opendir(my $dh, $dir);
+    my @dlls = grep { /\.so/ || /\.(dylib|dll)$/ } grep !/^\./, readdir $dh;
+    closedir $dh;
+    return grep { ! -l $_ } map { File::Spec->catfile($dir, $_) } @dlls;
+
+  }
 }
 
 =head2 bin_dir

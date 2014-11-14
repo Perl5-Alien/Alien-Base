@@ -35,6 +35,7 @@
          "requires" : {
             "Archive::Extract" : "0",
             "Capture::Tiny" : "0.17",
+            "FFI::CheckLib" : "0",
             "File::ShareDir" : "0",
             "File::chdir" : "0.1005",
             "HTTP::Tiny" : "0",
