@@ -21,6 +21,14 @@ L<Alien::Base::ModuleBuild> adds several parameters to the L<new|Module::Build::
 
 The name of the primary library which will be provided. This should be in the form to be passed to C<pkg-config>. This name is available in the L<command interpolation|/"COMMAND INTERPOLATION"> as C<%n>.
 
+=item alien_ffi_name
+
+[version 0.007]
+
+The name of the shared library for use with FFI.  Provided for situations where the shared library name cannot be determined from the C<pkg-config> name specified with C<alien_name>.
+For example C<libxml2> has a C<pkg-config> of C<libxml-2.0>, but a shared library name of C<xml2>.
+By default alien_name is used with any C<lib> prefix removed.  For example C<libarchive> to be translated into C<archive> which is what you want for that package.
+
 =item alien_temp_dir
 
 [version 0.001]
