@@ -158,19 +158,21 @@ sub new {
   # be used by the auto_include method
   $self->config_data( 'inline_auto_include' => $self->alien_inline_auto_include );
 
-  if (grep /(?<!\%)\%c/, @{ $self->alien_build_commands }) {
-    $self->config_data( 'autoconf' => 1 );
-  }
+  if($Force || !$self->alien_check_installed_version) {
+    if (grep /(?<!\%)\%c/, @{ $self->alien_build_commands }) {
+      $self->config_data( 'autoconf' => 1 );
+    }
 
-  if ($^O eq 'MSWin32' && ($self->config_data( 'autoconf') || $self->alien_msys)) {
-    $self->_add_prereq( 'build_requires', 'Alien::MSYS', '0' );
-    $self->config_data( 'msys' => 1 );
-  } else {
-    $self->config_data( 'msys' => 0 );
-  }
+    if ($^O eq 'MSWin32' && ($self->config_data( 'autoconf') || $self->alien_msys)) {
+      $self->_add_prereq( 'build_requires', 'Alien::MSYS', '0' );
+      $self->config_data( 'msys' => 1 );
+    } else {
+      $self->config_data( 'msys' => 0 );
+    }
   
-  while(my($tool, $version) = each %{ $self->alien_bin_requires }) {
-    $self->_add_prereq( 'build_requires', $tool, $version );
+    while(my($tool, $version) = each %{ $self->alien_bin_requires }) {
+      $self->_add_prereq( 'build_requires', $tool, $version );
+    }
   }
 
 

@@ -262,4 +262,57 @@ EOF
   rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
+subtest 'source build requires' => sub {
+
+  local $mb_class = do {
+    package My::MBBuildRequiresExample1;
+
+    use base qw( Alien::Base::ModuleBuild );
+
+    sub alien_check_installed_version
+    {
+      return;
+    }
+
+    __PACKAGE__;
+  };
+
+  subtest 'not installed, not forced' => sub {
+    local $Alien::Base::ModuleBuild::Force = 0;
+    my $builder = builder( alien_bin_requires => { 'Foo::Bar' => '1.1' } );
+    is $builder->build_requires->{"Foo::Bar"}, '1.1', 'Foo::Bar = 1.1';
+  };
+
+  subtest 'not installed, forced' => sub {
+    local $Alien::Base::ModuleBuild::Force = 1;
+    my $builder = builder( alien_bin_requires => { 'Foo::Bar' => '1.1' } );
+    is $builder->build_requires->{"Foo::Bar"}, '1.1', 'Foo::Bar = 1.1';
+  };
+
+  local $mb_class = do {
+    package My::MBBuildRequiresExample2;
+
+    use base qw( Alien::Base::ModuleBuild );
+
+    sub alien_check_installed_version
+    {
+      return '1.2';
+    }
+
+    __PACKAGE__;
+  };
+
+  subtest 'installed, not forced' => sub {
+    local $Alien::Base::ModuleBuild::Force = 0;
+    my $builder = builder( alien_bin_requires => { 'Foo::Bar' => '1.1' } );
+    is $builder->build_requires->{"Foo::Bar"}, undef, 'Foo::Bar = undef';
+  };
+
+  subtest 'installed, forced' => sub {
+    local $Alien::Base::ModuleBuild::Force = 1;
+    my $builder = builder( alien_bin_requires => { 'Foo::Bar' => '1.1' } );
+    is $builder->build_requires->{"Foo::Bar"}, '1.1', 'Foo::Bar = 1.1';
+  };
+};
+
 done_testing;
