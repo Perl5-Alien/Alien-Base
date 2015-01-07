@@ -1,9 +1,10 @@
-Build
-MYMETA.*
+/Build
+/MYMETA.*
+/META.*
 _build/
-blib/
+/blib/
 *.swp
 .DS_Store
-/MANIFEST.bak
+/MANIFEST*
 /Alien-Base-*
 /_Inline
