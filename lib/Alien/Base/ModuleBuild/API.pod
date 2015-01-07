@@ -168,6 +168,10 @@ On windows wrap build and install commands in an C<MSYS> environment using L<Ali
 
 Hash reference of modules (keys) and versions (values) that specifies C<Alien> modules that provide binary tools that are required to build.  Any L<Alien::Base> module that includes binaries should work.  Also supported are L<Alien::MSYS>, L<Alien::CMake>, L<Alien::TinyCC> and L<Alien::Autotools>.
 
+[version 0.007]
+
+These only become required for building if L<Alien::Base::ModuleBuild> determines that a source code build is required.
+
 =back
 
 =head2 PACKAGE AND ENVIRONMENT VARIABLES

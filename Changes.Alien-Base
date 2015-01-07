@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+  - alien_bin_requires only become build_requires if Alien::Base::ModuleBuild determines
+    a source build is necessary (plicease gh#96)
+  - On MSWin32, Alien::MSYS is only injected a prereq if Alien::Base::ModuleBuild determines
+    a source build is necessary and autoconf is detected (plicease gh#96)
+
 0.006_01  Nov 14, 2014
   - Add support for Alien::Base dynamic_libs method for system installs
     (previously only share install was supported)
