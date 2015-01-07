@@ -5,8 +5,12 @@ use Module::Build;
 
 my %build_args = (
   module_name => 'Alien::Base',
+  dist_name => 'Alien-Base',
   dist_abstract => 'A base class for Alien:: modules',
-  dist_author => 'Joel A. Berger <joel.a.berger@gmail.com>',
+  dist_author => [
+    'Graham Ollis <plicease@cpan.org>',
+    'Joel A. Berger <joel.a.berger@gmail.com>',
+  ],
   license  => 'perl',
   configure_requires => {
     'Module::Build' => 0.36,

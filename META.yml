@@ -1,6 +1,7 @@
 ---
 abstract: 'A base class for Alien:: modules'
 author:
+  - 'Graham Ollis <plicease@cpan.org>'
   - 'Joel A. Berger <joel.a.berger@gmail.com>'
 build_requires:
   Cwd: '0'
@@ -11,7 +12,7 @@ build_requires:
 configure_requires:
   Module::Build: '0.36'
 dynamic_config: 1
-generated_by: 'Module::Build version 0.421, CPAN::Meta::Converter version 2.142690'
+generated_by: 'Module::Build version 0.421, CPAN::Meta::Converter version 2.143240'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
