@@ -5,6 +5,7 @@ _build/
 /blib/
 *.swp
 .DS_Store
-/MANIFEST*
+/MANIFEST.bak
+/MANIFEST
 /Alien-Base-*
 /_Inline
