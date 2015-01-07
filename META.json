@@ -1,6 +1,7 @@
 {
    "abstract" : "A base class for Alien:: modules",
    "author" : [
+      "Graham Ollis <plicease@cpan.org>",
       "Joel A. Berger <joel.a.berger@gmail.com>"
    ],
    "dynamic_config" : 1,
