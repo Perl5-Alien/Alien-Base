@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.006_03  Jan 8, 2015
+  - (optional) inline tests now require Acme::Alien::DontPanic 0.010
+    older versions do not do a link test, and we want that type of failure reported there, not here
+
 0.006_02  Jan 7, 2015
   - alien_bin_requires only become build_requires if Alien::Base::ModuleBuild determines
     a source build is necessary (plicease gh#96)
