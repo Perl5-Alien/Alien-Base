@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild::Cabinet;
 use strict;
 use warnings;
 
-our $VERSION = '0.006_02';
+our $VERSION = '0.006_03';
 $VERSION = eval $VERSION;
 
 use Sort::Versions;
