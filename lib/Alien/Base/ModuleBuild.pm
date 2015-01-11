@@ -38,6 +38,7 @@ use Alien::Base::ModuleBuild::Repository::Local;
 my %default_repository_class = (
   default => 'Alien::Base::ModuleBuild::Repository',
   http    => 'Alien::Base::ModuleBuild::Repository::HTTP',
+  https   => 'Alien::Base::ModuleBuild::Repository::HTTP',
   ftp     => 'Alien::Base::ModuleBuild::Repository::FTP',
   local   => 'Alien::Base::ModuleBuild::Repository::Local',
 );

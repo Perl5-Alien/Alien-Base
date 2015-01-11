@@ -45,12 +45,13 @@ sub get_file {
   my $self = shift;
   my $file = shift || croak "Must specify file to download";
 
+  my $protocol = $self->protocol;
   my $host = $self->{host};
   my $from = $self->location;
 
-  my $uri = $self->build_uri($host, $from, $file);
+  my $uri = $self->build_uri($protocol, $host, $from, $file);
   # if it is an absolute URI, then use the filename from the URI
-  $file = ($uri->path_segments())[-1] if $file =~ /^(?:http|file):/;
+  $file = ($uri->path_segments())[-1] if $file =~ /^(?:https?|file):/;
   my $res = $self->connection->mirror($uri, $file);
   my ( $is_error, $content, $headers ) = $self->check_http_response( $res );
   croak "Download failed: " . $content if $is_error;
@@ -68,9 +69,10 @@ sub get_file {
 sub list_files {
   my $self = shift;
 
+  my $protocol = $self->protocol;
   my $host = $self->host;
   my $location = $self->location;
-  my $uri = $self->build_uri($host, $location);
+  my $uri = $self->build_uri($protocol, $host, $location);
 
   my $res = $self->connection->get($uri);
 
@@ -127,13 +129,14 @@ sub find_links_textbalanced {
 
 sub build_uri {
   my $self = shift;
-  my ($host, $path, $file) = @_;
+  my ($protocol, $host, $path, $file) = @_;
 
+  $protocol ||= 'http'; # if no protocol is passed, default to HTTP
   my $uri = URI->new($file);
   return $uri if $uri->scheme; # if an absolute URI
 
-  unless ( $host =~ m'^(?:http|file)://' ) {
-    $host = "http://$host";
+  unless ( $host =~ m'^(?:https?|file)://' ) {
+    $host = "$protocol://$host";
   }
   $uri = URI->new( $host );
   return $uri unless defined $path;

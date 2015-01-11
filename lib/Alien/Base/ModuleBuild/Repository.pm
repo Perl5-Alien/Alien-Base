@@ -51,7 +51,7 @@ sub probe {
     @files = $self->list_files();
 
     if ($pattern) {
-	@files = grep { $_ =~ $pattern } @files;
+      @files = grep { $_ =~ $pattern } @files;
     }
 
     carp "Could not find any matching files" unless @files;
