@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.007_01  Jan 12, 2015
+  - Add support for https repositories (zmughal++ gh#98)
+
 0.007  Jan 8, 2015
   - Production release identical to 0.006_03 release
 
