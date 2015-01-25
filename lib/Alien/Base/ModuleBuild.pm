@@ -225,6 +225,21 @@ END
 #  ACTION methods  #
 ####################
 
+sub ACTION_alien_dry_run {
+  my $self = shift;
+
+  print "# Build\n";
+  foreach my $cmd (map { $self->alien_interpolate($_) } @{ $self->alien_build_commands })
+  {
+    print "+ $cmd\n";
+  }
+  print "# Build install\n";
+  foreach my $cmd (map { $self->alien_interpolate($_) } @{ $self->alien_install_commands })
+  {
+    print "+ $cmd\n";
+  }
+}
+
 sub ACTION_code {
   my $self = shift;
   $self->notes( 'alien_blib_scheme' => $self->alien_detect_blib_scheme );
