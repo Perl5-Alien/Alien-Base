@@ -86,11 +86,12 @@ Or you can use it from an FFI module:
  package MyLibrary::FFI;
  
  use Alien::MyLibrary;
- use FFI::Raw;
+ use FFI::Platypus;
  
- my($dll) = Alien::MyLibrary->dynamic_libs;
+ my $ffi = FFI::Platypus->new;
+ $ffi->lib(Alien::MyLibrary->dynamic_libs);
  
- FFI::Raw->new($dll, 'my_library_function', FFI::Raw::void);
+ $ffi->attach( 'my_library_function' => [] => 'void' );
 
 You can even use it with L<Inline> (C and C++ languages are supported):
 
