@@ -229,14 +229,16 @@ sub ACTION_alien_dry_run {
   my $self = shift;
 
   print "# Build\n";
-  foreach my $cmd (map { $self->alien_interpolate($_) } @{ $self->alien_build_commands })
+  foreach my $cmd (@{ $self->alien_build_commands })
   {
-    print "+ $cmd\n";
+    my @cmd = map { $self->alien_interpolate($_) } ref($cmd) ? @$cmd : ($cmd);
+    print "+ @cmd\n";
   }
   print "# Build install\n";
-  foreach my $cmd (map { $self->alien_interpolate($_) } @{ $self->alien_install_commands })
+  foreach my $cmd (@{ $self->alien_install_commands })
   {
-    print "+ $cmd\n";
+    my @cmd = map { $self->alien_interpolate($_) } ref($cmd) ? @$cmd : ($cmd);
+    print "+ @cmd\n";
   }
 }
 
