@@ -160,7 +160,7 @@ sub new {
   $self->config_data( 'inline_auto_include' => $self->alien_inline_auto_include );
 
   if($Force || !$self->alien_check_installed_version) {
-    if (grep /(?<!\%)\%c/, @{ $self->alien_build_commands }) {
+    if (grep /(?<!\%)\%c/, map { ref($_) ? @{$_} : $_ } @{ $self->alien_build_commands }) {
       $self->config_data( 'autoconf' => 1 );
     }
 
@@ -618,7 +618,7 @@ sub _env_do_system {
 
   }
   
-  $self->do_system( $command );
+  $self->do_system( ref($command) ? @$command : $command );
 }
 
 sub alien_check_built_version {

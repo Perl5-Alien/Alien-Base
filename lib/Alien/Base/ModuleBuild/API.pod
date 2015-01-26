@@ -53,11 +53,19 @@ This is intended to choose the mechanism for selecting one file from many. The d
 
 An arrayref of commands used to build the library in the directory specified in C<alien_temp_dir>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ '%c --prefix=%s', 'make' ]>.
 
+[version 0.009]
+
+Each command may be either a string or a list reference.  If the list reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
+
 =item alien_install_commands
 
 [version 0.001]
 
 An arrayref of commands used to install it to the share directory specified by interpolation var C<%s>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ 'make install' ]>.
+
+[version 0.009]
+
+Each command may be either a string or a list reference.  If the list reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
 
 =item alien_version_check
 

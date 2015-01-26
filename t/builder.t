@@ -262,6 +262,64 @@ EOF
   rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
+subtest 'multi arg do_system' => sub {
+
+  open my $fh, '>', 'build.pl';
+  print $fh <<'EOF';
+exit($ARGV[0] =~ /^(build|install) it$/ ? 0 : 2);
+EOF
+  close $fh;
+
+  mkdir 'src';
+  open $fh, '>', 'src/foo.tar.gz';
+  binmode $fh;
+  print $fh unpack("u", 
+    q{M'XL(`)"=)%0``^W1P0K",`P&X)Y]BCQ!36K2GGP8#YL,AH6UBH]OA#%DH)ZJ} .
+    q{MB/DNH;30O_W[G+>N,41,(J"3DN#C7``%)A4C$:`N)#F0UL'NSJ4>)HV2QW$H} .
+    q{MQ^?GWNW/[UCFC^BU_TLWE2&??+W6)G?H?T3F%_V'=?\<DSC`)FE6_KS_N7O8} .
+    q{50_`[SYMOYS'&&/,9-ZR`#EH`"@``}
+  );
+  close $fh;
+
+  eval q{
+    package My::ModuleBuild2;
+    
+    use base qw( Alien::Base::ModuleBuild );
+    
+    sub alien_check_built_version {
+      open my $fh, '<', 'version.txt';
+      my $txt = <$fh>;
+      close $fh;
+      $txt =~ /version = ([0-9.]+)/ ? $1 : ();
+    }
+  };
+  die $@ if $@;
+
+  local $mb_class = 'My::ModuleBuild2';
+  
+  my $builder = builder(
+    alien_name => 'foobarbazfakething',
+    alien_build_commands => [
+      [ "%x", "$CWD/build.pl", "build it" ],
+    ],
+    alien_install_commands => [
+      [ "%x", "$CWD/build.pl", "install it" ],
+    ],
+    alien_repository => {
+      protocol => 'local',
+      location => 'src',
+      c_compiler_required => 0,
+    },
+  );
+  
+  output_to_note { $builder->depends_on('build') };
+
+  is $builder->config_data( 'version' ), '2.3.4', 'version is set correctly';
+
+  unlink 'build.pl';
+  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
+};
+
 subtest 'source build requires' => sub {
 
   local $mb_class = do {
