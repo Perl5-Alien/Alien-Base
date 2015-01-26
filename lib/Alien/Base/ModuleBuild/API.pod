@@ -55,7 +55,7 @@ An arrayref of commands used to build the library in the directory specified in 
 
 [version 0.009]
 
-Each command may be either a string or a list reference.  If the list reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
+Each command may be either a string or a array reference.  If the array reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
 
 =item alien_install_commands
 
@@ -65,7 +65,7 @@ An arrayref of commands used to install it to the share directory specified by i
 
 [version 0.009]
 
-Each command may be either a string or a list reference.  If the list reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
+Each command may be either a string or a array reference.  If the array reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
 
 =item alien_version_check
 
