@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.009_01  Jan 27, 2015
+  - Added './Build alien_fakebuild' command which shows you what would be executed without actually doing it (plicease gh#102)
+
 0.009  Jan 27, 2015
   - Production release identical to 0.008_01 release
 
