@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.009  Jan 27, 2015
+  - Production release identical to 0.008_01 release
+
 0.008_01  Jan 26, 2015
   - Allow multiple argument system calls for alien_build_commands and alien_install_commands (plicease gh#103)
 
