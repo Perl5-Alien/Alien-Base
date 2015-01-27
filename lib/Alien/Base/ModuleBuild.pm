@@ -225,7 +225,7 @@ END
 #  ACTION methods  #
 ####################
 
-sub ACTION_alien_dry_run {
+sub ACTION_alien_fakebuild {
   my $self = shift;
 
   print "# Build\n";
