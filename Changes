@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.009_02  Feb 4, 2015
   - Added diagnostics for Alien authors to help in diagnosing common configuration problems.
 
 0.009_01  Jan 27, 2015
