@@ -108,7 +108,7 @@ __PACKAGE__->add_property( 'alien_provides_libs' );
 #   |-- platform: src or platform, matching os_type M::B method
 #   |
 #   |-- (non-api) connection: holder for Net::FTP-like object (needs cwd, ls, and get methods)
-__PACKAGE__->add_property( 'alien_repository'         => {} );
+__PACKAGE__->add_property( 'alien_repository'         => [] );
 __PACKAGE__->add_property( 'alien_repository_default' => {} );
 __PACKAGE__->add_property( 'alien_repository_class'   => {} );
 
@@ -358,6 +358,10 @@ sub ACTION_alien_code {
   }
 
   if (! $version and ! $pc_version) {
+    print STDERR "If you are the author of this Alien dist, you may need to provide a an\n";
+    print STDERR "alien_check_built_version method for your Alien::Base::ModuleBuild\n";
+    print STDERR "class.  See:\n";
+    print STDERR "https://metacpan.org/pod/Alien::Base::ModuleBuild#alien_check_built_version\n";
     carp "Library looks like it installed, but no version was determined";
     $self->config_data( version => 0 );    
     return
@@ -491,6 +495,14 @@ sub alien_create_repositories {
   # upconvert to arrayref if a single hashref is passed
   if (ref $repo_specs eq 'HASH') {
     $repo_specs = [ $repo_specs ];
+  }
+  
+  unless(@$repo_specs)
+  {
+    print STDERR "If you are the author of this Alien dist, you need to provide at least\n";
+    print STDERR "one repository in your Build.PL.  See:\n";
+    print STDERR "https://metacpan.org/pod/distribution/Alien-Base/lib/Alien/Base/ModuleBuild/API.pod#alien_repository\n";
+    croak "No repositories specified.";
   }
 
   my @repos;

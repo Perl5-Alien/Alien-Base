@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+  - Added diagnostics for Alien authors to help in diagnosing common configuration problems.
+
 0.009_01  Jan 27, 2015
   - Added './Build alien_fakebuild' command which shows you what would be executed without actually doing it (plicease gh#102)
 
