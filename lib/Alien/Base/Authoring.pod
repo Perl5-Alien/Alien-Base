@@ -95,10 +95,11 @@ L<Acme::Ford::Prefect> -- An XS module which provides the Perl-level access to C
 
 Additionally, there exists in-production C<Alien::> distributions that serve as de-facto tests of L<Alien::Base>'s networking components:
 
+=over
+
 =item *
 
 L<Alien::LibYAML> -- Builds and installs F<libyaml>, acquiring the library archive from its hosted location via C<Alien::Base::Repository::HTTP>.
-
 
 =back
 
