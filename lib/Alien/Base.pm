@@ -381,6 +381,8 @@ L<Alien::Base::ModuleBuild::API#CONSTRUCTOR> for all build arguments).
 sub dynamic_libs {
   my ($class) = @_;
   
+  require FFI::CheckLib;
+  
   if($class->install_type('system')) {
 
     my $name = $class->config('ffi_name');
@@ -392,18 +394,28 @@ sub dynamic_libs {
       $name =~ s/-[0-9\.]+$//;
     }
     
-    require FFI::CheckLib;  
     return FFI::CheckLib::find_lib(lib => $name);
   
   } else {
   
-    my $dir = File::Spec->catfile($class->dist_dir, 'dynamic');
-    return unless -d $dir;
-    opendir(my $dh, $dir);
-    my @dlls = grep { /\.so/ || /\.(dylib|dll)$/ } grep !/^\./, readdir $dh;
-    closedir $dh;
-    return grep { ! -l $_ } map { File::Spec->catfile($dir, $_) } @dlls;
+    my $dir = $class->dist_dir;
+    my $dynamic = File::Spec->catfile($class->dist_dir, 'dynamic');
+    
+    if(-d $dynamic)
+    {
+      return FFI::CheckLib::find_lib(
+        lib        => '*',
+        libpath    => $dynamic,
+        systempath => [],
+      );
+    }
 
+    return FFI::CheckLib::find_lib(
+      lib        => '*',
+      libpath    => $dir,
+      systempath => [],
+      recursive  => 1,
+    );
   }
 }
 
