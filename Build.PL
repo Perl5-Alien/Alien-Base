@@ -31,7 +31,7 @@ my %build_args = (
     'Text::ParseWords' => '3.26',
     'Shell::Guess'     => 0,
     'Shell::Config::Generate' => 0,
-    'FFI::CheckLib'    => 0,
+    'FFI::CheckLib'    => 0.11,
   },
   test_requires => {
     'Test::More'       => 0.94,
