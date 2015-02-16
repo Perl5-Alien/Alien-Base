@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.009_03  Feb 15, 2015
+  - Improved FFI support
+
 0.009_02  Feb 4, 2015
   - Added diagnostics for Alien authors to help in diagnosing common configuration problems.
 
