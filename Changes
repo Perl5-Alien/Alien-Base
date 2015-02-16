@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.009_04  Feb 16, 2015
+  - Test fix for Microsoft Visual C++
+
 0.009_03  Feb 15, 2015
   - Improved FFI support
 
