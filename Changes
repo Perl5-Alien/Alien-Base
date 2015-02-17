@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.010  Feb 17, 2015
+  - Production release identical to 0.009_04 release
+
 0.009_04  Feb 16, 2015
   - Test fix for Microsoft Visual C++
 
