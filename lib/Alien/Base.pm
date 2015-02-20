@@ -114,6 +114,8 @@ sub import {
   my $class = shift;
 
   return if $class->install_type('system');
+  
+  $class->dist_dir;
 
   # get a reference to %Alien::MyLibrary::AlienLoaded
   # which contains names of already loaded libraries
