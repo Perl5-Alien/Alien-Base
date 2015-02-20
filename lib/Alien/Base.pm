@@ -181,6 +181,9 @@ sub dist_dir {
       ? File::ShareDir::dist_dir($dist) 
       : $class->config('working_directory');
 
+  croak "Failed to find share dir for dist '$dist'"
+    unless -d $dist_dir;
+
   return $dist_dir;
 }
 
