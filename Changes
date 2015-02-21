@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.010_01  Feb 21, 2015
+  - When installed from source (install_type=share) if the share directory is
+    missing it is now a fatal exception.  (plicease gh#108)
+
 0.010  Feb 17, 2015
   - Production release identical to 0.009_04 release
 
