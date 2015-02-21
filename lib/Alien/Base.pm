@@ -114,7 +114,9 @@ sub import {
   my $class = shift;
 
   return if $class->install_type('system');
-  
+
+  # Sanity check in order to ensure that dist_dir can be found.
+  # This will throw an exception otherwise.  
   $class->dist_dir;
 
   # get a reference to %Alien::MyLibrary::AlienLoaded
