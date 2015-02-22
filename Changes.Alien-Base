@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.012  Feb 22, 2015
+  - Fix bug introduced in 0.011 where bin_dir dies when install_type=system
+
 0.011  Feb 22, 2015
   - Production release identical to 0.010_01 release
 
