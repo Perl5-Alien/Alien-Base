@@ -440,6 +440,7 @@ get installed into non-standard locations.
 
 sub bin_dir {
   my ($class) = @_;
+  return unless $class->install_type('share');
   my $dir = File::Spec->catfile($class->dist_dir, 'bin');
   -d $dir ? ($dir) : ();
 }
