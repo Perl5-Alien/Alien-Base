@@ -7,6 +7,7 @@ our $VERSION = '0.012';
 $VERSION = eval $VERSION;
 
 use Carp;
+use Config;
 use File::Basename qw/fileparse/;
 use File::Spec;
 use Capture::Tiny qw( capture_stderr );
@@ -123,7 +124,7 @@ my $pkg_config_command;
 sub pkg_config_command {
   unless (defined $pkg_config_command) {
     capture_stderr {
-      if (`pkg-config --version` && $? == 0) {
+      if (`pkg-config --version` && $? == 0 && !($^O eq 'solaris' && $Config{ptrsize} == 8)) {
         $pkg_config_command = 'pkg-config';
       } else {
         require PkgConfig;

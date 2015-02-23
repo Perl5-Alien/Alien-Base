@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-
+use Config;
 use Module::Build;
 
 my %build_args = (
@@ -58,6 +58,10 @@ my %build_args = (
 
 unless (`pkg-config --version` && $? == 0) {
   $build_args{'requires'}->{'PkgConfig'} = '0.07520';
+}
+
+if($^O eq 'solaris' && $Config{ptrsize} == 8) {
+  $build_args{'requires'}->{'PkgConfig'} = '0.08826';
 }
 
 my $builder = Module::Build->new(%build_args);
