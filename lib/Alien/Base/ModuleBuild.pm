@@ -346,6 +346,7 @@ sub ACTION_alien_code {
   }
 
   $self->config_data( install_type => 'share' );
+  $self->config_data( original_prefix => $self->alien_library_destination );
 
   my $pc = $self->alien_load_pkgconfig;
   my $pc_version = (
