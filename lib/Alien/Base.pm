@@ -287,7 +287,7 @@ sub _keyword {
     ) }
     @pc;
 
-  if($self->config('original_prefix') ne $self->dist_dir)
+  if(defined $self->config('original_prefix') && $self->config('original_prefix') ne $self->dist_dir)
   {
     my $old = quotemeta $self->config('original_prefix');
     @strings = map {
