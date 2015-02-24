@@ -439,7 +439,7 @@ sub ACTION_alien_install {
     foreach my $dir (qw( bin lib )) {
       next unless -d $dir;
       opendir(my $dh, $dir);
-      my @dlls = grep { /\.so/ || /\.(dylib|la|dll|dll\.a)$/ } grep !/^\./, readdir $dh;
+      my @dlls = grep { /\.so/ || /\.(dylib|bundle|la|dll|dll\.a)$/ } grep !/^\./, readdir $dh;
       closedir $dh;
       foreach my $dll (@dlls) {
         my $from = File::Spec->catfile($dir, $dll);
