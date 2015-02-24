@@ -184,7 +184,7 @@ sub dist_dir {
       : $class->config('working_directory');
 
   croak "Failed to find share dir for dist '$dist'"
-    unless -d $dist_dir;
+    unless defined $dist_dir && -d $dist_dir;
 
   return $dist_dir;
 }
