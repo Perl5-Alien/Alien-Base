@@ -1,5 +1,12 @@
 Revision history for Perl module Alien::Base.
 
+0.012_01  Feb 24, 2015
+  - Prefer and require PkgConfig.pm over pkg-config on 64 solaris
+    If pkg-config is used it will likely be giving flags for 32 bit libs
+    (plicease gh#110)
+  - Allow for relocation of Alien-Base based dists.
+    (plicease gh#111)
+
 0.012  Feb 22, 2015
   - Fix bug introduced in 0.011 where bin_dir dies when install_type=system
 
