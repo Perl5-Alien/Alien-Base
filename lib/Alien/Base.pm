@@ -287,6 +287,16 @@ sub _keyword {
     ) }
     @pc;
 
+  if($self->config('original_prefix') ne $self->dist_dir)
+  {
+    my $old = quotemeta $self->config('original_prefix');
+    @strings = map {
+      s{^(-I|-L|-LIBPATH:)?($old)}{$1.$self->dist_dir}e;
+      s/(\s)/\\$1/g;
+      $_;
+    } map { $self->split_flags($_) } @strings;
+  }
+
   return join( ' ', @strings );
 }
 
