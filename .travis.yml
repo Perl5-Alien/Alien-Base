@@ -26,6 +26,9 @@ script:
   - ./Build
   - prove -bv t
   - ./Build install
+  - cd Alien-Base-Extras/Acme-Alien-DontPanic; cpanm -l /tmp/original -v .
+  - mv /tmp/original /tmp/moved
+  - cd Alien-Base-Extras/Acme-Ford-Prefect;    cpanm -l /tmp/moved -v .
   - cd Alien-Base-Extras/Acme-Alien-DontPanic; cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
   - cd Alien-Base-Extras/Acme-Ford-Prefect;    cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
   - cd ../..
