@@ -124,6 +124,13 @@ my $pkg_config_command;
 sub pkg_config_command {
   unless (defined $pkg_config_command) {
     capture_stderr {
+    
+      # For now we prefer PkgConfig.pm over pkg-config on
+      # Solaris 64 bit Perls.  We may need to do this on
+      # other platforms, in which case this logic should
+      # be abstracted so that it can be shared here and
+      # in Build.PL
+
       if (`pkg-config --version` && $? == 0 && !($^O eq 'solaris' && $Config{ptrsize} == 8)) {
         $pkg_config_command = 'pkg-config';
       } else {

@@ -60,6 +60,11 @@ unless (`pkg-config --version` && $? == 0) {
   $build_args{'requires'}->{'PkgConfig'} = '0.07520';
 }
 
+# For now we prefer PkgConfig.pm over pkg-config on
+# Solaris 64 bit Perls.  We may need to do this on
+# other platforms, in which case this logic should
+# be abstracted so that it can be shared here and
+# in lib/Alien/Base.pm#pkg_config_command
 if($^O eq 'solaris' && $Config{ptrsize} == 8) {
   $build_args{'requires'}->{'PkgConfig'} = '0.08826';
 }
