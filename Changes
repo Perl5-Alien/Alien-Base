@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.014  Feb 25, 2015
+  - Production release identical to 0.012_01 release
+
 0.012_01  Feb 24, 2015
   - Prefer and require PkgConfig.pm over pkg-config on 64 solaris
     If pkg-config is used it will likely be giving flags for 32 bit libs
