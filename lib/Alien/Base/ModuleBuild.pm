@@ -663,7 +663,7 @@ sub _env_do_system {
     pop @CWD;
     
     open my $fh, '>', 'config.site';
-    print $fh "CC=$Config{cc}\n";
+    print $fh "CC='$Config{cc}'\n";
     # -D define flags should be stripped because they are Perl
     # specific.
     print $fh "CFLAGS='", _filter_defines($Config{ccflags}), "'\n";
