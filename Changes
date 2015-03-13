@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.014_01  Fri Mar, 13
+  - Generate config.site for autoconfigure source installs (plicease gh#113)
+
 0.014  Feb 25, 2015
   - Production release identical to 0.012_01 release
 
