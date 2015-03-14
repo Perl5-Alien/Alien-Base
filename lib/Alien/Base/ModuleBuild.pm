@@ -1084,7 +1084,7 @@ build step of your distribution.  When properly configured it will
 
 =head1 METHODS
 
-=head2 alien_check_instaled_version
+=head2 alien_check_installed_version
 
  my $version = $abmb->alien_check_installed_version;
 
