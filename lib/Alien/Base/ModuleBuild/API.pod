@@ -180,6 +180,15 @@ Hash reference of modules (keys) and versions (values) that specifies C<Alien> m
 
 These only become required for building if L<Alien::Base::ModuleBuild> determines that a source code build is required.
 
+=item alien_stage_install
+
+[version 0.016]
+
+Alien packages that should be installed directory into the blib directory by the `./Build' command rather than to the final location during the `./Build install` step.
+
+This is the default when building an ActiveState PPM package because AS does not do `./Build install'.
+
+
 =back
 
 =head2 PACKAGE AND ENVIRONMENT VARIABLES

@@ -127,6 +127,12 @@ __PACKAGE__->add_property( 'alien_msys' => 0 );
 # Alien packages that provide build dependencies
 __PACKAGE__->add_property( 'alien_bin_requires' => {} );
 
+# Alien packages that can/should be installed directory into the blib directory by the `./Build' command
+# rather than to the final location during the `./Build install` step.
+# This is the default when building an ACTIVESTATE_PPM_BUILD because AS does not do `./Build install` at
+# all when building a PPM
+__PACKAGE__->add_property( 'alien_stage_install' => $ENV{ACTIVESTATE_PPM_BUILD} ? 1 : 0 );
+
 ################
 #  ConfigData  #
 ################
@@ -283,6 +289,8 @@ sub Inline { shift; $module->Inline(\@_) }
 EOF
     close $fh;
   }
+
+  $self->depends_on('alien_install') if $self->alien_stage_install;
 }
 
 sub ACTION_alien_code {
@@ -395,7 +403,7 @@ sub ACTION_test {
 sub ACTION_install {
   my $self = shift;
   $self->SUPER::ACTION_install;
-  $self->depends_on('alien_install');
+  $self->depends_on('alien_install') unless $self->alien_stage_install;
 }
 
 sub ACTION_alien_install {
@@ -557,7 +565,7 @@ sub alien_library_destination {
 
   # send the library into the blib if running under the blib scheme
   my $lib_dir = 
-    $self->notes('alien_blib_scheme')
+    $self->notes('alien_blib_scheme') || $self->alien_stage_install
     ? File::Spec->catdir( $self->base_dir, $self->blib, 'lib' )
     : $self->install_destination('lib');
 
