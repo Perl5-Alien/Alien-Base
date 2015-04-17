@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.015_01  Fri Apr 17, 2015
+  - Add alien_stage_install option for Alien::Base::ModuleBuild
+    see Alien::Base::ModuleBuild::API for details (plicease gh#114)
+  - alien_stage_install is default for PPM builds
+
 0.015  Tue Mar 17, 2015
   - Production release identical to 0.014_01 release
 
