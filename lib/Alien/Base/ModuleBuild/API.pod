@@ -186,8 +186,9 @@ These only become required for building if L<Alien::Base::ModuleBuild> determine
 
 Alien packages are installed directly into the blib directory by the `./Build' command rather than to the final location during the `./Build install` step.
 
-This is the default when building an ActiveState PPM package because AS does not do `./Build install'.
+[version 0.017]
 
+As of 0.017 this is the default.
 
 =back
 

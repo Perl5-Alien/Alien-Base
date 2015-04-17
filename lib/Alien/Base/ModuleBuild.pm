@@ -127,11 +127,8 @@ __PACKAGE__->add_property( 'alien_msys' => 0 );
 # Alien packages that provide build dependencies
 __PACKAGE__->add_property( 'alien_bin_requires' => {} );
 
-# Alien packages that can/should be installed directory into the blib directory by the `./Build' command
-# rather than to the final location during the `./Build install` step.
-# This is the default when building an ACTIVESTATE_PPM_BUILD because AS does not do `./Build install` at
-# all when building a PPM
-__PACKAGE__->add_property( 'alien_stage_install' => $ENV{ACTIVESTATE_PPM_BUILD} ? 1 : 0 );
+# Do a staged install to blib instead of trying to install to the final location.
+__PACKAGE__->add_property( 'alien_stage_install' => 1 );
 
 ################
 #  ConfigData  #
