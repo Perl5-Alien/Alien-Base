@@ -670,6 +670,10 @@ sub _env_do_system {
     local $CWD;
     pop @CWD;
     
+    my $ldflags = $Config{ldflags};
+    $ldflags .= " -Wl,-headerpad_max_install_names"
+      if $^O eq 'darwin';
+    
     open my $fh, '>', 'config.site';
     print $fh "CC='$Config{cc}'\n";
     # -D define flags should be stripped because they are Perl
@@ -677,7 +681,7 @@ sub _env_do_system {
     print $fh "CFLAGS='", _filter_defines($Config{ccflags}), "'\n";
     print $fh "CPPFLAGS='", _filter_defines($Config{cppflags}), "'\n";
     print $fh "CXXFLAGS='", _filter_defines($Config{ccflags}), "'\n";
-    print $fh "LDFLAGS='$Config{ldflags}'\n";
+    print $fh "LDFLAGS='$ldflags'\n";
     close $fh;
   
     my $config ||= _shell_config_generate();
