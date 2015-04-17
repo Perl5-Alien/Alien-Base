@@ -403,7 +403,11 @@ sub ACTION_test {
 sub ACTION_install {
   my $self = shift;
   $self->SUPER::ACTION_install;
-  $self->depends_on('alien_install') unless $self->alien_stage_install;
+  if($self->alien_stage_install) {
+    $self->alien_relocation_fixup if $self->alien_stage_install;
+  } else {
+    $self->depends_on('alien_install') unless $self->alien_stage_install;
+  }
 }
 
 sub ACTION_alien_install {
@@ -478,7 +482,8 @@ sub ACTION_alien_install {
     $self->SUPER::ACTION_install;
 
     # refresh the packlist
-    $self->alien_refresh_packlist( $self->alien_library_destination );
+    $self->alien_refresh_packlist( $self->alien_library_destination )
+      unless $self->alien_stage_install;
   }
 }
 
@@ -1006,6 +1011,37 @@ sub alien_refresh_packlist {
   };
 
   $packlist->write if $changed;
+}
+
+sub alien_relocation_fixup {
+  my($self) = @_;
+  
+  # so far relocation fixup is only needed on OS X
+  return unless $^O eq 'darwin';
+
+  my $dist_name = $self->dist_name;  
+  my $share = _catdir( $self->install_destination('lib'), qw/auto share dist/, $dist_name );
+  
+  require File::Find;
+  File::Find::find(sub {
+    if(/\.dylib$/)
+    {
+      # save the original mode and make it writable
+      my $mode = (stat $File::Find::name)[2];
+      chmod 0755, $File::Find::name unless -w $File::Find::name;
+      
+      my @cmd = (
+        'install_name_tool',
+        '-id' => $File::Find::name,
+        $File::Find::name,
+      );
+      print "+ @cmd\n";
+      system @cmd;
+      
+      # restore the original permission mode
+      chmod $mode, $File::Find::name;
+    }
+  }, $share);
 }
 
 sub _rscan_destdir {
