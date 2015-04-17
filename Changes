@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.015_02  Fri Apr 17, 2015
+  - On OS X use install_name_tool to more reliably relocate dynamic libraries
+    on that platform (plicease gh#115)
+
 0.015_01  Fri Apr 17, 2015
   - Add alien_stage_install option for Alien::Base::ModuleBuild
     see Alien::Base::ModuleBuild::API for details (plicease gh#114)
