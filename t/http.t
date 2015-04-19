@@ -138,5 +138,35 @@ subtest 'get_file()' => sub {
   };
 };
 
+subtest 'get()' => sub {
+  subtest 'mock client' => sub {
+    my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new(
+      protocol_class => 'Test::Alien::Base::HTTP',
+    );
+    my $file = Alien::Base::ModuleBuild::File->new(
+      repository => $repo,
+      filename => 'http://example.com/test.tar.gz',
+    );
+    my $filename = $file->get();
+    is $filename, 'test.tar.gz';
+  };
+  subtest 'LWP::UserAgent' => sub {
+    plan skip_all => 'No LWP::UserAgent' unless eval { require LWP::UserAgent; 1 };
+    my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new(
+      protocol_class => 'LWP::UserAgent',
+    );
+    # Change to a tempdir so our file gets automatically cleaned up
+    my $tmp = File::Temp->newdir;
+    local $CWD = $tmp->dirname;
+
+    my $file = Alien::Base::ModuleBuild::File->new(
+      repository => $repo,
+      filename => URI::file->new($INDEX_PATH)->as_string,
+    );
+    my $filename = $file->get();
+    is $filename, 'index.html';
+  };
+};
+
 done_testing;
 
