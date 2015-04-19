@@ -33,13 +33,12 @@ sub get {
   ## whatever happened, record the new filename
   $self->{filename} = $filename;
 
-
   if (defined $self->{sha1} || defined $self->{sha256}) {
     unless (eval 'require Digest::SHA') {
       warn "sha1 or sha256 sums are specified but cannot be checked since Digest::SHA is not installed";
       return $filename;
     }
-  
+
     eval 'require Digest::SHA' or return $filename;
     ## verify that the SHA-1 and/or SHA-256 sums match if provided
     if (defined $self->{sha1}) {
@@ -62,7 +61,7 @@ sub get {
     }
   }
 
-  return $self->filename;
+  return $filename;
 }
 
 sub platform   { shift->{platform}   }
