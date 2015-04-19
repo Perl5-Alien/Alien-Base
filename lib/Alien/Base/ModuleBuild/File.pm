@@ -27,8 +27,11 @@ sub get {
 
   my $filename = $repo->get_file($self->filename);
   if ( my $new_filename = $repo->{new_filename} ) {
-    $filename = $self->{filename} = $new_filename;
+    $filename = $new_filename;
   }
+
+  ## whatever happened, record the new filename
+  $self->{filename} = $filename;
 
 
   if (defined $self->{sha1} || defined $self->{sha256}) {
