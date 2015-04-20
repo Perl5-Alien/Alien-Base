@@ -83,8 +83,6 @@ subtest 'override temp and share' => sub {
 subtest 'destdir' => sub {
   plan skip_all => 'TODO on MSWin32' if $^O eq 'MSWin32';
 
-  $ENV{ALIEN_BLIB} = 0;
-
   open my $fh, '>', 'build.pl';
   print $fh <<'EOF';
 use strict;
@@ -127,6 +125,7 @@ EOF
       location => 'src',
       c_compiler_required => 0,
     },
+    alien_stage_install => 0,
   );
 
   my $share = $builder->alien_library_destination;

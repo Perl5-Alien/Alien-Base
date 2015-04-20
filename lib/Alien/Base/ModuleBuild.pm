@@ -265,7 +265,7 @@ sub ACTION_code {
     $self->SUPER::ACTION_code;
 
     # copy the compiled files into blib if running under blib scheme
-    $self->depends_on('alien_install') if $self->notes('alien_blib_scheme');
+    $self->depends_on('alien_install') if $self->notes('alien_blib_scheme') || $self->alien_stage_install;
   }
   
   my $module = $self->module_name;
@@ -289,8 +289,6 @@ sub Inline { shift; $module->Inline(\@_) }
 EOF
     close $fh;
   }
-
-  $self->depends_on('alien_install') if $self->alien_stage_install;
 }
 
 sub ACTION_alien_code {
@@ -584,6 +582,7 @@ sub alien_library_destination {
 sub alien_detect_blib_scheme {
   my $self = shift;
 
+  return 0 if $self->alien_stage_install;
   return $ENV{ALIEN_BLIB} if defined $ENV{ALIEN_BLIB};
 
   # check to see if Alien::Base::ModuleBuild is running from blib.
