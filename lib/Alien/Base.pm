@@ -563,6 +563,8 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =item Vikas N Kumar (vikasnkumar)
 
+=item Flavio Poletti (polettix)
+
 =back
 
 =head1 COPYRIGHT AND LICENSE
