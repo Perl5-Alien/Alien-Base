@@ -130,6 +130,12 @@ __PACKAGE__->add_property( 'alien_bin_requires' => {} );
 # Do a staged install to blib instead of trying to install to the final location.
 __PACKAGE__->add_property( 'alien_stage_install' => 1 );
 
+# Should modules be installed into arch specific directory?
+# Most alien dists will have arch specific files in their share so it makes sense to install
+# the module in the arch specific location.  If you are alienizing something that isn't arch
+# specific, like javascript source or java byte code, then you'd want to set this to 0.
+__PACKAGE__->add_property( 'alien_arch' => 1 );
+
 ################
 #  ConfigData  #
 ################
@@ -283,6 +289,17 @@ sub Inline { shift; $module->Inline(\@_) }
 EOF
     close $fh;
   }
+  
+  if($self->alien_arch) {
+    my @parts = split /::/, $module;
+    my $arch_dir = File::Spec->catdir($self->blib, 'arch', 'auto', @parts);
+    File::Path::mkpath($arch_dir, 0, oct(777)) unless -d $arch_dir;
+    open my $fh, '>', File::Spec->catfile($arch_dir, $parts[-1].".txt");
+    print $fh "Alien based distribution with architecture specific file in share\n";
+    close $fh;
+  }
+
+  $self->depends_on('alien_install') if $self->alien_stage_install;
 }
 
 sub process_share_dir_files {
