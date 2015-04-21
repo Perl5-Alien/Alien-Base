@@ -190,6 +190,12 @@ Alien packages are installed directly into the blib directory by the `./Build' c
 
 As of 0.017 this is the default.
 
+=item alien_arch
+
+[version 0.017]
+
+Install module into an architecture specific directory.  This is the default, as most Alien distributions will be installing binary code.  If you are installing something not architecture specific, like JavaScript or Java byte code, then you should set this to 0.
+
 =back
 
 =head2 PACKAGE AND ENVIRONMENT VARIABLES
