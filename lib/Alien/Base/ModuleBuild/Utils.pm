@@ -4,7 +4,7 @@ package Alien::Base::ModuleBuild::Utils;
 use strict;
 use warnings;
 
-our $VERSION = '0.016';
+our $VERSION = '0.016_01';
 $VERSION = eval $VERSION;
 
 use Text::Balanced qw/extract_bracketed extract_delimited extract_multiple/;
