@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.016  Tue Apr 22, 2015
+  - Production release identical to 0.015_03 release
+
 0.015_03  Mon Apr 20, 2015
   - Fixed bug related to absolute URL (polettix++ gh#116)
 
