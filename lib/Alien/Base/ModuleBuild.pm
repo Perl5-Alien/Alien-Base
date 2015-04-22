@@ -593,7 +593,7 @@ sub alien_library_destination {
   my $lib_dir = 
     $self->notes('alien_blib_scheme') || $self->alien_stage_install
     ? File::Spec->catdir( $self->base_dir, $self->blib, 'lib' )
-    : $self->install_destination('lib');
+    : $self->install_destination($self->alien_arch ? 'arch' : 'lib');
 
   my $dist_name = $self->dist_name;
   my $dest = _catdir( $lib_dir, qw/auto share dist/, $dist_name );
@@ -1042,7 +1042,7 @@ sub alien_relocation_fixup {
   return unless $^O eq 'darwin';
 
   my $dist_name = $self->dist_name;  
-  my $share = _catdir( $self->install_destination('lib'), qw/auto share dist/, $dist_name );
+  my $share = _catdir( $self->install_destination($self->alien_arch ? 'arch' : 'lib'), qw/auto share dist/, $dist_name );
   
   require File::Find;
   File::Find::find(sub {
