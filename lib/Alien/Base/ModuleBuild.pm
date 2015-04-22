@@ -134,7 +134,7 @@ __PACKAGE__->add_property( 'alien_stage_install' => 1 );
 # Most alien dists will have arch specific files in their share so it makes sense to install
 # the module in the arch specific location.  If you are alienizing something that isn't arch
 # specific, like javascript source or java byte code, then you'd want to set this to 0.
-__PACKAGE__->add_property( 'alien_arch' => 1 );
+__PACKAGE__->add_property( 'alien_arch' => defined $ENV{ALIEN_ARCH} ? $ENV{ALIEN_ARCH} : 1 );
 
 ################
 #  ConfigData  #

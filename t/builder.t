@@ -3,7 +3,7 @@ use warnings;
 
 use Test::More;
 
-BEGIN { delete $ENV{ACTIVESTATE_PPM_BUILD} }
+BEGIN { delete $ENV{ACTIVESTATE_PPM_BUILD}; $ENV{ALIEN_ARCH} = 0 }
 
 use Alien::Base::ModuleBuild;
 use File::chdir;
