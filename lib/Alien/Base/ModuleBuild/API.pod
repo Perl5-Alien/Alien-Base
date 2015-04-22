@@ -220,6 +220,14 @@ Setting either to a true value will cause the builder to ignore a system-wide in
 
 Setting this to true indicates that you don't intend to actually install your Alien::Base subclass, but rather use it from the built F<blib> directory. This behavior is mostly to support automated testing from CPANtesters and should be automagically determined. If by chance you happen to trip the behavior accidentally, setting this environment variable to false (0) before building should prevent problems. 
 
+=item $ENV{ALIEN_ARCH}
+
+[version 0.017]
+
+Setting this changes the default for alien_arch above.  If the module specifies its own alien_arch in its C<Build.PL> file then it will override this setting.  Typically installing into an architecture specific directory is what you
+want to do, since most L<Alien::Base> based distributions provide architecture specific binary code, so you should consider carefully before installing modules with this environment variable set to 0.  This may be useful for
+integrators creating a single non-architecture specific RPM, .dep or similar package.  In this case the integrator should ensure that the Alien package be installed with a system install_type and use the system package.
+
 =back
 
 =head2 CONFIG DATA
