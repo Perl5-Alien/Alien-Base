@@ -466,7 +466,7 @@ sub ACTION_alien_install {
   $self->config_data( 'finished_installing' => 1 );
 
   # to refresh config_data
-  $self->SUPER::ACTION_config_data;
+  $self->alien_force_update_config_data;
 
   if ( $self->notes( 'alien_blib_scheme') || $self->alien_stage_install) {
     # reinstall config_data to blib
@@ -479,6 +479,16 @@ sub ACTION_alien_install {
     # refresh the packlist
     $self->alien_refresh_packlist( $self->alien_library_destination );
   }
+}
+
+sub alien_force_update_config_data
+{
+  my($self) = @_;
+  my $module_name = $self->module_name;
+  my $config_name = $module_name . '::ConfigData';
+  my $config_pm   = File::Spec->catfile($self->blib, 'lib', split /::/, "$config_name.pm");
+  unlink $config_pm;
+  $self->ACTION_config_data;
 }
 
 #######################
