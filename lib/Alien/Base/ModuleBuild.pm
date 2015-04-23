@@ -399,9 +399,9 @@ sub ACTION_install {
   my $self = shift;
   $self->SUPER::ACTION_install;
   if($self->alien_stage_install) {
-    $self->alien_relocation_fixup if $self->alien_stage_install;
+    $self->alien_relocation_fixup;
   } else {
-    $self->depends_on('alien_install') unless $self->alien_stage_install;
+    $self->depends_on('alien_install');
   }
 }
 
@@ -468,7 +468,7 @@ sub ACTION_alien_install {
   # to refresh config_data
   $self->SUPER::ACTION_config_data;
 
-  if ( $self->notes( 'alien_blib_scheme') ) {
+  if ( $self->notes( 'alien_blib_scheme') || $self->alien_stage_install) {
     # reinstall config_data to blib
     $self->process_files_by_extension('pm');
 
@@ -477,8 +477,7 @@ sub ACTION_alien_install {
     $self->SUPER::ACTION_install;
 
     # refresh the packlist
-    $self->alien_refresh_packlist( $self->alien_library_destination )
-      unless $self->alien_stage_install;
+    $self->alien_refresh_packlist( $self->alien_library_destination );
   }
 }
 
