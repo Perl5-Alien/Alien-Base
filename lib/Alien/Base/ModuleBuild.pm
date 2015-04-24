@@ -260,9 +260,6 @@ sub ACTION_code {
 
     $self->depends_on('alien_code');
     $self->SUPER::ACTION_code;
-
-    # copy the compiled files into blib if running under blib scheme
-    $self->depends_on('alien_install') if $self->notes('alien_blib_scheme') || $self->alien_stage_install;
   }
   
   my $module = $self->module_name;
@@ -286,6 +283,14 @@ sub Inline { shift; $module->Inline(\@_) }
 EOF
     close $fh;
   }
+}
+
+sub process_share_dir_files {
+  my $self = shift;
+  $self->SUPER::process_share_dir_files(@_);
+  
+  # copy the compiled files into blib if running under blib scheme
+  $self->depends_on('alien_install') if $self->notes('alien_blib_scheme') || $self->alien_stage_install;
 }
 
 sub ACTION_alien_code {
@@ -465,14 +470,15 @@ sub ACTION_alien_install {
   $self->alien_refresh_manual_pkgconfig( $self->alien_library_destination );
   $self->config_data( 'finished_installing' => 1 );
 
-  # to refresh config_data
-  $self->SUPER::ACTION_config_data;
-
   if ( $self->notes( 'alien_blib_scheme') || $self->alien_stage_install) {
-    # reinstall config_data to blib
-    $self->process_files_by_extension('pm');
+    ## reinstall config_data to blib
+    #$self->process_files_by_extension('pm');
 
   } else {
+
+    # to refresh config_data
+    $self->SUPER::ACTION_config_data;
+
     # reinstall config_data
     $self->SUPER::ACTION_install;
 
