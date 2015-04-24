@@ -474,6 +474,10 @@ sub ACTION_alien_install {
   $self->config_data( 'finished_installing' => 1 );
 
   if ( $self->notes( 'alien_blib_scheme') || $self->alien_stage_install) {
+  
+    ### TODO: empty if should be claned up before 0.017.
+    ### we used to call process_files_by_extension('pm')
+    ### here, but with gh#121 it is unecessary
     ## reinstall config_data to blib
     #$self->process_files_by_extension('pm');
 
