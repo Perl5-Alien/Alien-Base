@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.017  Fri Apr 24, 2015
+  - Identical to 0.016_02 release, except alien_stage_install is
+    OFF by default (it was turned on for dev release 0.016_01,
+    and will be turned back on or after May 25).
+
 0.016_02  Fri Apr 24, 2015
   - Fix bug where ConfigData.pm was not updated after install to blib
     (plicease gh#121)
