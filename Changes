@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.018_01  Tue May 26, 2015
+  - Added alien_arch option for non-homogeneous environments with shared @INC
+    (for example AFS) (plicease gh#118)
+
 0.018  Tue May 26, 2015
   - alien_stage_install is now on by default
     (first production release for this to be the case)

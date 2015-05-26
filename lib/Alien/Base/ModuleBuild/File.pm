@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Carp;
 
-our $VERSION = '0.018';
+our $VERSION = '0.018_01';
 $VERSION = eval $VERSION;
 
 sub new {
