@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.018  Tue May 26, 2015
+  - alien_stage_install is now on by default
+    (first production release for this to be the case)
+
 0.017  Fri Apr 24, 2015
   - Identical to 0.016_02 release, except alien_stage_install is
     OFF by default (it was turned on for dev release 0.016_01,
