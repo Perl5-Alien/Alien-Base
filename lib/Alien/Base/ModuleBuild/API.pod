@@ -192,9 +192,9 @@ As of 0.017 this is the default.
 
 =item alien_arch
 
-[version 0.017]
+[version 0.019]
 
-Install module into an architecture specific directory.  This is the default, as most Alien distributions will be installing binary code.  If you are installing something not architecture specific, like JavaScript or Java byte code, then you should set this to 0.
+Install module into an architecture specific directory.  This is off by default, unless $ENV{ALIEN_ARCH} is true.  Most Alien distributions will be installing binary code.  If you are an integrator where the C<@INC> path is shared by multiple Perls in a non-homogeneous environment you can set $ENV{ALIEN_ARCH} to 1 and Alien modules will be installed in architecture specific directories.
 
 =back
 
