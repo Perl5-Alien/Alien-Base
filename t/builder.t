@@ -117,8 +117,8 @@ EOF
       "$^X $CWD/build.pl touch bin/foo",
     ],
     alien_install_commands => [
-      "$^X $CWD/build.pl mkdir DESTDIR/%s/bin",
-      "$^X $CWD/build.pl copy  bin/foo DESTDIR/%s/bin/foo",
+      "$^X $CWD/build.pl mkdir DESTDIR%s/bin",
+      "$^X $CWD/build.pl copy  bin/foo DESTDIR%s/bin/foo",
     ],
     alien_repository => {
       protocol => 'local',
