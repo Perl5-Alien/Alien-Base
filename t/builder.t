@@ -113,12 +113,12 @@ EOF
   my $builder = builder(
     alien_name => 'foobarbazfakething',
     alien_build_commands => [
-      "$^X $CWD/build.pl mkdir bin",
-      "$^X $CWD/build.pl touch bin/foo",
+      [ $^X, "$CWD/build.pl", 'mkdir', 'bin' ],
+      [ $^X, "$CWD/build.pl", 'touch', 'bin/foo' ],
     ],
     alien_install_commands => [
-      "$^X $CWD/build.pl mkdir DESTDIR%s/bin",
-      "$^X $CWD/build.pl copy  bin/foo DESTDIR%s/bin/foo",
+      [ $^X, "$CWD/build.pl", 'mkdir', 'DESTDIR%s/bin' ],
+      [ $^X, "$CWD/build.pl", 'copy',  'bin/foo', 'DESTDIR%s/bin/foo' ],
     ],
     alien_repository => {
       protocol => 'local',
@@ -243,10 +243,10 @@ EOF
   my $builder = builder(
     alien_name => 'foobarbazfakething',
     alien_build_commands => [
-      "$^X $CWD/build.pl",
+      [ $^X, "$CWD/build.pl" ],
     ],
     alien_install_commands => [
-      "$^X $CWD/build.pl",
+      [ $^X, "$CWD/build.pl" ],
     ],
     alien_repository => {
       protocol => 'local',
