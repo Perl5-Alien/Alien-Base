@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.018_02  Wed Jun  3, 2015
+  - Fix test suite for Cygwin
+
 0.018_01  Tue May 26, 2015
   - Added alien_arch option for non-homogeneous environments with shared @INC
     (for example AFS) (plicease gh#119)
