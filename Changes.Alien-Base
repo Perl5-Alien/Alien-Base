@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.019  Fri Jun  5, 2015
+  - Production release identical to 0.018_02 release
+
 0.018_02  Wed Jun  3, 2015
   - Fix test suite for Cygwin
 
