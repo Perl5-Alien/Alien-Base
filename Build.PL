@@ -53,6 +53,7 @@ my %build_args = (
       file      => [ 'README.pod' ],
       directory => [ 'examples', 't' ],
     },
+    "x_IRC" : "irc://irc.perl.org/#alien"
   },
 );
 
