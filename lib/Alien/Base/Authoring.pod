@@ -93,7 +93,7 @@ L<Acme::Ford::Prefect> -- An XS module which provides the Perl-level access to C
 
 =back
 
-Additionally, there exists in-production C<Alien::> distributions that serve as de-facto tests of L<Alien::Base>'s networking components:
+Additionally, there exist in-production C<Alien::> distributions that serve as de-facto tests of L<Alien::Base>'s networking components:
 
 =over
 
@@ -101,10 +101,12 @@ Additionally, there exists in-production C<Alien::> distributions that serve as 
 
 L<Alien::LibYAML> -- Builds and installs F<libyaml>, acquiring the library archive from its hosted location via C<Alien::Base::Repository::HTTP>.
 
+=item *
+
+L<Alien::GSL> -- Builds and installs F<libgsl>, aquiring the library source archive via C<Alien::Base::Repository::FTP>.
+
 =back
 
-Also, the author intends to convert L<Alien::GSL> to use this system as soon as it is production ready, so that C<Alien::> authors can see another "Code in the Wild" example. Until then, a pre-release version of this module is provided in the F<examples> directory as well.
- 
 =head1 AUTHOR
 
 Joel Berger <joel.a.berger@gmail.com>
