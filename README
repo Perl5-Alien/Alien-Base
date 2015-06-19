@@ -1,6 +1,4 @@
-Alien::Base will be a base class to help build Alien:: modules for simple libraries.
-
-Initially the target will be Alien::GSL (and probably other Gnu libraries) but in principle there is no limitation.
+Alien::Base will is a base class to help build Alien:: modules for simple libraries.
 
 Special thanks go out to:
 

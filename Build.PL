@@ -52,7 +52,7 @@ my %build_args = (
     },
     no_index => {
       file      => [ 'README.pod' ],
-      directory => [ 'examples', 't' ],
+      directory => [ 't' ],
     },
   },
 );
