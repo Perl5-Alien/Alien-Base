@@ -48,12 +48,12 @@ my %build_args = (
       repository => "http://github.com/Perl5-Alien/Alien-Base",
       bugtracker => "http://github.com/Perl5-Alien/Alien-Base/issues",
       x_MailingList => 'https://groups.google.com/forum/#!forum/perl5-alien',
+      x_IRC => "irc://irc.perl.org/#native",
     },
     no_index => {
       file      => [ 'README.pod' ],
       directory => [ 'examples', 't' ],
     },
-    "x_IRC" : "irc://irc.perl.org/#native"
   },
 );
 
