@@ -496,9 +496,9 @@ __POD__
 
 =head1 SUPPORT AND CONTRIBUTING
 
-IRC: #alien on irc.perl.org
+IRC: #native on irc.perl.org
 
- L<(click for instant chatroom login)|http://chat.mibbit.com/#alien@irc.perl.org> 
+ L<(click for instant chatroom login)|http://chat.mibbit.com/#native@irc.perl.org> 
 
 If you find a bug, please report it on the projects issue tracker on GitHub:
 
