@@ -105,6 +105,10 @@ L<Alien::LibYAML> -- Builds and installs F<libyaml>, acquiring the library archi
 
 L<Alien::GSL> -- Builds and installs F<libgsl>, aquiring the library source archive via C<Alien::Base::Repository::FTP>.
 
+=item *
+
+L<Alien::gmake> -- Builds and installs GNU make.  Rather than being a library, this is a tool used to build other tools and libraries.  It is useful for other Alien modules that require the GNU version of make.  It also demonstrates the use of L<Alien::Base> for providing tools rather than libraries.
+
 =back
 
 =head1 AUTHOR
