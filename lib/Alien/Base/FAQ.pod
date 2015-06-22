@@ -62,7 +62,8 @@ example, your C<Build.PL> might look like this:
 
 Create a folder in your distribution root called C<patch> and place the C<mypackage.patch> file in there.  Since 
 the C<patch> command will be executed in the package root instead of the distribution root, you need to use a 
-relative path prefixed by C<../..>.
+relative path prefixed by C<../..>.  You may also want to use L<Alien::patch> which will provide patch even
+on platforms where it is not provided.
 
 Patch is not always available, and you may want to write some Perl code to patch / manipulate your package 
 before starting the build process.
