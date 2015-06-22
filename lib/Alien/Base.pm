@@ -566,6 +566,8 @@ __POD__
 
 =head1 SUPPORT AND CONTRIBUTING
 
+First check the L<Alien::Base::FAQ> for questions that have already been answered.
+
 IRC: #native on irc.perl.org
 
 L<(click for instant chatroom login)|http://chat.mibbit.com/#native@irc.perl.org> 
@@ -608,6 +610,10 @@ L<Module::Build>
 =item *
 
 L<Alien>
+
+=item *
+
+L<Alien::Base::FAQ>
 
 =back
 
