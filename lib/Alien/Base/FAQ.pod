@@ -2,13 +2,46 @@
 
 Alien::Base::FAQ - Frequently Asked Questions about Alien::Base
 
+=head1 SYNOPSIS
+
+ perldoc Alien::Base::FAQ
+
+=head1 DESCRIPTION
+
+This document serves to answer the most frequently asked questions made by L<Alien::Base> authors.
+
+=head2 What is Alien and Alien::Base?
+
+Alien is a Perl namespace for defining dependencies in CPAN for libraries and tools which are not "native"
+to CPAN.  For a manifesto style description of the Why, and How see L<Alien>.  L<Alien::Base> is a base
+class and framework for creating Alien distributions.  The idea is to address as many of the common challenges
+to developing Alien modules in the base class to simplify the process.
+
 =head2 How do determine cflags and libs for packages that do not support pkg-config?
 
-FIXME
+TODO
 
 =head2 How do I test my package once it is built (before it is installed)?
 
-FIXME
+There are many ways to test Alien modules before they are installed.  Probably the easiest is by using
+L<Test::CChecker>.  Here is an example test for the theoretical libfoo library:
+
+ use Test::More tests => 1;
+ use Test::CChecker 0.06;    # require version 0.06 for compatability with recent Alien::Base
+ use Alien::Base    0.18;    # require version 0.18 for staged install to blib
+ use Alien::Foo;
+ 
+ compile_with_alien 'Alien::Foo';
+ 
+ compile_run_ok <<SOURCE, 'basic compile test for libfoo';
+ #include <foo.h>
+ 
+ int main()
+ {
+   foo();
+   return 0;
+ }
+ SOURCE
 
 =head2 How do I patch packages that need minor (or major) alterations?
 
@@ -187,19 +220,35 @@ distribution is using.  For example, if you use L<Alien::CMake> or L<Alien::gmak
 that are provided by your operating system, L<Alien::Build::ModuleBuild> will adjust the path before executing 
 build and install commands.
 
-FIXME
+In the alien build directory (usually C<_alien>) you will find environment files that you can source
+into your shell (C<env.csh> for tcsh and C<env.sh> for bourne based shells), which should provide the 
+identical environment used by the build process in order to troubleshoot the build manually.
 
-=head2 How do I build a .deb package?
-
-FIXME
+ % source _alien/env.sh
 
 =head2 I have question not listed here!
 
-Please post a polite message regarding your issue to the Google Groups list for this project:
+There are a number of forums available to people working on L<Alien> and L<Alien::Base> modules:
 
 =over 4
 
-=item L<https://groups.google.com/forum/#!forum/perl5-alien>
+=item C<#native> on irc.perl.org
+
+This is intended for native interfaces in general and so is a good place for questions about L<Alien>
+generally or L<Alien::Base> specifically.
+
+=item mailing list
+
+The C<perl5-alien> google group is intended for L<Alien> issues generally, including L<Alien::Base>.
+
+L<https://groups.google.com/forum/#!forum/perl5-alien>
+
+=item Open a support ticket
+
+If you have an issue with L<Alie::Base> itself, then please open a support ticket on the
+project's GitHub issue tracker.
+
+L<https://github.com/Perl5-Alien/Alien-Base/issues>
 
 =back
  
