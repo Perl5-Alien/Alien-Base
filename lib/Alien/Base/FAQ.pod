@@ -50,11 +50,17 @@ example, your C<Build.PL> might look like this:
 
  # Build.PL
  use Alien::Base::ModuleBuild;
+ 
+ # --binary is required to get the same results on Windows
+ # where line endings are different.  Not all versions of
+ # patch support this option so it should only be used where
+ # necessary.
+ my $patch = $^O eq 'MSWin32' ? 'patch --binary' : 'path';
+ 
  Alien::Base::ModuleBuild->new(
    ...
    alien_build_commands => [
-     # --binary allows patches to be applied on either Unix or Windows
-     'patch --binary -p1 < ../../patch/mypackage.patch',
+     '$patch -p1 < ../../patch/mypackage.patch',
      ...
    ],
    ...
