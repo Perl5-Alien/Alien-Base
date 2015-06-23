@@ -130,7 +130,7 @@ If you see an error like this:
 
 It may be because your package provides a C<configure> script that provides an autoconf-style interface, but is 
 not actually autoconf.  L<Alien::Base::ModuleBuild> is aggressive in using the C<--with-pic> option because when 
-supported by autoconf it produces position independant code (important for reliably building XS extensions), and 
+supported by autoconf it produces position independent code (important for reliably building XS extensions), and 
 when not supported autoconf simply ignores the option. Unfortunately some autoconf-style C<configure> scripts 
 consider it an error when they see options that they do not recognize.  You can tell L<Alien::Base::ModuleBuild> 
 to not use the C<--with-pic> option via the C<alien_autoconf_with_pic> property:
