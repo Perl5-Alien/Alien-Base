@@ -196,6 +196,12 @@ As of 0.017 this is the default.
 
 Install module into an architecture specific directory.  This is off by default, unless $ENV{ALIEN_ARCH} is true.  Most Alien distributions will be installing binary code.  If you are an integrator where the C<@INC> path is shared by multiple Perls in a non-homogeneous environment you can set $ENV{ALIEN_ARCH} to 1 and Alien modules will be installed in architecture specific directories.
 
+=item alien_helper
+
+[version 0.020]
+
+Provide helpers to be used in commands.  TODO
+
 =back
 
 =head2 PACKAGE AND ENVIRONMENT VARIABLES
@@ -265,6 +271,12 @@ Holder for C<alien_name> as needed by pkg-config.
 Before L<Alien::Base::ModuleBuild> executes system commands, it replaces a few special escape sequences with useful data. This is needed especially for referencing the full path to the C<alien_share_dir> before this path is known. The availble sequences are:
 
 =over
+
+=item %{I<helper>}
+
+[version 0.020]
+
+Call the given helper, either provided by the C<alien_helper> or C<alien_bin_requires> property. TODO
 
 =item %s
 
