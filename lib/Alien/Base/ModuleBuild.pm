@@ -242,6 +242,9 @@ END
 sub ACTION_alien_fakebuild {
   my $self = shift;
 
+  # needed for any helpers provided by alien_bin_requires
+  $self->_alien_bin_require($_) for keys %{ $self->alien_bin_requires };
+
   print "# Build\n";
   foreach my $cmd (@{ $self->alien_build_commands })
   {
