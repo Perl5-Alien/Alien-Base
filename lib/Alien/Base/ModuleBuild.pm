@@ -26,6 +26,7 @@ use Shell::Config::Generate;
 use File::Path qw/mkpath/;
 use Config;
 use Text::ParseWords qw( shellwords );
+use Text::Balanced qw( extract_bracketed );
 
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -828,6 +829,16 @@ sub alien_interpolate {
     } else {
       $string =~ s/(?<!\%)\%v/$version/g;
     }
+
+  }
+
+  while($string =~ s/(?<!\%)\%(\{.*)$//) {
+    my($perl, $rest) = extract_bracketed "$1", '{}';
+    my $value = eval qq{
+      package Alien::Base::ModuleBuild::Sandbox;
+      $perl
+    };
+    $string .= $value . $rest;
   }
 
   #remove escapes (%%)

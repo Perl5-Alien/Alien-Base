@@ -266,6 +266,10 @@ Before L<Alien::Base::ModuleBuild> executes system commands, it replaces a few s
 
 =over
 
+=item %{ I<arbitrary perl code> }
+
+The Perl code inside the curly braces will be evaluated and the result will be interpolated immediately before the command is executed.  Nested curly braces will be handled correctly.
+
 =item %s
 
 The full path to the final installed location of the share directory (builder method C<alien_library_destination>). This is where the library should install itself; for autoconf style installs this will look like 
