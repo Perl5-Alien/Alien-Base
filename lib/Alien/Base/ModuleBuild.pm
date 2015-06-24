@@ -26,6 +26,7 @@ use Shell::Config::Generate;
 use File::Path qw/mkpath/;
 use Config;
 use Text::ParseWords qw( shellwords );
+use Text::Balanced qw( extract_bracketed );
 
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
@@ -806,6 +807,8 @@ sub alien_interpolate {
   my $share  = $self->alien_library_destination;
   my $name   = $self->alien_name || '';
 
+  my $original = $string;
+
   # substitute:
   #   install location share_dir (placeholder: %s)
   $string =~ s/(?<!\%)\%s/$share/g;
@@ -828,6 +831,19 @@ sub alien_interpolate {
     } else {
       $string =~ s/(?<!\%)\%v/$version/g;
     }
+
+  }
+
+  while($string =~ s/(?<!\%)\%(\{.*)$//) {
+    my($perl, $rest) = extract_bracketed "$1", '{}';
+    die "unable to extract Perl block for interpolation from '$original'"
+      unless defined $perl;
+    my $value = eval qq{
+      package Alien::Base::ModuleBuild::Sandbox;
+      $perl
+    };
+    die $@ if $@;
+    $string .= $value . $rest;
   }
 
   #remove escapes (%%)
