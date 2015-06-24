@@ -56,6 +56,13 @@ is( $builder->alien_interpolate('%x'), $perl, '%x is current interpreter' );
 is $builder->alien_interpolate('| %{ "foo" . "bar" } |'), '| foobar |', 'interpolation of arbitrary perl';
 is $builder->alien_interpolate('| %{ join ",", map { $_ - 1 } 2..11 } |'), '| 1,2,3,4,5,6,7,8,9,10 |', 'interpolation of arbitrary perl with nested brackets';
 
+eval { $builder->alien_interpolate('| %{ ') };
+like $@, qr{unable to extract Perl block for interpolation from}, 'interpolation of arbitrary perl bad extract';
+note $@;
+
+eval { $builder->alien_interpolate('| %{ die "foobarbaz" } |') };
+like $@, qr{foobarbaz}, 'interpolation of arbitrary exception';
+
 done_testing;
 
 package

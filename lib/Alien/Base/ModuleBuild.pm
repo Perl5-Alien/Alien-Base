@@ -807,6 +807,8 @@ sub alien_interpolate {
   my $share  = $self->alien_library_destination;
   my $name   = $self->alien_name || '';
 
+  my $original = $string;
+
   # substitute:
   #   install location share_dir (placeholder: %s)
   $string =~ s/(?<!\%)\%s/$share/g;
@@ -834,10 +836,13 @@ sub alien_interpolate {
 
   while($string =~ s/(?<!\%)\%(\{.*)$//) {
     my($perl, $rest) = extract_bracketed "$1", '{}';
+    die "unable to extract Perl block for interpolation from '$original'"
+      unless defined $perl;
     my $value = eval qq{
       package Alien::Base::ModuleBuild::Sandbox;
       $perl
     };
+    die $@ if $@;
     $string .= $value . $rest;
   }
 
