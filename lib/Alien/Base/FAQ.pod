@@ -160,10 +160,9 @@ install it for you.  You can use this from your C<Build.PL> with the C<alien_bin
  use Config;
  Alien::Base::ModuleBuild->new(
    ...
-   configure_requires => {
+   alien_bin_requires => {
      'Alien::CMake' => 0,
    },
-   alien_bin_requires => [ 'Alien::CMake' ],
    alien_build_commands => [
      # acutal required arguments may vary
      "cmake -G 'Unix Makefiles' -DCMAKE_MAKE_PROGRAM=$Config{make} -DCMAKE_INSTALL_PREFIX:PATH=%s",
@@ -209,7 +208,9 @@ from the operating system, or built from source):
    configure_requires => {
      'Alien::gmake' => 0,
    },
-   alien_bin_requires => [ 'Alien::gmake' ],
+   alien_bin_requires => {
+      'Alien::gmake' = 0,
+   },
    alien_build_commands => [
      "$gmake",
    ],
