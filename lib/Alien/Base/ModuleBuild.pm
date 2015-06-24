@@ -137,6 +137,8 @@ __PACKAGE__->add_property( 'alien_stage_install' => 1 );
 # For now this will default to off.  See gh#119 for a discussion.
 __PACKAGE__->add_property( 'alien_arch' => defined $ENV{ALIEN_ARCH} ? $ENV{ALIEN_ARCH} : 0 );
 
+__PACKAGE__->add_property( 'alien_helper' => {} );
+
 ################
 #  ConfigData  #
 ################
@@ -646,6 +648,22 @@ sub _filter_defines
   join ' ', grep !/^-D/, shellwords($_[0]);
 }
 
+sub _alien_bin_require {
+  my($self, $mod) = @_;
+  
+  my $version = $self->alien_bin_requires->{$mod};
+
+  eval qq{ use $mod $version () }; # should also work for version = 0
+  die $@ if $@;
+  
+  if($mod->can('alien_helper')) {
+    my $helpers = $mod->alien_helper;
+    while(my($k,$v) = each %$helpers) {
+      $self->alien_helper->{$k} = $v;
+    }
+  }
+}
+
 sub _env_do_system {
   my $self = shift;
   my $command = shift;
@@ -659,9 +677,7 @@ sub _env_do_system {
   my $config;
   
   foreach my $mod (keys %{ $self->alien_bin_requires }) {
-    my $version = $self->alien_bin_requires->{$mod};
-    eval qq{ use $mod $version () }; # should also work for version = 0
-    die $@ if $@;
+    $self->_alien_bin_require($mod);
     
     my %path;
     
@@ -797,6 +813,16 @@ sub do_system {
   return wantarray ? %return : $return{success};
 }
 
+sub _alien_execute_helper {
+  my($self, $helper) = @_;
+  my $code = $self->alien_helper->{$helper};
+  die "no such helper: $helper" unless defined $code;
+  return $code->() if ref($code) eq 'CODE';
+  my $value = eval $code;
+  die $@ if $@;
+  $value;
+}
+
 sub alien_interpolate {
   my $self = shift;
   my ($string) = @_;
@@ -829,6 +855,8 @@ sub alien_interpolate {
       $string =~ s/(?<!\%)\%v/$version/g;
     }
   }
+
+  $string =~ s/(?<!\%)\%\{([a-zA-Z_][a-zA-Z_0-9]+)\}/$self->_alien_execute_helper($1)/eg;
 
   #remove escapes (%%)
   $string =~ s/\%(?=\%)//g;

@@ -8,6 +8,13 @@ my $builder = Alien::Base::ModuleBuild->new(
   module_name => 'My::Test', 
   dist_version => 0.01,
   alien_name => 'test',
+  alien_helper => {
+    foo => ' "bar" . "baz" ',
+    exception => ' die "abcd" ',
+  },
+  alien_bin_requires => {
+    'Alien::foopatcher' => 0,
+  },
 ); 
 
 is( $builder->alien_interpolate('%phello'), $builder->alien_exec_prefix . 'hello', 'prefix interpolation');
@@ -53,6 +60,18 @@ is( $builder->alien_interpolate('%x'), $perl, '%x is current interpreter' );
   is( join( "\n", @warn ),                       '',                      'version warning after setting it' );
 }
 
+is( $builder->alien_interpolate("|%{foo}|"), "|barbaz|", "helper" );
+is( $builder->alien_interpolate("|%{foo}|%{foo}|"), "|barbaz|barbaz|", "helper x 2" );
+eval { $builder->alien_interpolate("%{exception}") };
+like $@, qr{abcd}, "exception gets thrown";
+
+$builder->_alien_bin_require('Alien::foopatcher');
+is( $builder->alien_interpolate("|%{patch1}|"), "|patch1 --binary|", "helper from independent Alien module");
+is( $builder->alien_interpolate("|%{patch2}|"), "|patch2 --binary|", "helper from independent Alien module with code ref");
+
+eval { $builder->alien_interpolate("%{bogus}") };
+like $@, qr{no such helper: bogus}, "exception thrown with bogus helper";
+
 done_testing;
 
 package
@@ -60,3 +79,15 @@ package
 
 sub new     { bless { ondie => $_[1] }, $_[0] }
 sub DESTROY { $_[0]{ondie}->() if ( $_[0]{ondie} ) }
+
+package
+    Alien::foopatcher;
+
+BEGIN { $INC{'Alien/foopatcher.pm'} = __FILE__; our $VERSION = '0.01' }
+
+sub alien_helper {
+    return {
+      patch1 => 'join " ", qw(patch1 --binary)',
+      patch2 => sub { 'patch2 --binary' },
+    },
+}
