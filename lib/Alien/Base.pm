@@ -460,7 +460,7 @@ sub bin_dir {
  my $helpers = Alien::MyLibrary->alien_helper;
 
 Returns a hash reference of helpers provided by the Alien module.
-They keys are helper names and the values are code references.  The
+The keys are helper names and the values are code references.  The
 code references will be executed at command time and the return value
 will be interpolated into the command before execution.  The default
 implementation returns an empty hash reference, and you are expected
