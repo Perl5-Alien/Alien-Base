@@ -455,6 +455,70 @@ sub bin_dir {
   -d $dir ? ($dir) : ();
 }
 
+=head2 alien_helper
+
+ my $helpers = Alien::MyLibrary->alien_helper;
+
+Returns a hash reference of helpers provided by the Alien module.
+They keys are helper names and the values are code references.  The
+code references will be executed at command time and the return value
+will be interpolated into the command before execution.  The default
+implementation returns an empty hash reference, and you are expected
+to override the method to create your own helpers.
+
+Helpers allow users of your Alien module to use platform or environment 
+determined logic to compute command names or arguments in 
+C<alien_build_commands> or C<alien_install_commands> in their C<Build.PL>.
+Helpers allow you to do this without making your Alien module a requirement
+when a build from source code is not necessary.
+
+As a concrete example, consider L<Alien::gmake>, which provides the 
+helper C<gmake>:
+
+ package Alien::gmake;
+ 
+ ...
+ 
+ sub alien_helper {
+   my($class) = @_;
+   return {
+     gmake => sub {
+       # return the executable name for GNU make,
+       # usually either make or gmake depending on
+       # the platform and environment
+       $class->exe;
+     }
+   },
+ }
+
+Now consider L<Alien::nasm>.  C<nasm> requires GNU Make to build from 
+source code, but if the system C<nasm> package is installed we don't 
+need it.  From the C<Build.PL> of C<Alien::nasm>:
+
+ # Alien::nasm Build.PL
+ 
+ ...
+ 
+ Alien::Build::ModuleBuild->new(
+   ...
+   alien_bin_requires => {
+     'Alien::gmake' => '0.05',  # helper introduced in 0.05
+   },
+   alien_build_commands => [
+     '%c --prefix=%s',
+     '%{gmake}',
+   ],
+   alien_install_commands => [
+     '%{gmake} install',
+   ],
+   ...
+
+=cut
+
+sub alien_helper {
+  {};
+}
+
 =head2 inline_auto_include
 
  my(@headers) = Alien::MyLibrary->inline_auto_include;
