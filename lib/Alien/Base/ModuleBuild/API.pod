@@ -200,7 +200,27 @@ Install module into an architecture specific directory.  This is off by default,
 
 [version 0.020]
 
-Provide helpers to be used in commands.  TODO
+Provide helpers to generate commands or arguments at build or install time.  This property is a hash 
+reference.  The keys are the helper names and the values are strings containing Perl code that will 
+be evaluated and interpolated into the command before execution.  Because helpers are only needed 
+when building a package from the source code, any dependency may be specified as an 
+C<alien_bin_requires>.  For example:
+
+ ...
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_bin_requires => {
+     'Alien::foo' => 0,
+   },
+   alien_helper => {
+     'foocommand'  => 'Alien::foo->some_command',
+     'fooargument' => 'Alien::foo->some_argument',
+   },
+   alien_build_commands => [
+     '%{foocommand} %{fooargument}',
+   ],
+   ...
+ );
 
 =back
 
@@ -276,7 +296,7 @@ Before L<Alien::Base::ModuleBuild> executes system commands, it replaces a few s
 
 [version 0.020]
 
-Call the given helper, either provided by the C<alien_helper> or C<alien_bin_requires> property. TODO
+Call the given helper, either provided by the C<alien_helper> or C<alien_bin_requires> property.  See L<Alien::Base#alien_helper>.
 
 =item %s
 
