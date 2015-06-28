@@ -11,6 +11,7 @@ my $builder = Alien::Base::ModuleBuild->new(
   alien_helper => {
     foo => ' "bar" . "baz" ',
     exception => ' die "abcd" ',
+    double => '"1";',
   },
   alien_bin_requires => {
     'Alien::foopatcher' => 0,
@@ -72,6 +73,8 @@ is( $builder->alien_interpolate("|%{patch2}|"), "|patch2 --binary|", "helper fro
 eval { $builder->alien_interpolate("%{bogus}") };
 like $@, qr{no such helper: bogus}, "exception thrown with bogus helper";
 
+is( $builder->alien_interpolate('%{double}'), "1", "MB helper overrides AB helper");
+
 done_testing;
 
 package
@@ -89,5 +92,6 @@ sub alien_helper {
     return {
       patch1 => 'join " ", qw(patch1 --binary)',
       patch2 => sub { 'patch2 --binary' },
+      double => sub { 2 },
     },
 }

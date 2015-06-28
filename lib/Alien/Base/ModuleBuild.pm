@@ -662,6 +662,7 @@ sub _alien_bin_require {
   if($mod->can('alien_helper')) {
     my $helpers = $mod->alien_helper;
     while(my($k,$v) = each %$helpers) {
+      next if defined $self->alien_helper->{$k};
       $self->alien_helper->{$k} = $v;
     }
   }
