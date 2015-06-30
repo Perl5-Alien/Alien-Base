@@ -45,22 +45,19 @@ L<Test::CChecker>.  Here is an example test for the theoretical libfoo library:
 
 =head2 How do I patch packages that need minor (or major) alterations?
 
-One approach is to create a unified diff for patches that you want to apply and simply run patch on them.  For 
-example, your C<Build.PL> might look like this:
+One approach is to create a unified diff for patches that you want to apply and simply run patch on them.  The
+L<Alien::patch> and the C<%{patch}> helper can be used like this:
 
  # Build.PL
  use Alien::Base::ModuleBuild;
  
- # --binary is required to get the same results on Windows
- # where line endings are different.  Not all versions of
- # patch support this option so it should only be used where
- # necessary.
- my $patch = $^O eq 'MSWin32' ? 'patch --binary' : 'patch';
- 
  Alien::Base::ModuleBuild->new(
    ...
+   alien_bin_requires => {
+     'Alien::patch' => 0.06, # needed for %{patch} helper
+   },
    alien_build_commands => [
-     '$patch -p1 < ../../patch/mypackage.patch',
+     '%{patch} < ../../patch/mypackage.patch',
      ...
    ],
    ...
@@ -68,11 +65,8 @@ example, your C<Build.PL> might look like this:
 
 Create a folder in your distribution root called C<patch> and place the C<mypackage.patch> file in there.  Since 
 the C<patch> command will be executed in the package root instead of the distribution root, you need to use a 
-relative path prefixed by C<../..>.  You may also want to use L<Alien::patch> which will provide patch even
-on platforms where it is not provided.
-
-Patch is not always available, and you may want to write some Perl code to patch / manipulate your package 
-before starting the build process.
+relative path prefixed by C<../..>.  Here we use L<Alien::patch> to provide patch even in environments where it
+is not provided.
 
 A more powerful approach to patching is to write a perl subroutine to modify the source after it has been 
 extracted.  One way to do this is to subclass L<Alien::Base::ModuleBuild>:
@@ -201,21 +195,17 @@ from the operating system, or built from source):
 
  # Build.PL
  use Alien::Base::ModuleBuild;
- use Alien::gmake;
- my $gmake = Alien::gmake->exe;
+ 
  Alien::Base::ModuleBuild->new(
    ...
-   configure_requires => {
-     'Alien::gmake' => 0,
-   },
    alien_bin_requires => {
-      'Alien::gmake' = 0,
+     'Alien::gmake' => 0.09, # needed for %{gmake} helper
    },
    alien_build_commands => [
-     "$gmake",
+     "%{gmake}",
    ],
    alien_install_commands => [
-     "$gmake install",
+     "%{gmake} install",
    ],
    ...
  )->create_build_script;
