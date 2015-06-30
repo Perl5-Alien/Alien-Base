@@ -466,6 +466,12 @@ will be interpolated into the command before execution.  The default
 implementation returns an empty hash reference, and you are expected
 to override the method to create your own helpers.
 
+For compatability with the C<Alien::Base::ModuleBuild> attribute C<alien_helper>,
+helpers may also be specified as Perl strings that will be evaluated
+and executed at command time.  This is necessary because of limitations
+with C<Module::Build>, and you are strongly encouraged to use code
+references when defining helpers from an Alien module.
+
 Helpers allow users of your Alien module to use platform or environment 
 determined logic to compute command names or arguments in 
 C<alien_build_commands> or C<alien_install_commands> in their C<Build.PL>.
