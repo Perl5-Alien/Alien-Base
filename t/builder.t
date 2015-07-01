@@ -372,6 +372,33 @@ subtest 'source build requires' => sub {
     my $builder = builder( alien_bin_requires => { 'Foo::Bar' => '1.1' } );
     is $builder->build_requires->{"Foo::Bar"}, '1.1', 'Foo::Bar = 1.1';
   };
+
+  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
+};
+
+subtest 'system provides' => sub {
+
+  local $mb_class = do {
+    package My::MBBuildSystemProvidesExample;
+
+    use base qw( Alien::Base::ModuleBuild );
+
+    sub alien_check_installed_version {
+      return '1.0';
+    }
+
+    __PACKAGE__;
+  };
+
+  subtest 'not installed, not forced' => sub {
+    local $Alien::Base::ModuleBuild::Force = 0;
+    my $builder = builder( alien_provides_cflags => '-DMY_CFLAGS', alien_provides_libs => '-L/my/libs -lmylib' );
+    $builder->depends_on('code');
+    is $builder->config_data('system_provides')->{Cflags}, '-DMY_CFLAGS',          'cflags';
+    is $builder->config_data('system_provides')->{Libs},   '-L/my/libs -lmylib', 'libs';
+  };
+
+  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
 done_testing;

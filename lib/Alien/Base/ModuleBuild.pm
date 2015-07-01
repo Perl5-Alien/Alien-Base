@@ -332,6 +332,12 @@ sub ACTION_alien_code {
   if ($version) {
     $self->config_data( install_type => 'system' );
     $self->config_data( version => $version );
+    my %system_provides;
+    $system_provides{Cflags} = $self->alien_provides_cflags
+      if defined $self->alien_provides_cflags;
+    $system_provides{Libs}   = $self->alien_provides_libs
+      if defined $self->alien_provides_libs;
+    $self->config_data( system_provides => \%system_provides );
     return;
   }
 
