@@ -261,6 +261,14 @@ L<https://github.com/Perl5-Alien/Alien-Base/issues>
 
 L<Alien::Base>
 
+=item *
+
+L<Alien::Base::ModuleBuild>
+
+=item *
+
+L<Alien::Base::ModuleBuild::API>
+
 =back
 
 =head1 AUTHOR
