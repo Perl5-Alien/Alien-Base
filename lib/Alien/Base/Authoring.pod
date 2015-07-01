@@ -131,6 +131,10 @@ L<Alien>
 
 L<Alien::Base>
 
+=item *
+
+L<Alien::Base::FAQ>
+
 =back
 
 =head1 SOURCE REPOSITORY
