@@ -41,6 +41,7 @@ script:
   - cd ../../Alien-Base-Extras/Acme-Ford-Prefect;    cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
   - cd ../..
   - prove -bv t
+  - cpanm -v Alien::Libbz2
 
 env:
   - ALIEN_FORCE=1 LD_LIBRARY_PATH=/usr/local/lib
