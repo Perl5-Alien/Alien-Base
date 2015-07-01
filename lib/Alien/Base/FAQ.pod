@@ -57,7 +57,7 @@ L<Alien::patch> and the C<%{patch}> helper can be used like this:
      'Alien::patch' => 0.06, # needed for %{patch} helper
    },
    alien_build_commands => [
-     '%{patch} < ../../patch/mypackage.patch',
+     '%{patch} -p1 < ../../patch/mypackage.patch',
      ...
    ],
    ...
@@ -69,14 +69,16 @@ relative path prefixed by C<../..>.  Here we use L<Alien::patch> to provide patc
 is not provided.
 
 A more powerful approach to patching is to write a perl subroutine to modify the source after it has been 
-extracted.  One way to do this is to subclass L<Alien::Base::ModuleBuild>:
+extracted.  One way to do this is to create a module in your distribution's inc directory that does the 
+patching (modules in inc can be used during build/test but won't be installed):
 
- # inc/My/ModuleBuild.pm
- package My::ModuleBuild;
+ # inc/My/AlienPatch.pm
+ package My::AlienPatch;
  
- use parent qw( Alien::Base::ModuleBuild );
- 
- sub my_patch {
+ # add this sub to the main namespace
+ # so we don't need to quote or escape
+ # anything below
+ sub main::alien_patch {
    # is executed in the package root,
    # make what ever changes you need to
    # to the source here.
@@ -85,11 +87,12 @@ extracted.  One way to do this is to subclass L<Alien::Base::ModuleBuild>:
  1;
 
  # Build.PL
- use My::ModuleBuild;
  Alien::Base::ModuleBuild->new(
    ...
    alien_build_commands => [
-     "%x -I../../inc -MMy::ModuleBuild -E 'My::ModuleBuild->my_patch'",
+     # %x will be replaced by path for calling Perl
+     # from the command line
+     "%x -I../../inc -MMy::AlienPatch -e alien_patch",
      ...
    ],
    ...
