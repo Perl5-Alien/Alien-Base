@@ -87,6 +87,8 @@ patching (modules in inc can be used during build/test but won't be installed):
  1;
 
  # Build.PL
+ use Alien::Base::ModuleBuild;
+ 
  Alien::Base::ModuleBuild->new(
    ...
    alien_build_commands => [
@@ -226,6 +228,11 @@ into your shell (C<env.csh> for tcsh and C<env.sh> for bourne based shells), whi
 identical environment used by the build process in order to troubleshoot the build manually.
 
  % source _alien/env.sh
+
+=head2 How do I use C<Alien::Base> from C<Dist::Zilla>
+
+For creating L<Alien::Base> based dists from L<Dist::Zilla> you can use the plugin 
+L<Dist::Zilla::Plugin::Alien>.
 
 =head2 I have question not listed here!
 
