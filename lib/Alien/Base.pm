@@ -271,7 +271,10 @@ sub _keyword {
 
     $! = 0;
     chomp ( my $pcdata = capture_merged { system( $command ) } );
-    croak "Could not call pkg-config: $!" if $!;
+
+    # if pkg-config fails for whatever reason, then we try to
+    # fallback on alien_provides_*
+    $pcdata = '' if $! || $?;
 
     $pcdata =~ s/\s*$//;
 
