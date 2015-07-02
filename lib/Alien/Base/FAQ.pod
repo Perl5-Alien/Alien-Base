@@ -17,9 +17,88 @@ to CPAN.  For a manifesto style description of the Why, and How see L<Alien>.  L
 class and framework for creating Alien distributions.  The idea is to address as many of the common challenges
 to developing Alien modules in the base class to simplify the process.
 
-=head2 How do determine cflags and libs for packages that do not support pkg-config?
+=head2 How to create an Alien module for packages that do not support pkg-config?
 
-TODO
+Although L<Alien::Base> and L<Alien::Base::ModuleBuild> assume packages come with a C<pkg-config>
+C<.pc> file to determine compiler and linker flags by default, you can implement an Alien module
+for packages that do use C<pkg-config> by following these tasks:
+
+=over 4
+
+=item subclass L<Alien::Base::ModuleBuild> and implement C<alien_check_installed_version>
+
+Create a subclass of L<Alien::Base::ModuleBuild> and put it in the C<inc> directory of your distribution so
+that it can be used during install but won't I<be installed>.
+
+ # inc/My/ModuleBuild.pm
+ package My::ModuleBuild;
+ 
+ use parent 'Alien::Base::ModuleBuild';
+ 
+ sub alien_check_installed_version {
+   my($class) = @_;
+   
+   # determine if your library is already provided by the system
+   my $version = ...;
+   
+   # return false if the library is NOT provided by the system
+   return unless defined $version;
+   
+   # otherwise return the version detected
+   # (if you cannot determine the version it
+   #  is usually sufficient to return a true value)
+   return $version;
+ }
+
+There are number of methods you can use to determine if the system provides your library.  From Perl
+methods include L<Devel::CheckLib>, L<ExtUtils::CBuilder>, L<ExtUtls::CChecker>, L<Config::AutoConf>,
+L<FFI::CheckLib> among others.  It is also frequently possible to determine if a library is installed
+using a C<-config> suffixed program.  For example C<libxml2> comes with xml2-config which provides the
+existence, compiler and linker flags it needs.  In my experience, however, most packages that provide a
+C<-config> suffixed program also provide a C<pkg-config> interface as well.
+
+=item implement C<alien_check_built_version> in your L<Alien::Base::ModuleBuild> subclass
+
+You should also implement C<alien_check_build_version> which will be executed from the package build
+root once the package is successfully built.
+
+ # inc/My/ModuleBuild.pm
+ package My::ModuleBuild;
+ 
+ ...
+ 
+ sub alien_check_built_version {
+   my($self) = @_;
+   
+   my $version = ...
+   
+   # (Again, if you cannot determine the version,
+   #  it is usually sufficent to return a true value)
+   return $version;
+ }
+
+=item set C<alien_provides_cflags> and C<alien_provides_libs> in C<Build.PL>.
+
+Add something like this to your C<Build.PL>:
+
+ # Build.PL
+ use lib 'inc';
+ use My::ModuleBuild;
+ 
+ My::ModuleBuild->new(
+   ...
+   alien_provides_cflags => '-I/usr/include/foo',
+   alien_provides_libs   => '-L/usr/lib/foo -lfoo',
+   ...
+ );
+
+Note that it is frequently sufficient to provide C<alien_provides_libs> and the appropriate C<-l> flag.
+These flags will be used in the event that the system package can be found.  It is a good idea to verify
+that these flags do indeed work in C<alien_check_installed_version> above.
+
+=back
+
+For a fully implemented example, see L<Alien::Libbz2>.
 
 =head2 How do I test my package once it is built (before it is installed)?
 
