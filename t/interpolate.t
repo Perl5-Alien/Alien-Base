@@ -12,6 +12,7 @@ my $builder = Alien::Base::ModuleBuild->new(
     foo => ' "bar" . "baz" ',
     exception => ' die "abcd" ',
     double => '"1";',
+    argument_count1 => 'scalar @_',
   },
   alien_bin_requires => {
     'Alien::foopatcher' => 0,
@@ -75,6 +76,9 @@ like $@, qr{no such helper: bogus}, "exception thrown with bogus helper";
 
 is( $builder->alien_interpolate('%{double}'), "1", "MB helper overrides AB helper");
 
+is( $builder->alien_interpolate('%{argument_count1}'), "0", "argument count is zero (string helper)");
+is( $builder->alien_interpolate('%{argument_count2}'), "0", "argument count is zero (code helper)");
+
 done_testing;
 
 package
@@ -93,5 +97,6 @@ sub alien_helper {
       patch1 => 'join " ", qw(patch1 --binary)',
       patch2 => sub { 'patch2 --binary' },
       double => sub { 2 },
+      argument_count2 => sub { scalar @_ },
     },
 }

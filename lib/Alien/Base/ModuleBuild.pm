@@ -821,10 +821,17 @@ sub _alien_execute_helper {
   my($self, $helper) = @_;
   my $code = $self->alien_helper->{$helper};
   die "no such helper: $helper" unless defined $code;
-  return $code->() if ref($code) eq 'CODE';
-  my $value = eval $code;
-  die $@ if $@;
-  $value;
+
+  if(ref($code) ne 'CODE') {
+    my $perl = $code;
+    $code = sub {
+      my $value = eval $perl;
+      die $@ if $@;
+      $value;
+    };
+  }
+
+  $code->();
 }
 
 sub alien_interpolate {
