@@ -11,6 +11,8 @@
 \b_darcs\b
 \B\.cvsignore$
 \B\.travis.yml$
+\B\.travis.sh$
+\B\.gitattributes$
 
 # Avoid VMS specific MakeMaker generated files
 \bDescrip.MMS$

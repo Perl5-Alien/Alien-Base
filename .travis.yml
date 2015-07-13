@@ -1,23 +1,14 @@
 language: perl
 
 install:
-  - wget ftp://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
-  - tar xf autoconf-2.69.tar.gz
-  - cd autoconf-2.69
-  - ./configure
-  - make
-  - sudo make install
-  - cd ..
-  - rm -rf autoconf-2.69
-  - git clone https://github.com/Perl5-Alien/Alien-Base-Extras.git
-  - tar xf Alien-Base-Extras/Acme-Alien-DontPanic/inc/dontpanic-1.0.tar.gz
-  - cd dontpanic-1.0
-  - ./configure
-  - make
-  - sudo make install
-  - cd ..
+  - bash .travis-install-system.sh
   - cpanm -n --installdeps .
+  # for t/inline*.t tests
   - cpanm -n Inline::C Inline::CPP
+  # for tests against Acme::Ford::Prefect::FFI
+  - cpanm -n FFI::Platypus
+  # for Alien::Libbz2
+  - cpanm -n Test::CChecker
 
 perl:
   - "5.8"
@@ -30,19 +21,28 @@ perl:
   - "5.21"
 
 script:
+  # basic test without anything optional installed
   - perl Build.PL
   - ./Build
   - prove -bv t
   - ./Build install
-  - cd Alien-Base-Extras/Acme-Alien-DontPanic; cpanm -l /tmp/original -v .
+  
+  # test that we can move an Alien dist
+  - bash .travis-install-perl.sh Acme::Alien::DontPanic /tmp/original
   - mv /tmp/original /tmp/moved
-  - cd ../../Alien-Base-Extras/Acme-Ford-Prefect;    cpanm -l /tmp/moved -v .
-  - cd ../../Alien-Base-Extras/Acme-Alien-DontPanic; cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
-  - cd ../../Alien-Base-Extras/Acme-Ford-Prefect;    cpanm --installdeps . && perl Build.PL && ./Build && ./Build test && ./Build install
-  - cd ../..
+  - bash .travis-install-perl.sh Acme::Ford::Prefect    /tmp/moved
+  
+  # test more normal installs
+  - bash .travis-install-perl.sh Acme::Alien::DontPanic
+  - bash .travis-install-perl.sh Acme::Ford::Prefect
+  - bash .travis-install-perl.sh Acme::Ford::Prefect::FFI
+  - bash .travis-install-perl.sh Alien::Libbz2
+  
+  # verify still works with optional modules
   - prove -bv t
-  - cpanm -v Alien::Libbz2
 
 env:
-  - ALIEN_FORCE=1 LD_LIBRARY_PATH=/usr/local/lib
-  - ALIEN_FORCE=0 LD_LIBRARY_PATH=/usr/local/lib
+  - ALIEN_FORCE=0 PATH=$PATH:$HOME/travislocal/bin LD_LIBRARY_PATH=$HOME/travislocal/lib PKG_CONFIG_PATH=$HOME/travislocal/lib/pkgconfig
+  - ALIEN_FORCE=1
+
+sudo: false
