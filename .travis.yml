@@ -6,6 +6,7 @@ install:
   # for t/inline*.t tests
   - cpanm -n Inline::C Inline::CPP
   # for tests against Acme::Ford::Prefect::FFI
+  - env PERL_ALT_INSTALL=OVERWRITE cpanm Alt::Alien::FFI::System
   - cpanm -n FFI::Platypus
   # for Alien::Libbz2
   - cpanm -n Test::CChecker
