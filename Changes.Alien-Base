@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.020  Mon Jul 13, 2015
+  - Production release identical to 0.019_02 release
+
 0.019_02  Wed Jul 8, 2015
   - Fixed bug where alien_provides_* options were not being honored when the
     system provided the library (plicease gh#131)
