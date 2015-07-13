@@ -8,11 +8,10 @@
 \B\.svn\b
 \B\.git\b
 \B\.gitignore\b
+\B\.gitattributes\b
 \b_darcs\b
 \B\.cvsignore$
-\B\.travis.yml$
-\B\.travis.sh$
-\B\.gitattributes$
+\B\.travis
 
 # Avoid VMS specific MakeMaker generated files
 \bDescrip.MMS$
