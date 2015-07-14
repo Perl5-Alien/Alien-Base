@@ -450,12 +450,17 @@ sub ACTION_alien_install {
   return if $self->config_data( 'install_type' ) eq 'system';
 
   my $destdir = $self->destdir;
-
+  my $target = $self->alien_library_destination;
+  
+  if(defined $destdir && !$self->alien_stage_install)
   {
-    my $target = $self->alien_library_destination;
+    # Note: no longer necessary when doing a staged install
     # prefix the target directory with $destdir so that package builds
     # can install into a fake root
-    $target = File::Spec->catdir($destdir, $target) if defined $destdir;
+    $target = File::Spec->catdir($destdir, $target);
+  }
+
+  {
     local $CWD = $target;
 
     # The only form of introspection that exists is to see that the README file
@@ -469,17 +474,13 @@ sub ACTION_alien_install {
   {
     local $CWD = $self->config_data( 'working_directory' );
     local $ENV{DESTDIR} = $ENV{DESTDIR};
-    $ENV{DESTDIR} = $destdir if defined $destdir;
+    $ENV{DESTDIR} = $destdir if defined $destdir && !$self->alien_stage_install;
     print "Installing library to $CWD ... ";
     $self->alien_do_commands('install') or die "Failed\n";
     print "Done\n";
   }
   
   if ( $self->alien_isolate_dynamic ) {
-    my $target = $self->alien_library_destination;
-    # prefix the target directory with $destdir so that package builds
-    # can install into a fake root
-    $target = File::Spec->catdir($destdir, $target) if defined $destdir;
     local $CWD = $target;
     print "Isolating dynamic libraries ... ";
     mkdir 'dynamic' unless -d 'dynamic';
