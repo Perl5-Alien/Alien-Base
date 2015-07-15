@@ -27,7 +27,7 @@ which simply checks to see if any version of that package is available.
  Alien::Base::ModuleBuild->new(
    dist_name           => 'Alien::Foo',
    alien_name          => 'foo',
-   configure_requires  => { 'Alien::Base' => '0.021' }, # required for %{pkg_config}
+   configure_requires  => { 'Alien::Base' => '0.022' }, # required for %{pkg_config}
    alien_version_check => '%{pkg_config} --modversion %n --atleast-version 1.0.3',
    ...
  )->create_build_script;

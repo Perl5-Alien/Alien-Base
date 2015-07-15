@@ -222,7 +222,7 @@ C<alien_bin_requires>.  For example:
    ...
  );
 
-[version 0.021]
+[version 0.022]
 
 One helper that you get for free is C<%{pkg_config}> which will be the pkg-config implementation
 chosen by L<Alien::Base::ModuleBuild>.  This will either be the real pkg-config provided by the
