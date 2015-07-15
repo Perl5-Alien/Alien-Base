@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.021  Wed Jul 15, 2015
+  - Fixed bug where upgrading to 0.020 could break Alien modules installed
+    before the upgrade.  You do not need to re-install your Alien modules,
+    just upgrade to Alien::Base 0.021.
+
 0.020  Mon Jul 13, 2015
   - Production release identical to 0.019_02 release
 
