@@ -278,8 +278,10 @@ sub _keyword {
 
     $pcdata =~ s/\s*$//;
 
-    if(my $system_provides = $self->config('system_provides')->{$keyword}) {
-      $pcdata = length $pcdata ? "$pcdata $system_provides" : $system_provides;
+    if($self->config('system_provides')) {
+      if(my $system_provides = $self->config('system_provides')->{$keyword}) {
+        $pcdata = length $pcdata ? "$pcdata $system_provides" : $system_provides;
+      }
     }
 
     return $pcdata;
