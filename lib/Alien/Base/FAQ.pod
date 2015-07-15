@@ -35,6 +35,8 @@ which simply checks to see if any version of that package is available.
 It is better to use the built in C<{%pkg_config}> helper as it will use the system provided pkg-config
 if it is available and fallback on the pure perl L<PkgConfig> if not.
 
+You can also use C<--exact-version> to specify an exact version.
+
 =head2 How to create an Alien module for packages that do not support pkg-config?
 
 Although L<Alien::Base> and L<Alien::Base::ModuleBuild> assume packages come with a C<pkg-config>
