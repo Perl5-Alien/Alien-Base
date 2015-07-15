@@ -17,6 +17,24 @@ to CPAN.  For a manifesto style description of the Why, and How see L<Alien>.  L
 class and framework for creating Alien distributions.  The idea is to address as many of the common challenges
 to developing Alien modules in the base class to simplify the process.
 
+=head2 How do I specify a minimum or exact version requirement for packages that use pkg-config?
+
+The C<alien_version_check> attribute to L<Alien::Base::ModuleBuild> will be executed to determine if
+the library is provided by the operating system.  The default for this is C<%{pkg_config} --modversion %n>
+which simply checks to see if any version of that package is available.
+
+ use Alien::Base::ModuleBuild;
+ Alien::Base::ModuleBuild->new(
+   dist_name           => 'Alien::Foo',
+   alien_name          => 'foo',
+   configure_requires  => { 'Alien::Base' => '0.021' }, # required for %{pkg_config}
+   alien_version_check => '%{pkg_config} --modversion %n --atleast-version 1.0.3',
+   ...
+ )->create_build_script;
+
+It is better to use the built in C<{%pkg_config}> helper as it will use the system provided pkg-config
+if it is available and fallback on the pure perl L<PkgConfig> if not.
+
 =head2 How to create an Alien module for packages that do not support pkg-config?
 
 Although L<Alien::Base> and L<Alien::Base::ModuleBuild> assume packages come with a C<pkg-config>
