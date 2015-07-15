@@ -79,6 +79,8 @@ is( $builder->alien_interpolate('%{double}'), "1", "MB helper overrides AB helpe
 is( $builder->alien_interpolate('%{argument_count1}'), "0", "argument count is zero (string helper)");
 is( $builder->alien_interpolate('%{argument_count2}'), "0", "argument count is zero (code helper)");
 
+is( $builder->alien_interpolate('%{pkg_config}'), Alien::Base::PkgConfig->pkg_config_command, "support for %{pkg_config}");
+
 done_testing;
 
 package

@@ -166,6 +166,9 @@ sub new {
 
   my $self = $class->SUPER::new(%args);
 
+  $self->alien_helper->{pkg_config} = 'Alien::Base::PkgConfig->pkg_config_command'
+    unless defined $self->alien_helper->{pkg_config};
+
   # setup additional temporary directories, and yes we have to add File::ShareDir manually
   $self->_add_prereq( 'requires', 'File::ShareDir', '1.00' );
 
