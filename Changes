@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.021_01  Wed Jul 15, 2015
+  - Added a default %{pkg_config} helper
+  - Fixed bug introduced in 0.016_01 where using --destdir or $ENV{DESTDIR}
+    would break the "./Build install" command.
+
 0.021  Wed Jul 15, 2015
   - Fixed bug where upgrading to 0.020 could break Alien modules installed
     before the upgrade.  You do not need to re-install your Alien modules,
