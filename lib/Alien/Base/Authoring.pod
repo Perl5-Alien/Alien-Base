@@ -8,7 +8,9 @@ Congratulations! You have made the decision to help the Perl community by provid
 
 =head1 STATUS
 
-L<Alien::Base> is under active development and is currently beta release. The author hopes that the API has stabilized, but will not promise that it has. Please resist the temptation to use it for production code until the warning is removed. Of course you are welcomed, and in fact encouraged, to test it with for your favorite library; if you do, you are more than welcome to share your experience with me.
+L<Alien::Base> is under active development.  The API is relatively 
+stable, although breaking changes may be introduced if the rewards are 
+deemed greater than the pains that they produce.
 
 =head1 ECOSYSTEM
 

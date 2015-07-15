@@ -656,6 +656,28 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =back
 
+Thanks also to
+
+=over
+
+=item Christian Walde (Mithaldu)
+
+For productive conversations about component interoperablility.
+
+=item kmx
+
+For writing Alien::Tidyp from which I drew many of my initial ideas.
+
+=item David Mertens (run4flat)
+
+For productive conversations about implementation.
+
+=item Mark Nunberg (mordy, mnunberg)
+
+For graciously teaching me about rpath and dynamic loading,
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
 Copyright (C) 2012-2015 by Joel Berger
