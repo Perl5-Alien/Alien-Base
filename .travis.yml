@@ -27,6 +27,10 @@ script:
   - ./Build
   - prove -bv t
   - ./Build install
+
+  # test the regression that happened between 0.019 and 0.020 caused
+  # by changes to the format of the data in ConfigData.pm
+  - bash .travis-test-upgrade.sh
   
   # test that we can move an Alien dist
   - bash .travis-install-perl.sh Acme::Alien::DontPanic /tmp/original
