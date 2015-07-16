@@ -18,14 +18,14 @@ IFS=$'\n\t'
 # future, but it does require the attention of developers to recognize this danger and
 # add the appropriate test to the .travis.yml
 
-# arguments: url git_tag subdir old_ab_url
+# arguments: url git_tag subdir ab_git_old_tag 
 #
 # WHERE
 #
 #  url - the URL to the Perl module that you want to test (either a .git repo or a .tar.gz file)
 #  git_tag - the tag to checkout if using a .git repo
 #  subdir - which directory in the git repository or tarball that should change into
-#  old_module_build_url - URL to the old version of Alien::Base
+#  ab_git_old_tag - the tag to the old version of Alien::Base
 
 url="${1:-}"
 if [ -z "$url" ]; then
@@ -35,9 +35,9 @@ fi
 filename=`perl -MURI -e '$url = URI->new($ARGV[0]); $url->path =~ m{^.*/(.*)$}; print $1' $url`
 name=`perl -MURI -e '$url = URI->new($ARGV[0]); $url->path =~ m{^.*/(.*)\..*$}; print $1' $url`
 
-git_tag="${2:-}"
-if [ -z "$git_tag" ]; then
-  git_tag="d2d6e3782bfdbec14db2c78532122055d2b22401"
+acme_git_tag="${2:-}"
+if [ -z "$acme_git_tag" ]; then
+  acme_git_tag="d2d6e3782bfdbec14db2c78532122055d2b22401"
 fi
 
 subdir="${3:-}"
@@ -45,23 +45,23 @@ if [ -z "$subdir" ]; then
   subdir="Acme-Alien-DontPanic"
 fi
 
-old_ab_url="${4:-}"
-if [ -z "$old_ab_url" ]; then
-  old_ab_url="https://cpan.metacpan.org/authors/id/P/PL/PLICEASE/Alien-Base-0.019.tar.gz"
+ab_git_old_tag="${4:-}"
+if [ -z "$ab_git_old_tag" ]; then
+  ab_git_old_tag=0.019
 fi
 
-echo "url        = $url"
-echo "filename   = $filename"
-echo "name       = $name"
-echo "subdir     = $subdir"
-echo "old AB URL = $old_ab_url"
+ab_git_new_tag=`git describe`
+
+echo "url            = $url"
+echo "filename       = $filename"
+echo "name           = $name"
+echo "acme_git_tag   = $acme_git_tag"
+echo "subdir         = $subdir"
+echo "ab_git_old_tag = $ab_git_old_tag"
+echo "ab_git_new_tag = $ab_git_new_tag"
 
 ab_root=`pwd`
 test_root=`mktemp -d`
-
-mkdir "$test_root/perl5"
-SHELL=/bin/sh
-eval "$(perl -Mlocal::lib=$test_root/perl5)"
 
 cd $test_root
 
@@ -70,7 +70,7 @@ case $filename in
   *.git)
     git clone $url
     cd $name
-    git checkout $git_tag
+    git checkout $acme_git_tag
     cd -
     ;;
 
@@ -86,28 +86,31 @@ case $filename in
 
 esac
 
-cd "$name/$subdir"
+echo "*use Alien::Base $ab_git_old_tag"
 
-echo "+cpanm $old_ab_url"
-cpanm $old_ab_url
+git clone $ab_root
+cd Alien-Base
+git checkout $ab_git_old_tag 
+if [ -z "$PERL5LIB" ]; then
+  export PERL5LIB=`pwd`/lib
+else
+  export PERL5LIB=`pwd`/lib:$PERL5LIB
+fi
 
-echo "+perl Build.PL"
-perl Build.PL || exit 2
+cd "../$name/$subdir"
 
-echo "+./Build"
-./Build || exit 2
+perl Build.PL 
 
-#echo "+prove -b t"
-#prove -l t || exit 2
+./Build 
 
-echo "+./Build test"
-./Build test || exit 2
+./Build test 
 
-echo "+cpanm $ab_root"
-cd $ab_root
-cpanm . || exit 2
+echo "*use Alien::Base $ab_git_new_tag"
+
 cd -
+git checkout $ab_git_new_tag 
 
-echo "+prove -bv t"
-prove -bv t || exit 2
+cd "../$name/$subdir"
+
+prove -bv t 
 
