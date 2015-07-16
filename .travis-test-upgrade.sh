@@ -36,9 +36,6 @@ filename=`perl -MURI -e '$url = URI->new($ARGV[0]); $url->path =~ m{^.*/(.*)$}; 
 name=`perl -MURI -e '$url = URI->new($ARGV[0]); $url->path =~ m{^.*/(.*)\..*$}; print $1' $url`
 
 acme_git_tag="${2:-}"
-if [ -z "$acme_git_tag" ]; then
-  acme_git_tag="d2d6e3782bfdbec14db2c78532122055d2b22401"
-fi
 
 subdir="${3:-}"
 if [ -z "$subdir" ]; then
@@ -69,9 +66,11 @@ case $filename in
 
   *.git)
     git clone $url
-    cd $name
-    git checkout $acme_git_tag
-    cd -
+    if [ -z "$acme_git_tag" ]; then
+      cd $name
+      git checkout $acme_git_tag
+      cd -
+    fi
     ;;
 
   *.tar)
