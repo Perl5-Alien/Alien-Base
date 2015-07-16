@@ -18,7 +18,7 @@ IFS=$'\n\t'
 # future, but it does require the attention of developers to recognize this danger and
 # add the appropriate test to the .travis.yml
 
-# arguments: url git_tag subdir ab_git_old_tag 
+# arguments: url git_tag subdir ab_git_old_tag
 #
 # WHERE
 #
@@ -47,13 +47,19 @@ if [ -z "$ab_git_old_tag" ]; then
   ab_git_old_tag=0.019
 fi
 
-ab_git_new_tag=`git describe`
+ab_git_new_tag=`git rev-parse HEAD`
+if [ -f ".git/shallow" ]; then
+  ab_url=`git remote -v | perl -e '$_ = <STDIN>; (undef,$url) = split /\s+/; print $url'`
+else
+  ab_url=$ab_root
+fi
 
 echo "url            = $url"
 echo "filename       = $filename"
 echo "name           = $name"
 echo "acme_git_tag   = $acme_git_tag"
 echo "subdir         = $subdir"
+echo "ab_url         = $ab_url"
 echo "ab_git_old_tag = $ab_git_old_tag"
 echo "ab_git_new_tag = $ab_git_new_tag"
 
@@ -87,10 +93,10 @@ esac
 
 echo "*use Alien::Base $ab_git_old_tag"
 
-git clone $ab_root
+git clone $ab_url
 cd Alien-Base
-git checkout $ab_git_old_tag 
-if [ -z "$PERL5LIB" ]; then
+git checkout $ab_git_old_tag
+if [ -z "${PERL5LIB:-}" ]; then
   export PERL5LIB=`pwd`/lib
 else
   export PERL5LIB=`pwd`/lib:$PERL5LIB
@@ -98,18 +104,18 @@ fi
 
 cd "../$name/$subdir"
 
-perl Build.PL 
+perl Build.PL
 
-./Build 
+./Build
 
-./Build test 
+./Build test
 
 echo "*use Alien::Base $ab_git_new_tag"
 
 cd -
-git checkout $ab_git_new_tag 
+git checkout $ab_git_new_tag
 
 cd "../$name/$subdir"
 
-prove -bv t 
+prove -bv t
 
