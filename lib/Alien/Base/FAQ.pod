@@ -21,14 +21,16 @@ to developing Alien modules in the base class to simplify the process.
 
 The C<alien_version_check> attribute to L<Alien::Base::ModuleBuild> will be executed to determine if
 the library is provided by the operating system.  The default for this is C<%{pkg_config} --modversion %n>
-which simply checks to see if any version of that package is available.
+which simply checks to see if any version of that package is available, and prints the version
+number.  You can use the C<--atleast-version>, C<--exact-version> options to require a specific range of versions,
+but these flags do not work with the C<--modversion> flag, so be sure to invoke separately.
 
  use Alien::Base::ModuleBuild;
  Alien::Base::ModuleBuild->new(
    dist_name           => 'Alien::Foo',
    alien_name          => 'foo',
    configure_requires  => { 'Alien::Base' => '0.022' }, # required for %{pkg_config}
-   alien_version_check => '%{pkg_config} --modversion %n --atleast-version 1.0.3',
+   alien_version_check => '%{pkg_config} --atleast-version 1.2.3 && %{pkg_config} --modversion %n',
    ...
  )->create_build_script;
 
