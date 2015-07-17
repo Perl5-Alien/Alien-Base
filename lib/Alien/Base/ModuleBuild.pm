@@ -50,6 +50,10 @@ $Verbose = $ENV{ALIEN_VERBOSE} if defined $ENV{ALIEN_VERBOSE};
 
 our $Force;
 $Force = $ENV{ALIEN_FORCE} if defined $ENV{ALIEN_FORCE};
+$Force = 1 if defined $ENV{ALIEN_INSTALL_TYPE} && $ENV{ALIEN_INSTALL_TYPE} eq 'share';
+
+our $ForceSystem;
+$ForceSystem = 1 if defined $ENV{ALIEN_INSTALL_TYPE} && $ENV{ALIEN_INSTALL_TYPE} eq 'system';
 
 ################
 #  Parameters  #
@@ -342,6 +346,10 @@ sub ACTION_alien_code {
       if defined $self->alien_provides_libs;
     $self->config_data( system_provides => \%system_provides );
     return;
+  }
+  
+  if ($ForceSystem) {
+    die "Requested system install, but system package not detected."
   }
 
   my @repos = $self->alien_create_repositories;

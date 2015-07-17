@@ -244,9 +244,13 @@ Setting the either to a true value will output a little more info from within th
 
 =item $Alien::Base::ModuleBuild::Force
 
+=item $ENV{ALIEN_INSTALL_TYPE}
+
+Setting to C<share> will ignore a system-wide installation and build a local version of the library.  Setting to C<system> will only use a system-wide installation and die if it cannot be found.
+
 =item $ENV{ALIEN_FORCE}
 
-Setting either to a true value will cause the builder to ignore a system-wide installation and build a local version of the library.
+Setting either to a true value will cause the builder to ignore a system-wide installation and build a local version of the library.  This is the equivalent to setting $ENV{ALIEN_INSTALL_TYPE} to 'share'.  $ENV{ALIEN_INSTALL_TYPE} takes precedence.
 
 =item $ENV{ALIEN_BLIB}
 
