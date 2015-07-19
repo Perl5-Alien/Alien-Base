@@ -48,23 +48,18 @@ if [ -z "$ab_git_old_tag" ]; then
 fi
 
 ab_git_new_tag=`git rev-parse HEAD`
-if [ -f ".git/shallow" ]; then
-  ab_url=`git remote -v | perl -e '$_ = <STDIN>; (undef,$url) = split /\s+/; print $url'`
-else
-  ab_url=$ab_root
-fi
+
+ab_root=`pwd`
+test_root=`mktemp -d -t abXXXXX`
 
 echo "url            = $url"
 echo "filename       = $filename"
 echo "name           = $name"
 echo "acme_git_tag   = $acme_git_tag"
 echo "subdir         = $subdir"
-echo "ab_url         = $ab_url"
+echo "ab_root         = $ab_root"
 echo "ab_git_old_tag = $ab_git_old_tag"
 echo "ab_git_new_tag = $ab_git_new_tag"
-
-ab_root=`pwd`
-test_root=`mktemp -d`
 
 cd $test_root
 
@@ -93,8 +88,8 @@ esac
 
 echo "*use Alien::Base $ab_git_old_tag"
 
-git clone $ab_url
-cd Alien-Base
+git clone $ab_root
+cd "$test_root/Alien-Base"
 git checkout $ab_git_old_tag
 if [ -z "${PERL5LIB:-}" ]; then
   export PERL5LIB=`pwd`/lib
@@ -102,7 +97,7 @@ else
   export PERL5LIB=`pwd`/lib:$PERL5LIB
 fi
 
-cd "../$name/$subdir"
+cd "$test_root/$name/$subdir"
 
 perl Build.PL
 
@@ -110,12 +105,11 @@ perl Build.PL
 
 ./Build test
 
-echo "*use Alien::Base $ab_git_new_tag"
-
-cd -
+echo "*use Alien::Base $ab_git_old_tag"
+cd "$test_root/Alien-Base"
 git checkout $ab_git_new_tag
 
-cd "../$name/$subdir"
+cd "$test_root/$name/$subdir"
 
 prove -bv t
 

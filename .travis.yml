@@ -16,6 +16,9 @@ install:
   
   # for .travis-test-*
   - cpanm -n local::lib
+  
+  # for upgrade tests
+  - git fetch --unshallow
 
 perl:
   - "5.8"
