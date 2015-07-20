@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.022  Mon 20, 2015
+  - Correction for the section "How do I specify a minumum or exact version
+    requirement for packages that use pkg-config?" in the FAQ.
+
 0.021_01  Wed Jul 15, 2015
   - Added a default %{pkg_config} helper
   - Fixed bug introduced in 0.016_01 where using --destdir or $ENV{DESTDIR}
