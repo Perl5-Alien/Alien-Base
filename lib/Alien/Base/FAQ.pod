@@ -34,7 +34,7 @@ but these flags do not work with the C<--modversion> flag, so be sure to invoke 
    ...
  )->create_build_script;
 
-It is better to use the built in C<{%pkg_config}> helper as it will use the system provided pkg-config
+It is better to use the built in C<%{pkg_config}> helper as it will use the system provided pkg-config
 if it is available and fallback on the pure perl L<PkgConfig> if not.
 
 You can also use C<--exact-version> to specify an exact version.
