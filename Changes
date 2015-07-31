@@ -1,6 +1,9 @@
 Revision history for Perl module Alien::Base.
 
-0.022  Mon 20, 2015
+0.022_01  Fri Jul 31, 2015
+  - Add support for ALIEN_INSTALL_TYPE environment variable
+
+0.022  Mon Jul 20, 2015
   - Correction for the section "How do I specify a minumum or exact version
     requirement for packages that use pkg-config?" in the FAQ.
 
