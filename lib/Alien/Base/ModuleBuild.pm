@@ -1160,7 +1160,7 @@ In your Build.PL:
 
  use Alien::Base::ModuleBuild;
  
- my $builder = Alien::Base::Module::Build->new(
+ my $builder = Alien::Base::ModuleBuild->new(
    module_name => 'Alien::MyLibrary',
    
    configure_requires => {
