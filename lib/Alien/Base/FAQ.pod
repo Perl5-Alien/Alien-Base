@@ -305,7 +305,7 @@ from the operating system, or built from source):
  Alien::Base::ModuleBuild->new(
    ...
    alien_bin_requires => {
-     'Alien::gmake' => 0.09, # needed for %{gmake} helper
+     'Alien::gmake' => 0.11, # needed for %{gmake} helper
    },
    alien_build_commands => [
      "%{gmake}",
