@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.023  Mon Sep 14, 2015
+  - Fixed typo in FAQ
+  - Updated FAQ Alien::gmake example to require Alien::gmake 0.11
+  - Otherwise a production release identical to the 0.22_01 release
+
 0.022_01  Fri Jul 31, 2015
   - Add support for ALIEN_INSTALL_TYPE environment variable
 
