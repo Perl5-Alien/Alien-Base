@@ -26,7 +26,7 @@ perl Build.PL
 ./Build test
 ./Build install --destdir "$test_root/destdir"
 
-mv $test_root/destdir/$test_root/perl5/* $test_root/perl5
+(cd $test_root/destdir/$test_root/perl5/ && tar cvf - *) | (cd $test_root/perl5 && tar xvf -)
 
 cd "$test_root/Alien-Base-Extras/Acme-Ford-Prefect"
 perl Build.PL
