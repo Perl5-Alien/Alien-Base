@@ -124,25 +124,43 @@ For a fully implemented example, see L<Alien::Libbz2>.
 
 =head2 How do I test my package once it is built (before it is installed)?
 
-There are many ways to test Alien modules before they are installed.  Probably the easiest is by using
-L<Test::CChecker>.  Here is an example test for the theoretical libfoo library:
+There are many ways to test Alien modules before (or after) they are installed, but instead
+of rolling your own, consider using L<Test::Alien> which is light on dependencies and will
+test your module very closely to the way that it will actaully be used.  That is to say by
+building a mini XS or FFI extension and using it.  It even has tests for tool oriented Alien
+distributions (like L<Alien::gmake> and L<Alien::patch>).  Here is a short example, there
+are many others included with the L<Test::Alien> documentation:
 
- use Test::More tests => 1;
- use Test::CChecker 0.06;    # require version 0.06 for compatability with recent Alien::Base
- use Alien::Base    0.18;    # require version 0.18 for staged install to blib
- use Alien::Foo;
+ use Test::Stream -V1;
+ use Test::Alien;
+ use Alien::Editline;
  
- compile_with_alien 'Alien::Foo';
+ alien_ok 'Alien::Editline';
+ my $xs = do { local $/; <DATA> };
+ xs_ok $xs, with_subtest {
+   my($module) = @_;
+   ok $module->version;
+ };
  
- compile_run_ok <<SOURCE, 'basic compile test for libfoo';
- #include <foo.h>
+ __DATA__
  
- int main()
+ #include "EXTERN.h"
+ #include "perl.h"
+ #include "XSUB.h"
+ #include <editline/readline.h>
+ 
+ /* having a string parameter that we ignore
+    allows us to call this as a class method */
+ const char *
+ version(const char *class)
  {
-   foo();
-   return 0;
+   return rl_library_version;
  }
- SOURCE
+ 
+ MODULE = TA_MODULE PACKAGE = TA_MODULE
+ 
+ const char *version(class);
+     const char *class;
 
 =head2 How do I patch packages that need minor (or major) alterations?
 
