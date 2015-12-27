@@ -14,6 +14,9 @@ install:
   # for Alien::Libbz2
   - cpanm -n Test::CChecker
   
+  # for Acme modules
+  - cpanm -n Test::Alien
+  
   # for .travis-test-*
   - cpanm -n local::lib
   
