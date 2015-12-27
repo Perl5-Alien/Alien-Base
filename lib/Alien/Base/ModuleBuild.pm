@@ -479,6 +479,7 @@ sub ACTION_alien_install {
     }
   }
 
+  if(!$self->config_data( 'finished_installing' ))
   {
     local $CWD = $self->config_data( 'working_directory' );
     local $ENV{DESTDIR} = $ENV{DESTDIR};
