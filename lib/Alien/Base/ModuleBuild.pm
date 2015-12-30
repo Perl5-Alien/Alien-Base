@@ -692,7 +692,7 @@ sub _alien_bin_require {
   }
 }
 
-sub _env_do_system {
+sub alien_do_system {
   my $self = shift;
   my $command = shift;
   
@@ -781,6 +781,9 @@ sub _env_do_system {
   $self->do_system( ref($command) ? @$command : $command );
 }
 
+# alias for backwards compatibility
+*_env_do_system = \&alien_do_system;
+
 sub alien_check_built_version {
   return;
 }
@@ -796,7 +799,7 @@ sub alien_do_commands {
 
   foreach my $command (@$commands) {
 
-    my %result = $self->_env_do_system( $command );
+    my %result = $self->alien_do_system( $command );
     unless ($result{success}) {
       carp "External command ($result{command}) failed! Error: $?\n";
       return 0;
@@ -1263,6 +1266,19 @@ The default implementation relies on L<Archive::Extract> that is able
 to handle most common formats. In order to handle other formats or
 archives requiring some special treatment you may want to override
 this method.
+
+=head2 alien_do_system
+
+  my %result = $amb->alien_do_system($cmd)
+
+Similar to L<Module::Build::do_system>, also sets the path and several
+environment variables in accordance to the object configuration
+(i.e. C<alien_bin_requires>) and performs the interpolation of the
+patterns described in L<Alien::Base::ModuleBuild::API/COMMAND
+INTERPOLATION>.
+
+Returns a set of key value pairs including C<stdout>, C<stderr>,
+C<success> and C<command>.
 
 =head1 GUIDE TO DOCUMENTATION
 
