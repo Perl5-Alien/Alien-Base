@@ -4,6 +4,8 @@ Revision history for Perl module Alien::Base.
     alien_install_commands were executed on every invocation of './Build',
     './Build test', and './Build install' instead of just once as is
     needed.  (plicease gh#141)
+  - Archive extraction can now be overridden with the alien_extract_archive
+    method in Alien::Base::ModuleBuild. (salva++ gh#142)
 
 0.023  Mon Sep 14, 2015
   - Fixed typo in FAQ

@@ -18,6 +18,8 @@ use Capture::Tiny 0.17 qw/capture_merged/;
 use Text::ParseWords qw/shellwords/;
 use Perl::OSType qw/os_type/;
 
+=encoding UTF-8
+
 =head1 NAME
 
 Alien::Base - Base classes for Alien:: modules
@@ -653,6 +655,8 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 =item Vikas N Kumar (vikasnkumar)
 
 =item Flavio Poletti (polettix)
+
+=item Salvador Fandiño (salva)
 
 =back
 
