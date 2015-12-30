@@ -323,6 +323,15 @@ sub process_share_dir_files {
   $self->depends_on('alien_install') if $self->notes('alien_blib_scheme') || $self->alien_stage_install;
 }
 
+sub alien_extract_archive {
+  my ($self, $archive) = @_;
+  print "Extracting Archive ... ";
+  my $ae = Archive::Extract->new( archive => $archive );
+  $ae->extract or croak "Archive extraction failed!";
+  print "Done\n";
+  return $ae->extract_path;
+}
+
 sub ACTION_alien_code {
   my $self = shift;
   local $| = 1; # don't buffer stdout
@@ -374,12 +383,8 @@ sub ACTION_alien_code {
     croak "Error downloading file" unless $filename;
     print "Done\n";
 
-    print "Extracting Archive ... ";
-    my $ae = Archive::Extract->new( archive => $filename );
-    $ae->extract;
-    print "Done\n";
+    my $extract_path = _catdir(File::Spec->rel2abs($self->alien_extract_archive($filename)));
 
-    my $extract_path = _catdir($ae->extract_path);
     $self->config_data( working_directory => $extract_path );
     $CWD = $extract_path;
 
@@ -1246,6 +1251,18 @@ If you see an error message like this:
 
 After the package is built from source code then you probably need to
 provide an implementation for this method.
+
+=head2 alien_extract_archive
+
+  my $dir = $amb->alien_extract_archive($filename);
+
+This function unpacks the given archive and returns the directory
+containing the unpacked files.
+
+The default implementation relies on L<Archive::Extract> that is able
+to handle most common formats. In order to handle other formats or
+archives requiring some special treatment you may want to override
+this method.
 
 =head1 GUIDE TO DOCUMENTATION
 
