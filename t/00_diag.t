@@ -26,6 +26,8 @@ my @mods = qw(
   Shell::Config::Generate
   Shell::Guess
   Sort::Versions
+  Test::Alien
+  Test::CChecker
   Test::More
   Text::ParseWords
   URI
