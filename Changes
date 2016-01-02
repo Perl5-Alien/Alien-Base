@@ -6,6 +6,8 @@ Revision history for Perl module Alien::Base.
     needed.  (plicease gh#141)
   - Archive extraction can now be overridden with the alien_extract_archive
     method in Alien::Base::ModuleBuild. (salva++ gh#142)
+  - Fixed bug with windows where using \ instead of / broke relocatable
+    installs.  (plicease gh#139)
 
 0.023  Mon Sep 14, 2015
   - Fixed typo in FAQ
