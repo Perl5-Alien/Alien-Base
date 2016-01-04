@@ -129,26 +129,20 @@ sub find_links_textbalanced {
 
 sub build_uri {
   my $self = shift;
-  my ($protocol, $host, $path, $file) = @_;
+  my ($protocol, $host, $path, $target) = @_;
 
-  $protocol ||= 'http'; # if no protocol is passed, default to HTTP
-  my $uri = URI->new($file);
-  return $uri if $uri->scheme; # if an absolute URI
-
-  unless ( $host =~ m'^(?:https?|file)://' ) {
-    $host = "$protocol://$host";
+  my $uri;
+  if (defined $host) {
+    my $base = URI->new($host);
+    unless (defined $base->scheme) {
+      $base = URI->new(($protocol || 'http') ."://$host");
+    }
+    $base->path($path) if defined $path;
+    $uri = URI->new_abs($target, $base);
   }
-  $uri = URI->new( $host );
-  return $uri unless defined $path;
-
-  $path =~ s'/$'';
-  $uri->path( $path );
-  return $uri->canonical unless defined $file;
-
-  my @segments = $uri->path_segments;
-  shift @segments;
-  $uri->path_segments( @segments, $file );
-
+  else {
+    $uri = URI->new($target);
+  }
   return $uri->canonical;
 }
 
