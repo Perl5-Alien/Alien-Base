@@ -50,8 +50,7 @@ sub get_file {
   my $from = $self->location;
 
   my $uri = $self->build_uri($protocol, $host, $from, $file);
-  # if it is an absolute URI, then use the filename from the URI
-  $file = ($uri->path_segments())[-1] if $file =~ /^(?:https?|file):/;
+  $file = ($uri->path_segments())[-1];
   my $res = $self->connection->mirror($uri, $file);
   my ( $is_error, $content, $headers ) = $self->check_http_response( $res );
   croak "Download failed: " . $content if $is_error;
