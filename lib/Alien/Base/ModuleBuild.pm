@@ -439,9 +439,13 @@ sub ACTION_test {
   my $self = shift;
   $self->SUPER::ACTION_test;
 
-  local $CWD = $self->config_data( 'working_directory' );
   print "Testing library (if applicable) ... ";
-  $self->alien_do_commands('test') or die "Failed\n";
+  if ($self->config_data( 'install_type' ) eq 'share') {
+    if (defined (my $wdir = $self->config_data( 'working_directory' ))) {
+      local $CWD = $wdir;
+      $self->alien_do_commands('test') or die "Failed\n";
+    }
+  }
   print "Done\n";
 }
 
