@@ -19,6 +19,7 @@ build: off
 
 test_script:
   - perl Build.PL
+  - Build
   - prove -bv t
   - Build install
   - cpanm -v Acme::Alien::DontPanic
