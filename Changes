@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.024  Thu Jan 7, 2015
+  - Production release identical to 0.023_01 release
+
 0.023_01  Sat Jan 2, 2015
   - Fixed a usually harmless but frequently annoying isssue where the
     alien_install_commands were executed on every invocation of './Build',
