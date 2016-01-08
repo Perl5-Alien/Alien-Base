@@ -829,11 +829,14 @@ sub do_system {
 
   print "+ @args\n";
 
+  my $old_super_verbose = $self->verbose;
+  $self->verbose(0);
   my ($out, $err, $success) = 
     $verbose
     ? tee     { $self->SUPER::do_system(@args) }
     : capture { $self->SUPER::do_system(@args) }
   ;
+  $self->verbose($old_super_verbose);
 
   my %return = (
     stdout => $out,
