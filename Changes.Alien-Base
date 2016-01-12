@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.024_01
+  - Use URI internally for improved support for GitHub as a source
+    (among others) (salva++ gh#144)
+
 0.024  Thu Jan 7, 2015
   - Production release identical to 0.023_01 release
 
