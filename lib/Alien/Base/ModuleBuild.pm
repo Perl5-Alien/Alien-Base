@@ -551,7 +551,7 @@ sub alien_check_installed_version {
   my $command = $self->alien_version_check;
 
   my %result = $self->do_system($command, {verbose => 0});
-  my $version = $result{stdout} || 0;
+  my $version = ($result{success} && $result{stdout}) || 0;
 
   return $version;
 }
