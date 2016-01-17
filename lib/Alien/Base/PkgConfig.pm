@@ -101,8 +101,9 @@ sub _interpolate_vars {
       unless $override->{$key};
   }
 
-  1 while $string =~ s/\$\{(.*?)\}/$override->{$1} || $self->{vars}{$1}/e;
-
+  if (defined $string) {
+    1 while $string =~ s/\$\{(.*?)\}/$override->{$1} || $self->{vars}{$1}/e;
+  }
   return $string;
 }
 

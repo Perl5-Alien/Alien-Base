@@ -292,7 +292,8 @@ sub _keyword {
   # use parsed info from build .pc file
   my $dist_dir = $self->dist_dir;
   my @pc = $self->pkgconfig(@_);
-  my @strings = 
+  my @strings =
+    grep defined,
     map { $_->keyword($keyword, 
       #{ pcfiledir => $dist_dir }
     ) }
