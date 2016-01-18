@@ -1,6 +1,12 @@
 Revision history for Perl module Alien::Base.
 
-0.024_01
+0.024_02  Mon Jan 18, 2016
+  - Silenced warnings that can happen when multiple .pc files are included
+    with a package (salva++ gh#148)
+  - Fixed bug where verbose diagnostic could cause false positives
+    and false negatives for system libraries (salva++ gh#147, plicease gh#149)
+
+0.024_01  Tue Jan 12, 2016
   - Use URI internally for improved support for GitHub as a source
     (among others) (salva++ gh#144)
 
