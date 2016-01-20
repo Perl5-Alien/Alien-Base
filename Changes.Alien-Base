@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.025  Wed Jan 20, 2016
+  - Production release identical to 0.024_02 release
+
 0.024_02  Mon Jan 18, 2016
   - Silenced warnings that can happen when multiple .pc files are included
     with a package (salva++ gh#148)
