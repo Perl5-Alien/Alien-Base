@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.026  Fri Jan 22, 2016
+  - For http, use base URL from index request when downloading
+    files (plicease gh#150, gh#151)
+
 0.025  Wed Jan 20, 2016
   - Production release identical to 0.024_02 release
 
