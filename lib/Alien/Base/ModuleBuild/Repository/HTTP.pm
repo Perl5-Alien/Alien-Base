@@ -75,11 +75,13 @@ sub list_files {
 
   my $res = $self->connection->get($uri);
 
-  my ( $is_error, $content ) = $self->check_http_response( $res );
+  my ( $is_error, $content, undef, $base_url ) = $self->check_http_response( $res );
   if ( $is_error ) {
     carp $content;
     return ();
   }
+  
+  $self->{base_url} = $base_url;
 
   my @links = $self->find_links($content);
 
@@ -132,11 +134,15 @@ sub build_uri {
 
   my $uri;
   if (defined $host) {
-    my $base = URI->new($host);
-    unless (defined $base->scheme) {
-      $base = URI->new(($protocol || 'http') ."://$host");
+    my $base = $self->{base_url};
+    unless($base)
+    {
+      $base = URI->new($host);
+      unless (defined $base->scheme) {
+        $base = URI->new(($protocol || 'http') ."://$host");
+      }
+      $base->path($path) if defined $path;
     }
-    $base->path($path) if defined $path;
     $uri = URI->new_abs($target, $base);
   }
   else {
@@ -150,15 +156,15 @@ sub check_http_response {
   if ( blessed $res && $res->isa( 'HTTP::Response' ) ) {
     my %headers = map { lc $_ => $res->header($_) } $res->header_field_names;
     if ( !$res->is_success ) {
-      return ( 1, $res->status_line . " " . $res->decoded_content, \%headers );
+      return ( 1, $res->status_line . " " . $res->decoded_content, \%headers, $res->request->uri );
     }
-    return ( 0, $res->decoded_content, \%headers );
+    return ( 0, $res->decoded_content, \%headers, $res->request->uri );
   }
   else {
     if ( !$res->{success} ) {
-      return ( 1, $res->{reason}, $res->{headers} );
+      return ( 1, $res->{reason}, $res->{headers}, $res->{url} );
     }
-    return ( 0, $res->{content}, $res->{headers} );
+    return ( 0, $res->{content}, $res->{headers}, $res->{url} );
   }
 }
 
