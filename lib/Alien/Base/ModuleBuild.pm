@@ -143,6 +143,8 @@ __PACKAGE__->add_property( 'alien_arch' => defined $ENV{ALIEN_ARCH} ? $ENV{ALIEN
 
 __PACKAGE__->add_property( 'alien_helper' => {} );
 
+__PACKAGE__->add_property( 'alien_env' => {} );
+
 ################
 #  ConfigData  #
 ################
@@ -700,7 +702,8 @@ sub alien_do_system {
   my $self = shift;
   my $command = shift;
   
-  local $ENV{PATH} = $ENV{PATH};
+  local %ENV = %ENV;
+  $ENV{PATH} = $ENV{PATH};
   
   if ($self->config_data( 'msys' )) {
     $self->alien_bin_requires->{'Alien::MSYS'} ||= 0
@@ -734,8 +737,6 @@ sub alien_do_system {
     $config->prepend_path( PATH => sort keys %path );
   }
 
-  local $ENV{CONFIG_SITE} = $ENV{CONFIG_SITE};
-  
   # If we are using autoconf, then create a site.config file
   # that specifies the same compiler and compiler linker flags
   # as were used for building Perl.  This is helpful for
@@ -765,6 +766,13 @@ sub alien_do_system {
     $config_site =~ s{\\}{/}g if $^O eq 'MSWin32';
     $config->set( CONFIG_SITE => $config_site );
     $ENV{CONFIG_SITE} = $config_site;
+  }
+  
+  foreach my $key (sort keys %{ $self->alien_env })
+  {
+    my $value = $self->alien_interpolate($self->alien_env->{$key});
+    defined $value ? $ENV{$key} = $value : delete $ENV{$key};
+    $config->set( $key => $value );
   }
 
   if($config) {  
@@ -889,6 +897,8 @@ sub alien_interpolate {
   #   current interpreter ($^X) (ph: %x)
   my $perl = $self->perl;
   $string =~ s/(?<!\%)\%x/$perl/g;
+  $perl =~ s{\\}{/}g if $^O eq 'MSWin32';
+  $string =~ s/(?<!\%)\%X/$perl/g;
 
   # Version, but only if needed.  Complain if needed and not yet
   # stored.

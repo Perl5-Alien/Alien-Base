@@ -228,6 +228,13 @@ One helper that you get for free is C<%{pkg_config}> which will be the pkg-confi
 chosen by L<Alien::Base::ModuleBuild>.  This will either be the real pkg-config provided by the
 operating system (preferred) or L<PkgConfig>, the pure perl implementation found on CPAN.
 
+=item alien_env
+
+[version 0.027]
+
+Environment overrides.  Allows you to set environment variables as a hash
+reference that will override environment variables.
+
 =back
 
 =head2 PACKAGE AND ENVIRONMENT VARIABLES
@@ -337,6 +344,13 @@ Captured version of the original archive.
 =item %x
 
 The current Perl interpreter (aka $^X)
+
+=item %X
+
+[version 0.027]
+
+The current Perl interpreter using the Unix style path separator C</>
+instead of the native Windows C<\>.
 
 =item %%
 
