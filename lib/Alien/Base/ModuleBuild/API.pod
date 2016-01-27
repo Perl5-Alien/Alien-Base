@@ -15,37 +15,27 @@ L<Alien::Base::ModuleBuild> adds several parameters to the L<new|Module::Build::
 
 =over
 
-=item alien_name
+=item alien_arch
 
-[version 0.001]
+[version 0.019]
 
-The name of the primary library which will be provided. This should be in the form to be passed to C<pkg-config>. This name is available in the L<command interpolation|/"COMMAND INTERPOLATION"> as C<%n>.
+Install module into an architecture specific directory.  This is off by default, unless $ENV{ALIEN_ARCH} is true.  Most Alien distributions will be installing binary code.  If you are an integrator where the C<@INC> path is shared by multiple Perls in a non-homogeneous environment you can set $ENV{ALIEN_ARCH} to 1 and Alien modules will be installed in architecture specific directories.
 
-=item alien_ffi_name
+=item alien_autoconf_with_pic
+
+[version 0.005]
+
+Add C<--with-pic> option to autoconf style C<configure> script when called.  This is the default, and normally a good practice.  Normally autoconf will ignore this and any other options that it does not recognize, but some non-autoconf C<configure> scripts may complain.
+
+=item alien_bin_requires
+
+[version 0.006]
+
+Hash reference of modules (keys) and versions (values) that specifies C<Alien> modules that provide binary tools that are required to build.  Any L<Alien::Base> module that includes binaries should work.  Also supported are L<Alien::MSYS>, L<Alien::CMake>, L<Alien::TinyCC> and L<Alien::Autotools>.
 
 [version 0.007]
 
-The name of the shared library for use with FFI.  Provided for situations where the shared library name cannot be determined from the C<pkg-config> name specified with C<alien_name>.
-For example C<libxml2> has a C<pkg-config> of C<libxml-2.0>, but a shared library name of C<xml2>.
-By default alien_name is used with any C<lib> prefix removed.  For example C<libarchive> to be translated into C<archive> which is what you want for that package.
-
-=item alien_temp_dir
-
-[version 0.001]
-
-The name of the temporary folder which will house the library when it is downloaded and built. The default name is C<_alien>.
-
-=item alien_share_dir
-
-[version 0.001]
-
-The name of the folder which will both serve a stub share directory via L<Module::Build>'s C<share_dir>/C<dist_dir> parameter. This directory is added in a smart manner which attempts not to interfere with other author-defined C<share_dir>s. The default name is C<_share>. This folder will hold a README file which is then installed to the target installed share location. It is THAT location that the library will be installed to.
-
-=item alien_selection_method
-
-[not yet implemented]
-
-This is intended to choose the mechanism for selecting one file from many. The default name is C<newest>.
+These only become required for building if L<Alien::Base::ModuleBuild> determines that a source code build is required.
 
 =item alien_build_commands
 
@@ -57,6 +47,72 @@ An arrayref of commands used to build the library in the directory specified in 
 
 Each command may be either a string or a array reference.  If the array reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
 
+=item alien_env
+
+[version 0.027]
+
+Environment overrides.  Allows you to set environment variables as a hash
+reference that will override environment variables.  You can use the same
+interpolated escape sequences and helpers that commands use.
+
+ ...
+ Alien::Base::ModuleBuild->neW(
+   ...
+   alien_env => {
+     PERL => '%X',     # sets the environment variable PERL to the location
+                       # of the Perl interpreter.
+     PERCENT => '%%',  # evaluates to '%'
+   },
+   ...
+ );
+ ...
+
+=item alien_ffi_name
+
+[version 0.007]
+
+The name of the shared library for use with FFI.  Provided for situations where the shared library name cannot be determined from the C<pkg-config> name specified with C<alien_name>.
+For example C<libxml2> has a C<pkg-config> of C<libxml-2.0>, but a shared library name of C<xml2>.
+By default alien_name is used with any C<lib> prefix removed.  For example C<libarchive> to be translated into C<archive> which is what you want for that package.
+
+=item alien_helper
+
+[version 0.020]
+
+Provide helpers to generate commands or arguments at build or install time.  This property is a hash 
+reference.  The keys are the helper names and the values are strings containing Perl code that will 
+be evaluated and interpolated into the command before execution.  Because helpers are only needed 
+when building a package from the source code, any dependency may be specified as an 
+C<alien_bin_requires>.  For example:
+
+ ...
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_bin_requires => {
+     'Alien::foo' => 0,
+   },
+   alien_helper => {
+     'foocommand'  => 'Alien::foo->some_command',
+     'fooargument' => 'Alien::foo->some_argument',
+   },
+   alien_build_commands => [
+     '%{foocommand} %{fooargument}',
+   ],
+   ...
+ );
+
+[version 0.022]
+
+One helper that you get for free is C<%{pkg_config}> which will be the pkg-config implementation
+chosen by L<Alien::Base::ModuleBuild>.  This will either be the real pkg-config provided by the
+operating system (preferred) or L<PkgConfig>, the pure perl implementation found on CPAN.
+
+=item alien_inline_auto_include
+
+[version 0.006]
+
+Array reference containing the list of header files to be used automatically by C<Inline::C> and C<Inline::CPP>.
+
 =item alien_install_commands
 
 [version 0.001]
@@ -67,11 +123,23 @@ An arrayref of commands used to install it to the share directory specified by i
 
 Each command may be either a string or a array reference.  If the array reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
 
-=item alien_version_check
+=item alien_isolate_dynamic
+
+[version 0.005]
+
+If set to true, then dynamic libraries will be moved from the C<lib> directory to a separate C<dynamic> directory.  This makes them available for FFI modules (see L<FFI::Platypus>, or L<FFI::Raw>), while preferring static libraries when creating XS extensions.
+
+=item alien_msys
+
+[version 0.006]
+
+On windows wrap build and install commands in an C<MSYS> environment using L<Alien::MSYS>.  This option will automatically add L<Alien::MSYS> as a build requirement when building on Windows.
+
+=item alien_name
 
 [version 0.001]
 
-A command to run to check the version of the library installed on the system. The default is C<pkg-config --modversion %n>.
+The name of the primary library which will be provided. This should be in the form to be passed to C<pkg-config>. This name is available in the L<command interpolation|/"COMMAND INTERPOLATION"> as C<%n>.
 
 =item alien_provides_cflags
 
@@ -127,24 +195,6 @@ If true (the default), then a C compiler is required to build from source.
 
 =back
 
-=item alien_isolate_dynamic
-
-[version 0.005]
-
-If set to true, then dynamic libraries will be moved from the C<lib> directory to a separate C<dynamic> directory.  This makes them available for FFI modules (see L<FFI::Platypus>, or L<FFI::Raw>), while preferring static libraries when creating XS extensions.
-
-=item alien_autoconf_with_pic
-
-[version 0.005]
-
-Add C<--with-pic> option to autoconf style C<configure> script when called.  This is the default, and normally a good practice.  Normally autoconf will ignore this and any other options that it does not recognize, but some non-autoconf C<configure> scripts may complain.
-
-=item alien_repository_default
-
-[version 0.001]
-
-This property is a shortcut for specifying multiple repositories with similar attributes. If a repository attribute is not defined in its C<alien_repository> hashref, but that attribute is defined here, then this value will be used. This hashref is empty by default.
-
 =item alien_repository_class
 
 [version 0.001]
@@ -158,27 +208,23 @@ As the repositories in C<alien_repository> are converted to objects, this hash c
 
 Unlike most L<Module::Build> parameters, authors may specify only those keys which are to be overridden. If any of the above keys are not specified, the above defaults will be used.
 
-=item alien_inline_auto_include
+=item alien_repository_default
 
-[version 0.006]
+[version 0.001]
 
-Array reference containing the list of header files to be used automatically by C<Inline::C> and C<Inline::CPP>.
+This property is a shortcut for specifying multiple repositories with similar attributes. If a repository attribute is not defined in its C<alien_repository> hashref, but that attribute is defined here, then this value will be used. This hashref is empty by default.
 
-=item alien_msys
+=item alien_selection_method
 
-[version 0.006]
+[not yet implemented]
 
-On windows wrap build and install commands in an C<MSYS> environment using L<Alien::MSYS>.  This option will automatically add L<Alien::MSYS> as a build requirement when building on Windows.
+This is intended to choose the mechanism for selecting one file from many. The default name is C<newest>.
 
-=item alien_bin_requires
+=item alien_share_dir
 
-[version 0.006]
+[version 0.001]
 
-Hash reference of modules (keys) and versions (values) that specifies C<Alien> modules that provide binary tools that are required to build.  Any L<Alien::Base> module that includes binaries should work.  Also supported are L<Alien::MSYS>, L<Alien::CMake>, L<Alien::TinyCC> and L<Alien::Autotools>.
-
-[version 0.007]
-
-These only become required for building if L<Alien::Base::ModuleBuild> determines that a source code build is required.
+The name of the folder which will both serve a stub share directory via L<Module::Build>'s C<share_dir>/C<dist_dir> parameter. This directory is added in a smart manner which attempts not to interfere with other author-defined C<share_dir>s. The default name is C<_share>. This folder will hold a README file which is then installed to the target installed share location. It is THAT location that the library will be installed to.
 
 =item alien_stage_install
 
@@ -190,63 +236,17 @@ Alien packages are installed directly into the blib directory by the `./Build' c
 
 As of 0.017 this is the default.
 
-=item alien_arch
+=item alien_temp_dir
 
-[version 0.019]
+[version 0.001]
 
-Install module into an architecture specific directory.  This is off by default, unless $ENV{ALIEN_ARCH} is true.  Most Alien distributions will be installing binary code.  If you are an integrator where the C<@INC> path is shared by multiple Perls in a non-homogeneous environment you can set $ENV{ALIEN_ARCH} to 1 and Alien modules will be installed in architecture specific directories.
+The name of the temporary folder which will house the library when it is downloaded and built. The default name is C<_alien>.
 
-=item alien_helper
+=item alien_version_check
 
-[version 0.020]
+[version 0.001]
 
-Provide helpers to generate commands or arguments at build or install time.  This property is a hash 
-reference.  The keys are the helper names and the values are strings containing Perl code that will 
-be evaluated and interpolated into the command before execution.  Because helpers are only needed 
-when building a package from the source code, any dependency may be specified as an 
-C<alien_bin_requires>.  For example:
-
- ...
- Alien::Base::ModuleBuild->new(
-   ...
-   alien_bin_requires => {
-     'Alien::foo' => 0,
-   },
-   alien_helper => {
-     'foocommand'  => 'Alien::foo->some_command',
-     'fooargument' => 'Alien::foo->some_argument',
-   },
-   alien_build_commands => [
-     '%{foocommand} %{fooargument}',
-   ],
-   ...
- );
-
-[version 0.022]
-
-One helper that you get for free is C<%{pkg_config}> which will be the pkg-config implementation
-chosen by L<Alien::Base::ModuleBuild>.  This will either be the real pkg-config provided by the
-operating system (preferred) or L<PkgConfig>, the pure perl implementation found on CPAN.
-
-=item alien_env
-
-[version 0.027]
-
-Environment overrides.  Allows you to set environment variables as a hash
-reference that will override environment variables.  You can use the same
-interpolated escape sequences and helpers that commands use.
-
- ...
- Alien::Base::ModuleBuild->neW(
-   ...
-   alien_env => {
-     PERL => '%X',     # sets the environment variable PERL to the location
-                       # of the Perl interpreter.
-     PERCENT => '%%',  # evaluates to '%'
-   },
-   ...
- );
- ...
+A command to run to check the version of the library installed on the system. The default is C<pkg-config --modversion %n>.
 
 =back
 
@@ -256,26 +256,6 @@ A few global variables are used to set gross behavior. For each pair of variable
 
 =over 
 
-=item $Alien::Base::ModuleBuild::Verbose
-
-=item $ENV{ALIEN_VERBOSE}
-
-Setting the either to a true value will output a little more info from within the module itself. At this point L<Alien::Base> is going to be fairly verbose without this enabled. 
-
-=item $Alien::Base::ModuleBuild::Force
-
-=item $ENV{ALIEN_INSTALL_TYPE}
-
-Setting to C<share> will ignore a system-wide installation and build a local version of the library.  Setting to C<system> will only use a system-wide installation and die if it cannot be found.
-
-=item $ENV{ALIEN_FORCE}
-
-Setting either to a true value will cause the builder to ignore a system-wide installation and build a local version of the library.  This is the equivalent to setting $ENV{ALIEN_INSTALL_TYPE} to 'share'.  $ENV{ALIEN_INSTALL_TYPE} takes precedence.
-
-=item $ENV{ALIEN_BLIB}
-
-Setting this to true indicates that you don't intend to actually install your Alien::Base subclass, but rather use it from the built F<blib> directory. This behavior is mostly to support automated testing from CPANtesters and should be automagically determined. If by chance you happen to trip the behavior accidentally, setting this environment variable to false (0) before building should prevent problems. 
-
 =item $ENV{ALIEN_ARCH}
 
 [version 0.017]
@@ -283,6 +263,26 @@ Setting this to true indicates that you don't intend to actually install your Al
 Setting this changes the default for alien_arch above.  If the module specifies its own alien_arch in its C<Build.PL> file then it will override this setting.  Typically installing into an architecture specific directory is what you
 want to do, since most L<Alien::Base> based distributions provide architecture specific binary code, so you should consider carefully before installing modules with this environment variable set to 0.  This may be useful for
 integrators creating a single non-architecture specific RPM, .dep or similar package.  In this case the integrator should ensure that the Alien package be installed with a system install_type and use the system package.
+
+=item $ENV{ALIEN_BLIB}
+
+Setting this to true indicates that you don't intend to actually install your Alien::Base subclass, but rather use it from the built F<blib> directory. This behavior is mostly to support automated testing from CPANtesters and should be automagically determined. If by chance you happen to trip the behavior accidentally, setting this environment variable to false (0) before building should prevent problems. 
+
+=item $Alien::Base::ModuleBuild::Force
+
+=item $ENV{ALIEN_FORCE}
+
+Setting either to a true value will cause the builder to ignore a system-wide installation and build a local version of the library.  This is the equivalent to setting $ENV{ALIEN_INSTALL_TYPE} to 'share'.  $ENV{ALIEN_INSTALL_TYPE} takes precedence.
+
+=item $ENV{ALIEN_INSTALL_TYPE}
+
+Setting to C<share> will ignore a system-wide installation and build a local version of the library.  Setting to C<system> will only use a system-wide installation and die if it cannot be found.
+
+=item $Alien::Base::ModuleBuild::Verbose
+
+=item $ENV{ALIEN_VERBOSE}
+
+Setting the either to a true value will output a little more info from within the module itself. At this point L<Alien::Base> is going to be fairly verbose without this enabled. 
 
 =back
 
@@ -294,25 +294,25 @@ Config keys of interest are:
 
 =over
 
-=item working_directory
+=item name
 
-Holder for the full path to the extracted source of the library. This is used to munge the pkg-config data later on.
-
-=item pkgconfig
-
-A hashref of Alien::Base::PkgConfig objects created from F<.pc> files found in C<working_directory>. One extra object (whose key is C<_manual> is created from the C<alien_provides_*> information.
+Holder for C<alien_name> as needed by pkg-config.
 
 =item install_type
 
 Remembers if the library was found system-wide (value: C<system>) or was installed during build (value: C<share>).
 
+=item pkgconfig
+
+A hashref of Alien::Base::PkgConfig objects created from F<.pc> files found in C<working_directory>. One extra object (whose key is C<_manual> is created from the C<alien_provides_*> information.
+
 =item version
 
 The version number installed or available.
 
-=item name
+=item working_directory
 
-Holder for C<alien_name> as needed by pkg-config.
+Holder for the full path to the extracted source of the library. This is used to munge the pkg-config data later on.
 
 =back
 
@@ -328,15 +328,15 @@ Before L<Alien::Base::ModuleBuild> executes system commands, it replaces a few s
 
 Call the given helper, either provided by the C<alien_helper> or C<alien_bin_requires> property.  See L<Alien::Base#alien_helper>.
 
-=item %s
-
-The full path to the final installed location of the share directory (builder method C<alien_library_destination>). This is where the library should install itself; for autoconf style installs this will look like 
-
- --prefix=%s
-
 =item %c
 
 Platform independent incantation for running autoconf C<configure> script.  On *nix systems this is C<./configure>, on Windows this is C<sh configure>.  On windows L<Alien::MSYS> is injected as a dependency and all commands are executed in an C<MSYS> environment.
+
+=item %n
+
+Shortcut for the name stored in C<alien_name>
+
+ pkg-config --modversion %n
 
 =item %p
 
@@ -344,11 +344,11 @@ Platform independent "local command prefix". On *nix systems this is C<./>, on W
 
  %pconfigure
 
-=item %n
+=item %s
 
-Shortcut for the name stored in C<alien_name>
+The full path to the final installed location of the share directory (builder method C<alien_library_destination>). This is where the library should install itself; for autoconf style installs this will look like 
 
- pkg-config --modversion %n
+ --prefix=%s
 
 =item %v
 
