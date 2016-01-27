@@ -233,7 +233,20 @@ operating system (preferred) or L<PkgConfig>, the pure perl implementation found
 [version 0.027]
 
 Environment overrides.  Allows you to set environment variables as a hash
-reference that will override environment variables.
+reference that will override environment variables.  You can use the same
+interpolated escape sequences and helpers that commands use.
+
+ ...
+ Alien::Base::ModuleBuild->neW(
+   ...
+   alien_env => {
+     PERL => '%X',     # sets the environment variable PERL to the location
+                       # of the Perl interpreter.
+     PERCENT => '%%',  # evaluates to '%'
+   },
+   ...
+ );
+ ...
 
 =back
 
