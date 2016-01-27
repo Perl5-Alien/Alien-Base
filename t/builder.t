@@ -190,7 +190,7 @@ subtest 'alien_bin_requires' => sub {
     my $dir = File::Spec->catdir(qw( _alien buildroot ));
     mkpath($dir, { verbose => 0 });
     $CWD = $dir;
-    %status = $builder->_env_do_system('privateapp');
+    %status = $builder->alien_do_system('privateapp');
   };
   ok $status{success}, 'found privateapp in path';
   if($^O eq 'MSWin32') {
@@ -398,6 +398,33 @@ subtest 'system provides' => sub {
     is $builder->config_data('system_provides')->{Libs},   '-L/my/libs -lmylib', 'libs';
   };
 
+  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
+};
+
+subtest 'alien_env' => sub {
+
+  local $ENV{BAZ} = 'baz';
+
+  my $builder = builder(
+    alien_helper => {
+      myhelper => '"my helper text"',
+    },
+    alien_env => {
+      FOO => 'foo1',
+      BAR => '%{myhelper}',
+      BAZ => undef,
+    },
+  );
+  
+  isa_ok $builder, 'Alien::Base::ModuleBuild';
+  my($out, $err, %status) = capture { $builder->alien_do_system([$^X, -e => 'print $ENV{FOO}']) };
+  is $status{stdout}, 'foo1', 'env FOO passed to process';
+  ($out, $err, %status) = capture { $builder->alien_do_system([$^X, -e => 'print $ENV{BAR}']) };
+  is $status{stdout}, 'my helper text', 'alien_env works with helpers';
+  ($out, $err, %status) = capture { $builder->alien_do_system([$^X, -e => 'print $ENV{BAZ}||"undef"']) };
+  is $status{stdout}, 'undef', 'alien_env works with helpers';
+  
+  
   rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 

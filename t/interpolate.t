@@ -28,6 +28,7 @@ is( $builder->alien_interpolate('thing other=%%s'), 'thing other=%s', 'no share_
 
 my $perl = $builder->perl;
 is( $builder->alien_interpolate('%x'), $perl, '%x is current interpreter' );
+unlike( $builder->alien_interpolate('%X'), qr{\\}, 'no backslash in %X' );
 
 # Prior to loading the version information
 {
