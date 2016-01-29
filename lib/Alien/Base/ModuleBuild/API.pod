@@ -41,7 +41,7 @@ These only become required for building if L<Alien::Base::ModuleBuild> determine
 
 [version 0.001]
 
-An arrayref of commands used to build the library in the directory specified in C<alien_temp_dir>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ '%c --prefix=%s', 'make' ]>.
+An arrayref of commands used to build the library in the directory specified in C<alien_temp_dir>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the GNU toolchain, i.e. AutoConf and Make; it is C<[ '%c --prefix=%s', 'make' ]>.
 
 [version 0.009]
 
@@ -56,7 +56,7 @@ reference that will override environment variables.  You can use the same
 interpolated escape sequences and helpers that commands use.
 
  ...
- Alien::Base::ModuleBuild->neW(
+ Alien::Base::ModuleBuild->new(
    ...
    alien_env => {
      PERL => '%X',     # sets the environment variable PERL to the location
@@ -117,7 +117,7 @@ Array reference containing the list of header files to be used automatically by 
 
 [version 0.001]
 
-An arrayref of commands used to install it to the share directory specified by interpolation var C<%s>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the Gnu toolchain, i.e. AutoConf and Make; it is C<[ 'make install' ]>.
+An arrayref of commands used to install it to the share directory specified by interpolation var C<%s>. Each command is first passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">, so those variables may be used. The default is tailored to the GNU toolchain, i.e. AutoConf and Make; it is C<[ 'make install' ]>.
 
 [version 0.009]
 
@@ -249,13 +249,13 @@ The name of the temporary folder which will house the library when it is downloa
 An arrayref of commands used to test the library.  Each command is first 
 passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">,
 so those variables may be used.  The default is to do no tests.  The most
-common command used by the Gnu toolchain is C<[ 'make check' ]>, but beware
+common command used by the GNU toolchain is C<[ 'make check' ]>, but beware
 that is not supported by all packages.
 
 [version 0.009]
 
-Each command may be either a string or an array reference.  If the arry 
-reference for m is used, then the multiple argument form of system is used.
+Each command may be either a string or an array reference.  If the array 
+reference form is used, then the multiple argument form of system is used.
 
 =item alien_version_check
 
