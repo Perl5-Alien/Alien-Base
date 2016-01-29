@@ -45,7 +45,7 @@ An arrayref of commands used to build the library in the directory specified in 
 
 [version 0.009]
 
-Each command may be either a string or a array reference.  If the array reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
+Each command may be either a string or an array reference.  If the array reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
 
 =item alien_env
 
@@ -121,7 +121,7 @@ An arrayref of commands used to install it to the share directory specified by i
 
 [version 0.009]
 
-Each command may be either a string or a array reference.  If the array reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
+Each command may be either a string or an array reference.  If the array reference form is used then the multiple argument form of C<system> is used.  Prior to version 0.009, only the string form was supported.
 
 =item alien_isolate_dynamic
 
@@ -241,6 +241,21 @@ As of 0.017 this is the default.
 [version 0.001]
 
 The name of the temporary folder which will house the library when it is downloaded and built. The default name is C<_alien>.
+
+=item alien_test_commands
+
+[version 0.001]
+
+An arrayref of commands used to test the library.  Each command is first 
+passed through the L<command interpolation engine|/"COMMAND INTERPOLATION">,
+so those variables may be used.  The default is to do no tests.  The most
+common command used by the Gnu toolchain is C<[ 'make check' ]>, but beware
+that is not supported by all packages.
+
+[version 0.009]
+
+Each command may be either a string or an array reference.  If the arry 
+reference for m is used, then the multiple argument form of system is used.
 
 =item alien_version_check
 
