@@ -67,6 +67,29 @@ interpolated escape sequences and helpers that commands use.
  );
  ...
 
+Please keep in mind that frequently users have a good reason to have set 
+environment variables, and you should not override them without a good 
+reason.  An example of a good justification would be if a project has a 
+Makefile that interacts badly with common environment variables.  This 
+can sometimes be a problem since Makefile variables can be overridden with
+environment variables.
+
+A useful pattern is to use a helper to only override an environment 
+variable if it is not already set.
+
+ ...
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_helper => {
+     foo => '$ENV{FOO}||"my preferred value if not already set"'
+   },
+   alien_env => {
+     FOO => '%{foo}',
+   }
+   ...
+ );
+ ...
+
 =item alien_ffi_name
 
 [version 0.007]
