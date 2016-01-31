@@ -87,8 +87,24 @@ variable if it is not already set.
    },
    alien_env => {
      FOO => '%{foo}',
-   }
+   },
    ...
+ );
+ ...
+
+A common pitfall with environment variables is that setting one to the 
+empty string (C<''>) is not portable.  On Unix it works fine as you would
+expect, but in Windows it actually unsets the environment variable, which
+may not be what you intend.
+
+ ...
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_env => {
+     # is allowed, but may not do what you intend
+     # on some platforms!
+     FOO => '',
+   },
  );
  ...
 
