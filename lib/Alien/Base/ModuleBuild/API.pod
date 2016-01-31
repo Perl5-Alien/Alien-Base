@@ -53,7 +53,8 @@ Each command may be either a string or an array reference.  If the array referen
 
 Environment overrides.  Allows you to set environment variables as a hash
 reference that will override environment variables.  You can use the same
-interpolated escape sequences and helpers that commands use.
+interpolated escape sequences and helpers that commands use.  Set to undef
+to remove the variable.
 
  ...
  Alien::Base::ModuleBuild->new(
@@ -62,6 +63,7 @@ interpolated escape sequences and helpers that commands use.
      PERL => '%X',     # sets the environment variable PERL to the location
                        # of the Perl interpreter.
      PERCENT => '%%',  # evaluates to '%'
+     REMOVE => undef,  # remove the environment variable if it is defined
    },
    ...
  );
