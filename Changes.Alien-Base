@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.026_01  Mon Feb 1, 2016
+  - Added alien_env property to Alien::Base::ModuleBuild
+  - require HTTP::Tiny 0.044 for correct calculation of
+    relative URLs on may websites.
+
 0.026  Fri Jan 22, 2016
   - For http, use base URL from index request when downloading
     files (plicease gh#150, gh#151)
