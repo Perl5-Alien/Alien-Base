@@ -414,6 +414,7 @@ subtest 'alien_env' => sub {
       BAR => '%{myhelper}',
       BAZ => undef,
     },
+    alien_build_commands => [],
   );
   
   isa_ok $builder, 'Alien::Base::ModuleBuild';
