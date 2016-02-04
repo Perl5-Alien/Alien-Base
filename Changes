@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.027  Thu Feb 4, 2016
+  - Production release identical to 0.026_02 release
+
 0.026_02  Mon Feb 1, 2016
   - Fix test bug introduced in 0.026_01 where t/builder.t
     would fail on Windows if Alien::MSYS was not installed.
