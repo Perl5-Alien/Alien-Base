@@ -703,7 +703,6 @@ sub alien_do_system {
   my $command = shift;
   
   local %ENV = %ENV;
-  $ENV{PATH} = $ENV{PATH};
   
   if ($self->config_data( 'msys' )) {
     $self->alien_bin_requires->{'Alien::MSYS'} ||= 0
