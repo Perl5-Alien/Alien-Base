@@ -396,9 +396,26 @@ Shortcut for the name stored in C<alien_name>
 
 =item %p
 
+B<deprecated>
+
 Platform independent "local command prefix". On *nix systems this is C<./>, on Windows it is an empty string.
 
  %pconfigure
+
+Please note that this only works to run scripts on Unix, and does not work on Windows.  It is thus, not fit for purpose and should not be used.  As an alternative:
+
+=over 4
+
+=item autoconf "configure"
+
+If you are trying to invoke the autoconf configure script, use C<%c> instead.  This will use the correct incantation on either Unix like systems and on Windows.
+
+=item Some other script
+
+Invoke the interpreter directly.  For example, if you have a pythong script use "python foo.py", if you have a Perl script use "%X foo.pl", if you have an sh script use "sh foo.sh".  These are all portable.
+For sh, be sure to set the C<alien_msys> property so that it will work on Windows.
+
+=back
 
 =item %s
 

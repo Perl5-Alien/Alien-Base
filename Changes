@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+  - Deprecate %p
+
 0.027  Thu Feb 4, 2016
   - Production release identical to 0.026_02 release
 

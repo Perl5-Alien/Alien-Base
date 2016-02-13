@@ -208,6 +208,10 @@ sub new {
 
   $self->config_data( 'finished_installing' => 0 );
 
+  if(grep /(?<!\%)\%p/, map { ref($_) ? @{$_} : $_ } @{ $self->alien_build_commands }) {
+    carp "%p is deprecated, See https://metacpan.org/pod/distribution/Alien-Base/lib/Alien/Base/ModuleBuild/API.pod#p";
+  }
+
   return $self;
 }
 
