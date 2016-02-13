@@ -412,7 +412,7 @@ If you are trying to invoke the autoconf configure script, use C<%c> instead.  T
 
 =item Some other script
 
-Invoke the interpreter directly.  For example, if you have a pythong script use "python foo.py", if you have a Perl script use "%X foo.pl", if you have an sh script use "sh foo.sh".  These are all portable.
+Invoke the interpreter directly.  For example, if you have a python script use "python foo.py", if you have a Perl script use "%X foo.pl", if you have an sh script use "sh foo.sh".  These are all portable.
 For sh, be sure to set the C<alien_msys> property so that it will work on Windows.
 
 =back
