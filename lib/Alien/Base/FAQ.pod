@@ -279,7 +279,7 @@ install it for you.  You can use this from your C<Build.PL> with the C<alien_bin
  Alien::Base::ModuleBuild->new(
    ...
    alien_bin_requires => {
-     'Alien::CMake' => 0,
+     'Alien::CMake' => 0.07,
    },
    alien_build_commands => [
      # acutal required arguments may vary
