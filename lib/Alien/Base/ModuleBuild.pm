@@ -194,7 +194,11 @@ sub new {
       $self->config_data( 'msys' => 0 );
     }
   
-    while(my($tool, $version) = each %{ $self->alien_bin_requires }) {
+    foreach my $tool (keys %{ $self->alien_bin_requires  }) {
+      my $version = $self->alien_bin_requires->{$tool};
+      if($tool eq 'Alien::CMake' && $version < 0.07) {
+        $version = '0.07';
+      }
       $self->_add_prereq( 'build_requires', $tool, $version );
     }
   }
@@ -721,8 +725,6 @@ sub alien_do_system {
     
     if ($mod eq 'Alien::MSYS') {
       $path{Alien::MSYS->msys_path} = 1;
-    } elsif ($mod eq 'Alien::CMake') {
-      Alien::CMake->set_path;
     } elsif ($mod eq 'Alien::TinyCC') {
       $path{Alien::TinyCC->path_to_tcc} = 1;
     } elsif ($mod eq 'Alien::Autotools') {

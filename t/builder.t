@@ -429,4 +429,32 @@ subtest 'alien_env' => sub {
   rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
+subtest 'cmake' => sub {
+
+  subtest 'default' => sub {
+
+    my $builder = builder(
+      alien_bin_requires => { 'Alien::CMake' => 0 },
+      alien_build_commands => [],
+    );
+
+    isa_ok $builder, 'Alien::Base::ModuleBuild';
+    is $builder->build_requires->{"Alien::CMake"}, '0.07', 'require at least 0.07';
+    rmtree [qw/ _alien  _share  blib  src /], 0, 0;  
+  };
+
+  subtest 'more recent' => sub {
+
+    my $builder = builder(
+      alien_bin_requires => { 'Alien::CMake' => '0.10' },
+      alien_build_commands => [],
+    );
+
+    isa_ok $builder, 'Alien::Base::ModuleBuild';
+    is $builder->build_requires->{"Alien::CMake"}, '0.10', 'keep 0.10';
+    rmtree [qw/ _alien  _share  blib  src /], 0, 0;  
+  };
+  
+};
+
 done_testing;
