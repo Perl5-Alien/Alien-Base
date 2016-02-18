@@ -1264,7 +1264,7 @@ This function determines the version of the library after it has been
 built from source.  This function only gets called if the operating
 system version can not be found and the package is successfully built.
 
-The default implementation relies on C<pkg-config>, and other huristics,
+The default implementation relies on C<pkg-config>, and other heuristics,
 but you will probably want to override this with your own implementation
 if the package you are building does not use C<pkg-config>.
 
