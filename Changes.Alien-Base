@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.027_01  Fri Feb 19, 2016
   - Deprecate %p
   - Require Alien::CMake 0.07 as a minimum when used as alien_bin_requires
     for Alien::Base compatability
