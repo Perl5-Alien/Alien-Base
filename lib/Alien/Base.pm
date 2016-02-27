@@ -417,7 +417,7 @@ sub dynamic_libs {
   if($class->install_type('system')) {
 
     my $name = $class->config('ffi_name');
-    unless(defined $name) {
+    if(defined $name) {
       $name = $class->config('name');
       # strip leading lib from things like libarchive or libffi
       $name =~ s/^lib//;
