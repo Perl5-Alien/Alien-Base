@@ -361,12 +361,50 @@ L<Alien::Base::ModuleBuild::API#CONFIG-DATA>.
 sub config {
   my $class = shift;
   $class = blessed $class || $class;
+
+  if(my $alien_builder_data = $class->_alien_builder_data)
+  {
+    return $alien_builder_data->{config}->{$_[0]};
+  }
   
   my $config = $class . '::ConfigData';
   eval "require $config";
   warn $@ if $@;
 
   return $config->config(@_);
+}
+
+sub Alien::Base::_alien_builder_data
+{
+  my($class) = @_;
+  
+  my $dist = $class;
+  $dist =~ s/::/-/g;
+  my $dir = eval { File::ShareDir::dist_dir($dist) };
+  return unless defined $dir && -d $dir;
+  my $filename = File::Spec->catfile($dir, 'alien_builder.json');
+  return unless -r $filename;
+
+  require JSON::PP;
+  open my $fh, '<', $filename;    
+  my $config = JSON::PP->new
+    ->filter_json_object(sub {
+      my($object) = @_;
+      my $class = delete $object->{'__CLASS__'};
+      return unless $class;
+      bless $object, $class;
+    })->decode(do { local $/; <$fh> });
+  close $fh;
+
+  # avoid re-reading on next call
+  if($class ne 'Alien::Base')
+  {
+    my $method = join '::', $class, '_alien_builder_data';
+    no strict 'refs';
+    *{$method} = sub { $config };
+  }
+
+  $config;
 }
 
 # helper method to split flags based on the OS
