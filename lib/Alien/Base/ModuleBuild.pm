@@ -1196,7 +1196,7 @@ In your Build.PL:
    module_name => 'Alien::MyLibrary',
    
    configure_requires => {
-     'Alien::Base' =>   '0.005',
+     'Alien::Base::ModuleBuild' => '0.005',
      'Module::Build' => '0.28'
    },
    requires => {
