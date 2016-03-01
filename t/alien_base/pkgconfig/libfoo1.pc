@@ -1,0 +1,11 @@
+prefix=/home/user/opt/libfoo1/git-06747d318761884e70dfa433a9548219fd779d7d
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+toolexeclibdir=${exec_prefix}/lib/../lib
+includedir=${libdir}/libfoo1-3.99999/include
+
+Name: libfoo1
+Description: Library supporting Foreign Function Interfaces
+Version: 3.99999
+Libs: -lfoo1
+Cflags: -DFOO=stuff

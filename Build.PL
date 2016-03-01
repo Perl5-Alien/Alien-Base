@@ -32,6 +32,7 @@ my %build_args = (
     'Shell::Guess'     => 0,
     'Shell::Config::Generate' => 0,
     'FFI::CheckLib'    => 0.11,
+    'JSON:PP'          => 0,
   },
   test_requires => {
     'Test::More'       => 0.94,

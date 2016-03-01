@@ -144,5 +144,13 @@ sub pkg_config_command {
   $pkg_config_command;
 }
 
+sub TO_JSON
+{
+  my($self) = @_;
+  my %hash = %$self;
+  $hash{'__CLASS__'} = ref($self);
+  \%hash;
+}
+
 1;
 
