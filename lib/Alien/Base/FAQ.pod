@@ -30,7 +30,7 @@ but these flags do not work with the C<--modversion> flag, so be sure to invoke 
    dist_name           => 'Alien::Foo',
    alien_name          => 'foo',
    configure_requires  => { 'Alien::Base' => '0.022' }, # required for %{pkg_config}
-   alien_version_check => '%{pkg_config} --atleast-version 1.2.3 && %{pkg_config} --modversion %n',
+   alien_version_check => '%{pkg_config} --atleast-version 1.2.3 %n && %{pkg_config} --modversion %n',
    ...
  )->create_build_script;
 
