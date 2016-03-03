@@ -20,6 +20,10 @@ sub new {
   $obj->{c_compiler_required} = 1
     unless defined $obj->{c_compiler_required};
 
+  if($obj->{exact_filename} && $obj->{location} !~ m{/$}) {
+    $obj->{location} .= '/'
+  }
+
   return $obj;
 }
 

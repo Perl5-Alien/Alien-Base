@@ -88,5 +88,33 @@ my $default = {
   }
 }
 
+subtest 'exact_filename trailing slash' => sub {
+
+  my $repo = Alien::Base::ModuleBuild::Repository->new(
+    protocol       => 'https',
+    host           => 'github.com',
+    location       => 'hunspell/hunspell/archive',
+    exact_filename => 'v1.3.4.tar.gz',
+  );
+  is $repo->location, 'hunspell/hunspell/archive/', 'exact filename implies trailing /';
+
+  $repo = Alien::Base::ModuleBuild::Repository->new(
+    protocol       => 'https',
+    host           => 'github.com',
+    location       => 'hunspell/hunspell/archive/',
+    exact_filename => 'v1.3.4.tar.gz',
+  );
+  is $repo->location, 'hunspell/hunspell/archive/', 'exact filename with trailing slash already there';
+
+  $repo = Alien::Base::ModuleBuild::Repository->new(
+    protocol       => 'https',
+    host           => 'github.com',
+    location       => 'hunspell/hunspell/archive',
+    pattern        => '^v([0-9\.]+).tar.gz$',
+  );
+  is $repo->location, 'hunspell/hunspell/archive', 'no exact filename does not imply trailing /';
+
+};
+
 done_testing;
 
