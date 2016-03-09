@@ -1,5 +1,13 @@
 Revision history for Perl module Alien::Base.
 
+0.027_03  Wed Mar 9, 2016
+  - Updated documentation to recommend the use of Alien::Base::ModuleBuild
+    as a configure_requires.  PLEASE UPDATE YOUR Build.PL FILES!
+  - Fixed bug where missing trailing slash when used with exact_filename
+    would cause a failure (plicease gh#161, gh162)
+  - Documentation fix in FAQ (plicease gh#159,gh#160)
+  - Added compatability for Alien::Builder (pliceasee gh#158, see also gh#157)
+
 0.027_02  Sat Feb 27, 2016
   - Fix bug where default ffi_name was incorrectly computed
 
