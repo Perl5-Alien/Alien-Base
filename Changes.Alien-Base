@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.028  Mon Mar 14, 2016
+  - Production release identical to 0.027_03 release
+
 0.027_03  Wed Mar 9, 2016
   - Updated documentation to recommend the use of Alien::Base::ModuleBuild
     as a configure_requires.  PLEASE UPDATE YOUR Build.PL FILES!
