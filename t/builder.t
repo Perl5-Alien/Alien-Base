@@ -3,7 +3,11 @@ use warnings;
 
 use Test::More;
 
-BEGIN { delete $ENV{ACTIVESTATE_PPM_BUILD} }
+BEGIN {
+  delete $ENV{ACTIVESTATE_PPM_BUILD};
+  delete $ENV{ALIEN_INSTALL_TYPE};
+  delete $ENV{ALIEN_FORCE};
+}
 
 use Alien::Base::ModuleBuild;
 use File::chdir;
