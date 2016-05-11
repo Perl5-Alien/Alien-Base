@@ -131,8 +131,8 @@ building a mini XS or FFI extension and using it.  It even has tests for tool or
 distributions (like L<Alien::gmake> and L<Alien::patch>).  Here is a short example, there
 are many others included with the L<Test::Alien> documentation:
 
- use Test::Stream -V1;
- use Test::Alien;
+ use Test2::Bundle::Simple;
+ use Test::Alien 0.05;
  use Alien::Editline;
  
  alien_ok 'Alien::Editline';
@@ -141,6 +141,8 @@ are many others included with the L<Test::Alien> documentation:
    my($module) = @_;
    ok $module->version;
  };
+ 
+ done_testing;
  
  __DATA__
  
