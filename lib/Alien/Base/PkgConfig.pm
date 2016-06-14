@@ -51,9 +51,9 @@ sub read {
     or croak "Cannot open .pc file $path: $!";
 
   while (<$fh>) {
-    if (/(.*?)=([^\n\r]*)/) {
+    if (/^([^=:]+?)=([^\n\r]*)/) {
       $self->{vars}{$1} = $2;
-    } elsif (/^(.*?):\s*([^\n\r]*)/) {
+    } elsif (/^([^=:]+?):\s*([^\n\r]*)/) {
       $self->{keywords}{$1} = $2;
     }
   }
