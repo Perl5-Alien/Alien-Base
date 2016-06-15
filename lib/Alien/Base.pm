@@ -699,6 +699,8 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =item Salvador Fandiño (salva)
 
+=item Gianni Ceccarelli (dakkar)
+
 =back
 
 Thanks also to
