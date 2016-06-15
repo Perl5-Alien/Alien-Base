@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.028_01
   - Fixed bug where a colon (:) and equal sign (=) can confuse pkg-config
     parser (dakkar++ gh#165)
 
