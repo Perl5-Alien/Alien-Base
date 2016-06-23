@@ -1,7 +1,7 @@
 language: perl
 
 install:
-  - bash .travis-install-system.sh
+  - curl https://perl5-alien.github.io/static/travis/install-system-dontpanic.sh | bash -
   - cpanm -n --installdeps .
 
   # for t/inline*.t tests
@@ -17,7 +17,7 @@ install:
   # for Acme modules
   - cpanm -n Test::Alien
   
-  # for .travis-test-*
+  # for ./travis/test-*
   - cpanm -n local::lib
   
   # for upgrade tests
@@ -37,33 +37,38 @@ script:
   # basic test without anything optional installed
   - perl Build.PL
   - ./Build
-  - prove -bv t
+  - ./Build test verbose=1
   - ./Build install
 
   # test that installing to a destdir and then moving that dir
   # to the real root works:
-  - bash -x .travis-test-destdir.sh
+  - ./travis/test-destdir.sh
 
   # test the regression that happened between 0.019 and 0.020 caused
   # by changes to the format of the data in ConfigData.pm
-  - bash -x .travis-test-upgrade.sh '' "d2d6e3782bfdbec14db2c78532122055d2b22401" '' "0.019"
+  - bash -x ./travis/test-upgrade.sh '' "d2d6e3782bfdbec14db2c78532122055d2b22401" '' "0.019"
   
   # test that we can move an Alien dist
-  - bash .travis-install-perl.sh Acme::Alien::DontPanic /tmp/original
+  - ./travis/install-perl.sh Acme::Alien::DontPanic /tmp/original
   - mv /tmp/original /tmp/moved
-  - bash .travis-install-perl.sh Acme::Ford::Prefect    /tmp/moved
+  - ./travis/install-perl.sh Acme::Ford::Prefect    /tmp/moved
   
   # test more normal installs
-  - bash .travis-install-perl.sh Acme::Alien::DontPanic
-  - bash .travis-install-perl.sh Acme::Ford::Prefect
-  - bash .travis-install-perl.sh Acme::Ford::Prefect::FFI
-  - bash .travis-install-perl.sh Alien::Libbz2
+  - ./travis/install-perl.sh Acme::Alien::DontPanic
+  - ./travis/install-perl.sh Acme::Ford::Prefect
+  - ./travis/install-perl.sh Acme::Ford::Prefect::FFI
+  - ./travis/install-perl.sh Alien::Libbz2
   
   # verify still works with optional modules
-  - prove -bv t
+  - ./Build test verbose=1
 
 env:
-  - ALIEN_FORCE=0 PATH=$PATH:$HOME/travislocal/bin LD_LIBRARY_PATH=$HOME/travislocal/lib PKG_CONFIG_PATH=$HOME/travislocal/lib/pkgconfig
-  - ALIEN_FORCE=1
+  global:
+    - PATH=$PATH:$HOME/opt/dontpanic/current/bin
+    - LD_LIBRARY_PATH=$HOME/opt/dontpanic/current/lib
+    - PKG_CONFIG_PATH=$HOME/opt/dontpanic/current/lib/pkgconfig
+  matrix:
+    - ALIEN_INSTALL_TYPE=share
+    - ALIEN_INSTALL_TYPE=system
 
 sudo: false

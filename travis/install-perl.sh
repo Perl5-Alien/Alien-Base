@@ -1,6 +1,5 @@
-#!/bin/sh
+#!/bin/bash
 
-# bash strict (see http://redsymbol.net/articles/unofficial-bash-strict-mode/)
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -21,16 +20,16 @@ case $mod in
 
   Acme::Alien::DontPanic)
     cd `mktemp -d`
-    git clone https://github.com/Perl5-Alien/Alien-Base-Extras.git
-    cd Alien-Base-Extras/Acme-Alien-DontPanic
+    git clone --depth 2 https://github.com/Perl5-Alien/Acme-Alien-DontPanic.git
+    cd Acme-Alien-DontPanic
     echo "+cpanm $location -v ."
     cpanm $location -v .
     ;;
 
   Acme::Ford::Prefect)
     cd `mktemp -d`
-    git clone https://github.com/Perl5-Alien/Alien-Base-Extras.git
-    cd Alien-Base-Extras/Acme-Ford-Prefect
+    git clone --depth 2 https://github.com/Perl5-Alien/Acme-Ford-Prefect.git
+    cd Acme-Ford-Prefect
     echo "+cpanm $location -v ."
     cpanm $location -v .
     ;;

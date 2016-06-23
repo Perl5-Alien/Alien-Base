@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# bash strict (see http://redsymbol.net/articles/unofficial-bash-strict-mode/)
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -29,7 +28,7 @@ IFS=$'\n\t'
 
 url="${1:-}"
 if [ -z "$url" ]; then
-  url="https://github.com/Perl5-Alien/Alien-Base-Extras.git"
+  url="https://github.com/Perl5-Alien/Acme-Alien-DontPanic.git"
 fi
 
 filename=`perl -MURI -e '$url = URI->new($ARGV[0]); $url->path =~ m{^.*/(.*)$}; print $1' $url`
@@ -39,7 +38,7 @@ acme_git_tag="${2:-}"
 
 subdir="${3:-}"
 if [ -z "$subdir" ]; then
-  subdir="Acme-Alien-DontPanic"
+  subdir=""
 fi
 
 ab_git_old_tag="${4:-}"
@@ -57,7 +56,7 @@ echo "filename       = $filename"
 echo "name           = $name"
 echo "acme_git_tag   = $acme_git_tag"
 echo "subdir         = $subdir"
-echo "ab_root         = $ab_root"
+echo "ab_root        = $ab_root"
 echo "ab_git_old_tag = $ab_git_old_tag"
 echo "ab_git_new_tag = $ab_git_new_tag"
 
