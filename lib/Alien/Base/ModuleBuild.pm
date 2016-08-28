@@ -145,6 +145,9 @@ __PACKAGE__->add_property( 'alien_helper' => {} );
 
 __PACKAGE__->add_property( 'alien_env' => {} );
 
+# Extra enviroment variable to effect to "configure"
+__PACKAGE__->add_property( 'alien_extra_site_config' => {} );
+
 ################
 #  ConfigData  #
 ################
@@ -755,15 +758,19 @@ sub alien_do_system {
     my $ldflags = $Config{ldflags};
     $ldflags .= " -Wl,-headerpad_max_install_names"
       if $^O eq 'darwin';
-    
+
+    my %extra_site_config = %{ $self->alien_extra_site_config };
     open my $fh, '>', 'config.site';
     print $fh "CC='$Config{cc}'\n";
     # -D define flags should be stripped because they are Perl
     # specific.
-    print $fh "CFLAGS='", _filter_defines($Config{ccflags}), "'\n";
-    print $fh "CPPFLAGS='", _filter_defines($Config{cppflags}), "'\n";
-    print $fh "CXXFLAGS='", _filter_defines($Config{ccflags}), "'\n";
-    print $fh "LDFLAGS='$ldflags'\n";
+    print $fh "CFLAGS='"   . join(" ", _filter_defines($Config{ccflags}), (delete($extra_site_config{CFLAGS}) ||"")) . "'\n";
+    print $fh "CPPFLAGS='" . join(" ", _filter_defines($Config{cppflags}), (delete($extra_site_config{CPPFLAGS}) ||"")) . "'\n";
+    print $fh "CXXFLAGS='" . join(" ", _filter_defines($Config{ccflags}), (delete($extra_site_config{CXXFLAGS}) ||"")) . "'\n";
+    print $fh "LDFLAGS='"  . join(" ", $ldflags, (delete($extra_site_config{LDFLAGS}) ||"") ) . "'\n";
+    for (keys %extra_site_config) {
+        print $fh "$_='$extra_site_config{$_}'\n";
+    }
     close $fh;
   
     my $config ||= _shell_config_generate();
