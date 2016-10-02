@@ -18,6 +18,11 @@ use FindBin ();
 
 my $dir = File::Temp->newdir;
 local $CWD = "$dir";
+# create an extra directory to the hierarchy
+# so that the env.* files will not be created
+# in /tmp  (see gh#167)
+mkdir 'x';
+$CWD = 'x';
 
 my %basic = (
   module_name  => 'My::Test',
