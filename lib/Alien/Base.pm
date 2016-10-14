@@ -701,6 +701,8 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =item Gianni Ceccarelli (dakkar)
 
+=item Pavel Shaydo (zwon, trinitum)
+
 =back
 
 Thanks also to
