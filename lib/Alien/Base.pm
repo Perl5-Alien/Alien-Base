@@ -59,7 +59,7 @@ Or if you prefer L<ExtUtils::MakeMaker>, in its C<Makefile.PL>:
  
  WriteMakefile(
    ...
-   CFLAGS => Alien::MyLibrary->cflags,
+   CCFLAGS => Alien::MyLibrary->cflags,
    LIBS   => ALien::MyLibrary->libs,
    ...
  );
