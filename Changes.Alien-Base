@@ -3,6 +3,8 @@ Revision history for Perl module Alien::Base.
   - Fixed example in documentation for ExtUtil::MakeMaker
   - Fixed bug in test suite with where multiple users installing
     AB could cause failures
+  - Added interface for overriding config.site variables
+    see alien_extra_site_config
 
 0.029  Mon Mar 14, 2016
   - Production release identical to 0.028_01 release
