@@ -110,6 +110,8 @@ may not be what you intend.
 
 =item alien_extra_site_config
 
+[version 0.030]
+
 Append extra values to the C<config.site> file when using autoconf.
 
 When <autoconf> is detected, a C<config.site> file is created with values appropriate for
