@@ -703,6 +703,8 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =item Pavel Shaydo (zwon, trinitum)
 
+=item Kang-min Liu (劉康民, gugod)
+
 =back
 
 Thanks also to
