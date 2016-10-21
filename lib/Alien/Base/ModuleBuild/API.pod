@@ -108,6 +108,39 @@ may not be what you intend.
  );
  ...
 
+=item alien_extra_site_config
+
+Append extra values to the C<config.site> file when using autoconf.
+
+When <autoconf> is detected, a C<config.site> file is created with values appropriate for
+building software that can link against the Perl that you are building with.  This is important
+on some platforms, for example 64 bit systems where the compilers generate 32 bit code by
+default.  You can also add values to the C<config.site> file using this directive.
+
+For values that are already provided by C<Alien::Base::ModuleBuild>, your value will be
+appended after the existing value.  For values that aren't provided, it will simply use
+your value by itself.
+
+For example if you needed to add a define to a CFLAGS, you might do something like this:
+
+ ...
+ Alien::Base::ModuleBuild->new(
+   ...
+   alien_extra_site_config => {
+     # CFLAGS is usually specified by A::B::MB
+     CFLAGS => '-DFOO=1',
+     # BAR usually is not.
+     BAR => 'baz',
+   },
+   ...
+ );
+ ...
+
+And the actual value for CFLAGS in the C<config.site> might have values like this:
+
+ CFLAGS=-O3 -g -DFOO=1
+ BAR=baz
+
 =item alien_ffi_name
 
 [version 0.007]
