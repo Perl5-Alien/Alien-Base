@@ -4,6 +4,8 @@ use warnings;
 use Test::More;
 
 use File::chdir;
+# make sure that t/lib with the full path is in @INC
+use lib do { local $CWD = 't/lib' };
 local $CWD = 't';
 
 require RepositoryTest;

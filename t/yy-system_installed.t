@@ -70,7 +70,8 @@ $builder->depends_on('build');
   local $CWD;
   push @CWD, qw/blib lib/;
 
-  require MyTest;
+  use lib '.';
+  require './MyTest.pm';
   my $alien = MyTest->new;
 
   isa_ok($alien, 'MyTest');
