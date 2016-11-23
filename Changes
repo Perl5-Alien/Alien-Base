@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.030_01 Wed Nov 23, 2016
+  - Fix test suite to handle it when . is not in @INC
+
 0.030  Mon Oct 31, 2016
   - Production release identical to 0.029_01 release
 
