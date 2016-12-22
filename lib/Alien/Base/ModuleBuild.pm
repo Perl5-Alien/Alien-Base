@@ -388,6 +388,11 @@ sub ACTION_alien_code {
     local $CWD = $self->alien_temp_dir;
 
     my $file = $cabinet->files->[0];
+    
+    unless (defined $file) {
+      die "no files found in repository";
+    }
+    
     $version = $file->version;
     $self->config_data( alien_version => $version ); # Temporary setting, may be overridden later
 
