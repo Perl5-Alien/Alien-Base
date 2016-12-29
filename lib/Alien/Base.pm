@@ -441,9 +441,7 @@ sub split_flags_windows {
  my($dll) = Alien::MyLibrary->dynamic_libs;
 
 Returns a list of the dynamic library or shared object files for the
-alien software.  Currently this only works for when C<install_type> is
-C<share> and C<alien_isolate_dynamic> is used (See
-L<Alien::Base::ModuleBuild::API#CONSTRUCTOR> for all build arguments).
+alien software.
 
 =cut
 
