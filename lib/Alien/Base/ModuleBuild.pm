@@ -1384,7 +1384,7 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2012-2015 by Joel Berger
+Copyright (C) 2012-2017 by Joel Berger
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
