@@ -496,6 +496,12 @@ a directory under C<dist_dir> named C<bin> if it exists.  You may wish
 to override the default behavior if you have executables or scripts that
 get installed into non-standard locations.
 
+Example usage:
+
+ use Env qw( @PATH );
+ 
+ unshft @PATH, Alien::MyLibrary->bin_dir;
+
 =cut
 
 sub bin_dir {
