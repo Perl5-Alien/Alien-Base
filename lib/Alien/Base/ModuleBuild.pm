@@ -742,7 +742,7 @@ sub alien_do_system {
     }
     
     # remove anything already in PATH
-    delete $path{$_} for @PATH;
+    delete $path{$_} for grep { defined $_ } @PATH;
     # add anything else to start of PATH
     unshift @PATH, sort keys %path;
 
