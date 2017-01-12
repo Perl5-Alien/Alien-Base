@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+0.031 Thu Jan 12, 2017
+  - Fix bug on Windows, Solaris, and possibly other operating systems (wbraswell gh#171)
+    Avoid error "Use of uninitialized value $_ in delete at Alien/Base/ModuleBuild.pm line 740."
+
 0.030_01 Wed Nov 23, 2016
   - Fix test suite to handle it when . is not in @INC
 
@@ -16,6 +20,7 @@ Revision history for Perl module Alien::Base.
 0.029  Mon Mar 14, 2016
   - Production release identical to 0.028_01 release
   - This is the "Happy Captain Picard Day" Release.
+    NOTE: Captain Picard Day is June 16, Pi Day is March 14 (wbraswell)
 
 0.028_01
   - Fixed bug where a colon (:) and equal sign (=) can confuse pkg-config
@@ -30,7 +35,7 @@ Revision history for Perl module Alien::Base.
   - Fixed bug where missing trailing slash when used with exact_filename
     would cause a failure (plicease gh#161, gh162)
   - Documentation fix in FAQ (plicease gh#159,gh#160)
-  - Added compatability for Alien::Builder (pliceasee gh#158, see also gh#157)
+  - Added compatability for Alien::Builder (plicease gh#158, see also gh#157)
 
 0.027_02  Sat Feb 27, 2016
   - Fix bug where default ffi_name was incorrectly computed

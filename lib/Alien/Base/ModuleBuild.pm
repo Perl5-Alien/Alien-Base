@@ -3,7 +3,7 @@ package Alien::Base::ModuleBuild;
 use strict;
 use warnings;
 
-our $VERSION = '0.030_01';
+our $VERSION = '0.031_000';
 $VERSION = eval $VERSION;
 
 use parent 'Module::Build';
@@ -742,7 +742,16 @@ sub alien_do_system {
     }
     
     # remove anything already in PATH
-    delete $path{$_} for @PATH;
+    # WBRASWELL 20170112 2017.012: Avoid error "Use of uninitialized value $_ in delete at Alien/Base/ModuleBuild.pm line 740."
+#    delete $path{$_} for @PATH;  # original line, deprecated
+    foreach my $path_entry (@PATH) {
+        if ((defined $path_entry) and
+            ($path_entry ne q{}) and
+            (exists $path{$path_entry})) {
+            delete $path{$path_entry};
+        }
+    }
+
     # add anything else to start of PATH
     unshift @PATH, sort keys %path;
 
