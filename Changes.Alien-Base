@@ -13,11 +13,11 @@ Revision history for Perl module Alien::Base.
   - Added interface for overriding config.site variables
     see alien_extra_site_config
 
-0.029  Mon Mar 14, 2016
+0.029  Thu Jun 16, 2016
   - Production release identical to 0.028_01 release
   - This is the "Happy Captain Picard Day" Release.
 
-0.028_01
+0.028_01  Tue Jun 14, 2016
   - Fixed bug where a colon (:) and equal sign (=) can confuse pkg-config
     parser (dakkar++ gh#165)
 
