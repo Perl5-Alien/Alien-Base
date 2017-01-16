@@ -4,11 +4,8 @@ install:
   - curl https://perl5-alien.github.io/static/travis/install-system-dontpanic.sh | bash -
   - cpanm -n --installdeps .
 
-  # latest Pgex does not work on 5.8
-  - cpanm https://cpan.metacpan.org/authors/id/I/IN/INGY/Pegex-0.61.tar.gz
-
   # for t/inline*.t tests
-  - cpanm -n Inline::C Inline::CPP
+  - ./travis/min-perl.pl 5.010 cpanm -n Inline::C Inline::CPP
 
   # for tests against Acme::Ford::Prefect::FFI
   - env PERL_ALT_INSTALL=OVERWRITE cpanm Alt::Alien::FFI::System
