@@ -350,10 +350,146 @@ identical environment used by the build process in order to troubleshoot the bui
 
  % source _alien/env.sh
 
+=head2 Can/Should I write a tool oriented Alien module using C<Alien::Base> that provides executables instead of a library?
+
+Certainly.  The original intent was to provide libraries, but tools are also quite doable using the 
+C<Alien::Base> toolset.  A simple minded example of this which is fairly easy to replicate is L<Alien::m4>.
+
+In general, this means specifying a subclass in your C<Build.PL> and bundling it in your distribution C<inc> directory.
+
+C<Build.PL>:
+
+ ...
+ use lib 'inc';
+ use My::ModuleBuild;
+ 
+ My::ModuleBuild->new(
+   ...
+ )->create_build_script;
+
+C<inc/My/ModuleBuild.pm>:
+
+ package My::ModuleBuild;
+ 
+ use strict;
+ use warnings;
+ use parent 'Alien::Base::ModuleBuild';
+ use Capture::Tiny qw( capture );
+ 
+ sub alien_check_installed_version
+ {
+   # see Alien::Base::ModuleBuild#alien_check_installed_version for details
+   
+   my($self) = @_;
+   my($stdout, $stderr) = capture { system 'mytool', '--version' };
+   
+   # return empty list if the tool is unavailable on the system,
+   # or unacceptable.
+   return if $! || ...;
+
+   # parse from stdout or stderr
+   my $version = ...;
+   return $version;
+ }
+ 
+ sub alien_check_built_version
+ {
+   # see Alien::Base::ModuleBuild#alien_check_built_version for details
+   
+   # return empty list if the tool version cannot be found, or if it
+   # is unacceptable.  Note that this will cause a failure, so "unknown"
+   # may be reasonable if the tool version cannot be determined.
+   return if ...;
+   
+   # determine from the tool itself, or the current directory.
+   my $version = ...;
+   return $version;
+ }
+ 
+ 1;
+
+As usual your C<Alien::MyTool> class will simply be a subclass of L<Alien::Base>.
+If you tool is installed in a C<bin> directory, you are done, the default C<bin_dir>
+implementation should work for you.  Otherwise you may need to provide an alternate
+implementation:
+
+ package Alien::MyTool;
+ 
+ use strict;
+ use warnings;
+ use parent 'Alien::Base';
+ use File::Spec;
+ 
+ sub bin_dir
+ {
+   # see Alien::Base#bin_dir for details
+   # You only need to override the default implementation if your tool
+   # does not install into the standard "bin" directory.
+
+   my($class) = @_;
+   
+   # normally for system installs the tool should already be in your
+   # PATH, so return an empty list.
+   return if $class->install_type eq 'system';
+   
+   # install_type = share
+   my $dist_dir = $class->dist_dir;
+   return ("$dist_dir/some/bin", "$dist_dir/some/other/bin");
+ }
+ 
+ 1;
+
+Now once your tool based Alien is installed you can use the C<bin_dir> method to
+update the C<PATH> as necessary:
+
+ use Alien::MyTool;
+ use Env qw( @PATH );
+ 
+ unshift @PATH, Alien::MyTool->bin_dir;
+ system 'mytool';
+
+=back
+ 
 =head2 How do I use C<Alien::Base> from C<Dist::Zilla>
 
 For creating L<Alien::Base> based dists from L<Dist::Zilla> you can use the plugin 
 L<Dist::Zilla::Plugin::Alien>.
+
+=head2 How do I check the built version if my library doesn't provide a C<.pc> file.
+
+The default implementation of C<alien_check_built_version> uses several heuristics,
+but leans heavily on C<pkg-config> style C<.pc> files, so if your library or tool
+does not provide a C<.pc>, the version may not be detected and your build may fail.
+
+A lot of libraries are bundled as tarballs with the version in the directory name
+that they are extracted into, and the current directory when C<alien_check_built_version>
+is called is the build root, so you can use C<File::chdir> as an easy way to determine
+the version number:
+
+ package My::ModuleBuild;
+ 
+ use strict;
+ use warnings;
+ use parent 'Alien::Base::ModuleBuild';
+ use File::chdir; # provides @CWD
+ 
+ sub alien_check_built_version
+ {
+   my $dir_name = $CWD[-1];
+   
+   if($dir_name =~ /^libfoo-([0-9\.]+)$/) {
+     return $1;
+   } else {
+     # Note that this will trigger a build failure
+     return;
+   }
+ }
+ 
+ 1;
+
+Using L<File::chdir> and C<@CWD> is a common idiom in L<Alien::Base>, because L<File::chdir>
+is already a dependency of L<Alien::Base>.  For packages that do not provide a version number
+in the extracted directory, you may require some creativity.
 
 =head2 I have question not listed here!
 
