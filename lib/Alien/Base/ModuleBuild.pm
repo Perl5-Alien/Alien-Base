@@ -1258,6 +1258,8 @@ build step of your distribution.  When properly configured it will
 
 =head2 alien_check_installed_version
 
+[version 0.001]
+
  my $version = $abmb->alien_check_installed_version;
 
 This function determines if the library is already installed as part of
@@ -1270,11 +1272,23 @@ building does not use C<pkg-config>.
 
 =head2 alien_check_built_version
 
+[version 0.006]
+
  my $version = $amb->alien_check_built_version;
 
 This function determines the version of the library after it has been
 built from source.  This function only gets called if the operating
 system version can not be found and the package is successfully built.
+The version is returned on success.  If the version can't be detected
+then it should return empty list.  Note that failing to detect a version
+is considered a failure and the corresponding C<./Build> action will
+fail!
+
+Any string is valid as a version as far as L<Alien::Base> is concerned.
+The most useful value would be a number or dotted decimal that most
+software developers recognize and that software tools can differentiate.
+In some cases packages will not have a clear version number, in which
+case the string C<unknown> would be a reasonable choice.
 
 The default implementation relies on C<pkg-config>, and other heuristics,
 but you will probably want to override this with your own implementation
@@ -1292,6 +1306,8 @@ provide an implementation for this method.
 
 =head2 alien_extract_archive
 
+[version 0.024]
+
   my $dir = $amb->alien_extract_archive($filename);
 
 This function unpacks the given archive and returns the directory
@@ -1303,6 +1319,8 @@ archives requiring some special treatment you may want to override
 this method.
 
 =head2 alien_do_system
+
+[version 0.024]
 
   my %result = $amb->alien_do_system($cmd)
 
