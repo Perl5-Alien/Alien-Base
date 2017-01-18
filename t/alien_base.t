@@ -17,6 +17,8 @@ subtest 'AB::MB sys install' => sub {
   my $cflags = Alien::Foo1->cflags;
   my $libs   = Alien::Foo1->libs;
 
+  $libs =~ s{^\s+}{};
+
   is $cflags, '-DFOO=stuff', "cflags: $cflags";
   is $libs,   '-lfoo1', "libs: $libs";
 };
@@ -57,6 +59,8 @@ subtest 'A::Builder sys install' => sub {
 
   my $cflags = Alien::Bar1->cflags;
   my $libs   = Alien::Bar1->libs;
+
+  $libs =~ s{^\s+}{};
 
   is $cflags, '-DFOO=stuff', "cflags: $cflags";
   is $libs,   '-lbar1', "libs: $libs";
