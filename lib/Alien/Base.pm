@@ -233,6 +233,22 @@ sub libs {
   return $self->_keyword('Libs', @_);
 }
 
+=head2 version
+
+ my $version = Alien::MyLibrary->version;
+
+Returns the version of the Alienized library or tool that was
+determined at install time.
+
+=cut
+
+sub version {
+  my $self = shift;
+  my $version = $self->config('version');
+  chomp $version;
+  return $version;
+}
+
 =head2 install_type
 
  my $install_type = Alien::MyLibrary->install_type;

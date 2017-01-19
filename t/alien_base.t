@@ -14,24 +14,28 @@ subtest 'AB::MB sys install' => sub {
 
   require_ok 'Alien::Foo1';
 
-  my $cflags = Alien::Foo1->cflags;
-  my $libs   = Alien::Foo1->libs;
+  my $cflags  = Alien::Foo1->cflags;
+  my $libs    = Alien::Foo1->libs;
+  my $version = Alien::Foo1->version;
 
   $libs =~ s{^\s+}{};
 
   is $cflags, '-DFOO=stuff', "cflags: $cflags";
   is $libs,   '-lfoo1', "libs: $libs";
+  is $version, '3.99999', "version: $version";
 };
 
 subtest 'AB::MB share install' => sub {
 
   require_ok 'Alien::Foo2';
 
-  my $cflags = Alien::Foo2->cflags;
-  my $libs   = Alien::Foo2->libs;
+  my $cflags  = Alien::Foo2->cflags;
+  my $libs    = Alien::Foo2->libs;
+  my $version = Alien::Foo2->version;
     
-  ok $cflags, "cflags: $cflags";
-  ok $libs,   "libs:   $libs";
+  ok $cflags,  "cflags: $cflags";
+  ok $libs,    "libs:   $libs";
+  is $version, '3.2.1', "version: $version";
 
   if($cflags =~ /-I(.*)$/)
   {
