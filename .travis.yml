@@ -58,7 +58,7 @@ script:
   - ./travis/install-perl.sh Acme::Alien::DontPanic
   - ./travis/install-perl.sh Acme::Ford::Prefect
   - ./travis/install-perl.sh Acme::Ford::Prefect::FFI
-  - ./travis/install-perl.sh Alien::Libbz2
+  #- ./travis/install-perl.sh Alien::Libbz2
   
   # verify still works with optional modules
   - ./Build test verbose=1
