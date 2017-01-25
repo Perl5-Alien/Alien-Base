@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.030_02 2017-01-25 06:25:26 -0500
   - Added a version method to Alien::Base.
   - Improved diagnostic when no files can be found on an attempted share install
   - A number of documentation improvements, as well as several new FAQs
