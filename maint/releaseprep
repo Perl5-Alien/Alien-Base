@@ -1,0 +1,43 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use autodie qw( :all );
+use App::RewriteVersion;
+
+my $version = shift @ARGV;
+my $time = `date +'%F %T %z'`;
+chomp $time;
+
+if($version)
+{
+  # update the version number in all modules
+  {
+    my $rewrite = App::RewriteVersion->new;
+    $rewrite->allow_decimal_underscore(1);
+    $rewrite->verbose(1);
+    $rewrite->rewrite_versions($version);
+  }
+  
+  # update the Changes file
+  {
+    my @lines;
+    my $fh;
+    my $first = 1;
+    open $fh, '<', 'Changes'; 
+    while(my $line = <$fh>)
+    {
+      if($first && $line =~ /^\s+-/)
+      {
+        push @lines, "$version $time\n";
+        $first = 0;
+      }
+      push @lines, $line;
+    }
+    close $fh;
+    open $fh, '>', 'Changes';
+    print $fh $_ for @lines;
+    close $fh;
+  }
+}
+
