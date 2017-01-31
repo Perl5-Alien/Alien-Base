@@ -203,6 +203,13 @@ sub new {
       }
       $self->_add_prereq( 'build_requires', $tool, $version );
     }
+
+    if($args{alien_repository}->{protocol} eq 'https')
+    {
+      $self->_add_prereq( 'build_requires', 'IO::Socket::SSL', '1.56' );
+      $self->_add_prereq( 'build_requires', 'Net::SSLeay',     '1.49' );
+    }
+
   }
 
 
