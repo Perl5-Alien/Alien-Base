@@ -584,7 +584,17 @@ sub alien_create_repositories {
   if (ref $repo_specs eq 'HASH') {
     $repo_specs = [ $repo_specs ];
   }
-  
+
+  my $module_env_part = uc $self->module_name;
+  $module_env_part =~ s/^ALIEN:://;
+  $module_env_part =~ s/::/_/g;
+  my $env_prefix = 'ALIEN_'.$module_env_part.'_REPO_';
+
+  # Catch e.g. 'ALIEN_MYMODULE_REPO_HTTP_HOST' variables to override repo config
+  my @env_overrides =
+    grep { index($_, $env_prefix) == 0 }
+    keys %ENV;
+
   unless(@$repo_specs)
   {
     print STDERR "If you are the author of this Alien dist, you need to provide at least\n";
@@ -604,11 +614,20 @@ sub alien_create_repositories {
     $repo->{platform} = 'src' unless defined $repo->{platform};
     my $protocol = $repo->{protocol} || 'default';
 
+    foreach my $var (@env_overrides) {
+        my $var_tail = lc substr($var, length($env_prefix));
+        my ($var_protocol, $var_key) = split /_/, $var_tail, 2;
+
+        if ($repo->{protocol} eq $var_protocol) {
+            $repo->{$var_key} = $ENV{$var};
+        }
+    }
+
     push @repos, $self->alien_repository_class($protocol)->new( $repo );
   }
 
   # check validation, including c compiler for src type
-  @repos = 
+  @repos =
     grep { $self->alien_validate_repo($_) }
     @repos;
 
