@@ -635,6 +635,33 @@ sub Inline {
 __END__
 __POD__
 
+=head1 ENVIRONMENT
+
+=over 4
+
+=item B<ALIEN_VERBOSE>
+
+Enables verbose output from L<M::B::do_system|Module::Build#do_system>.
+
+=item B<ALIEN_FORCE>
+
+Skips checking for an installed version and forces reinstalling the Alien target.
+
+=item B<ALIEN_INSTALL_TYPE>
+
+Set to 'share' or 'system' to override the install type.
+
+=item B<ALIEN_ARCH>
+
+Set to a true value to install to an arch-specific directory.
+
+=item B<ALIEN_${MODULENAME}_REPO_${PROTOCOL}_${KEY}>
+
+Overrides $KEY in the given module's repository configuration matching $PROTOCOL.
+For example, C<ALIEN_OPENSSL_REPO_FTP_HOST=ftp.example.com>.
+
+=back
+
 =head1 SUPPORT AND CONTRIBUTING
 
 First check the L<Alien::Base::FAQ> for questions that have already been answered.
