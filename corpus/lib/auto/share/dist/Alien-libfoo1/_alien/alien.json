@@ -1,0 +1,17 @@
+{
+   "libs" : "-lfoo ",
+   "install_type" : "system",
+   "version" : "1.2.3",
+   "legacy" : {
+      "finished_installing" : 1,
+      "name" : "foo",
+      "version" : "1.2.3",
+      "original_prefix" : "/foo/bar/baz/auto/share/dist/Alien-libfoo1",
+      "install_type" : "system"
+   },
+   "cflags_static" : "-DFOO=1 -DFOO_STATIC=1 ",
+   "cflags" : "-DFOO=1 ",
+   "libs_static" : "-lfoo -lbar -lbaz ",
+   "prefix" : "/foo/bar/baz/auto/share/dist/Alien-libfoo1",
+   "arbitrary" : "one"
+}
