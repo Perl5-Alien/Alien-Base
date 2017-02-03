@@ -3,13 +3,9 @@ package Alien::Base;
 use strict;
 use warnings;
 
-use Alien::Base::PkgConfig;
-
 our $VERSION = '0.032';
 
 use Carp;
-use DynaLoader ();
-
 use File::ShareDir ();
 use File::Spec;
 use Scalar::Util qw/blessed/;
@@ -114,7 +110,11 @@ This is the documentation for the L<Alien::Base> module itself. To learn more ab
 sub import {
   my $class = shift;
 
+  return if $class->runtime_prop;
+
   return if $class->install_type('system');
+
+  require DynaLoader;
 
   # Sanity check in order to ensure that dist_dir can be found.
   # This will throw an exception otherwise.  
@@ -178,7 +178,6 @@ sub dist_dir {
   my $dist = blessed $class || $class;
   $dist =~ s/::/-/g;
 
-
   my $dist_dir = 
     $class->config('finished_installing') 
       ? File::ShareDir::dist_dir($dist) 
@@ -191,6 +190,30 @@ sub dist_dir {
 }
 
 sub new { return bless {}, $_[0] }
+
+sub _flags
+{
+  my($class, $key) = @_;
+  
+  my $config = $class->runtime_prop;
+  my $flags = $config->{$key};
+
+  my $prefix = $config->{prefix};
+  $prefix =~ s{\\}{/}g if $^O =~ /^(MSWin32|msys)$/;
+  my $distdir = $config->{distdir};
+  $distdir =~ s{\\}{/}g if $^O =~ /^(MSWin32|msys)$/;
+  
+  if($prefix ne $distdir)
+  {
+    $flags = join ' ', map { 
+      s/^(-I|-L|-LIBPATH:)?\Q$prefix\E/$1$distdir/;
+      s/(\s)/\\$1/g;
+      $_;
+    } $class->split_flags($flags);
+  }
+  
+  $flags;
+}
 
 =head2 cflags
 
@@ -208,8 +231,13 @@ the Perl core L<Text::ParseWords> module.
 =cut
 
 sub cflags {
-  my $self = shift;
-  return $self->_keyword('Cflags', @_);
+  my $class = shift;
+  return $class->runtime_prop ? $class->_flags('cflags') : $class->_pkgconfig_keyword('Cflags', 'static');
+}
+
+sub cflags_static {
+  my $class = shift;
+  return $class->runtime_prop ? $class->_flags('cflags_static') : $class->_pkgconfig_keyword('Cflags');
 }
 
 =head2 libs
@@ -228,8 +256,13 @@ the Perl core L<Text::ParseWords> module.
 =cut
 
 sub libs {
-  my $self = shift;
-  return $self->_keyword('Libs', @_);
+  my $class = shift;
+  return $class->runtime_prop ? $class->_flags('libs') : $class->_pkgconfig_keyword('Libs');
+}
+
+sub libs_static {
+  my $class = shift;
+  return $class->runtime_prop ? $class->_flags('libs_static') : $class->_pkgconfig_keyword('Libs', 'static');
 }
 
 =head2 version
@@ -277,14 +310,16 @@ sub install_type {
   return @_ ? $type eq $_[0] : $type;
 }
 
-sub _keyword {
+sub _pkgconfig_keyword {
   my $self = shift;
   my $keyword = shift;
+  my $static = shift;
 
   # use pkg-config if installed system-wide
   if ($self->install_type('system')) {
     my $name = $self->config('name');
-    my $command = Alien::Base::PkgConfig->pkg_config_command . " --\L$keyword\E $name";
+    require Alien::Base::PkgConfig;
+    my $command = Alien::Base::PkgConfig->pkg_config_command . " @{[ $static ? '--static' : '' ]} --\L$keyword\E $name";
 
     $! = 0;
     chomp ( my $pcdata = capture_merged { system( $command ) } );
@@ -306,7 +341,7 @@ sub _keyword {
 
   # use parsed info from build .pc file
   my $dist_dir = $self->dist_dir;
-  my @pc = $self->pkgconfig(@_);
+  my @pc = $self->_pkgconfig(@_);
   my @strings =
     grep defined,
     map { $_->keyword($keyword, 
@@ -329,7 +364,7 @@ sub _keyword {
   return join( ' ', @strings );
 }
 
-sub pkgconfig {
+sub _pkgconfig {
   my $self = shift;
   my %all = %{ $self->config('pkgconfig') };
 
@@ -337,6 +372,7 @@ sub pkgconfig {
   require File::Find;
   my $wanted = sub {
     return if ( -d or not /\.pc$/ );
+    require Alien::Base::PkgConfig;
     my $pkg = Alien::Base::PkgConfig->new($_);
     $all{$pkg->{package}} = $pkg;
   };
@@ -377,49 +413,17 @@ sub config {
   my $class = shift;
   $class = blessed $class || $class;
 
-  if(my $alien_builder_data = $class->_alien_builder_data)
+  if(my $ab_config = $class->runtime_prop)
   {
-    return $alien_builder_data->{config}->{$_[0]};
+    my $key = shift;
+    return $ab_config->{legacy}->{$key};
   }
-  
+
   my $config = $class . '::ConfigData';
   eval "require $config";
   warn $@ if $@;
 
   return $config->config(@_);
-}
-
-sub Alien::Base::_alien_builder_data
-{
-  my($class) = @_;
-  
-  my $dist = $class;
-  $dist =~ s/::/-/g;
-  my $dir = eval { File::ShareDir::dist_dir($dist) };
-  return unless defined $dir && -d $dir;
-  my $filename = File::Spec->catfile($dir, 'alien_builder.json');
-  return unless -r $filename;
-
-  require JSON::PP;
-  open my $fh, '<', $filename;    
-  my $config = JSON::PP->new
-    ->filter_json_object(sub {
-      my($object) = @_;
-      my $class = delete $object->{'__CLASS__'};
-      return unless $class;
-      bless $object, $class;
-    })->decode(do { local $/; <$fh> });
-  close $fh;
-
-  # avoid re-reading on next call
-  if($class ne 'Alien::Base')
-  {
-    my $method = join '::', $class, '_alien_builder_data';
-    no strict 'refs';
-    *{$method} = sub { $config };
-  }
-
-  $config;
 }
 
 # helper method to split flags based on the OS
@@ -521,9 +525,18 @@ Example usage:
 
 sub bin_dir {
   my ($class) = @_;
-  return unless $class->install_type('share');
-  my $dir = File::Spec->catfile($class->dist_dir, 'bin');
-  -d $dir ? ($dir) : ();
+  if($class->install_type('system'))
+  {
+    my $prop = $class->runtime_prop;
+    return unless defined $prop;
+    return unless defined $prop->{system_bin_dir};
+    return ref $prop->{system_bin_dir} ? @{ $prop->{system_bin_dir} } : ($prop->{system_bin_dir});
+  }
+  else
+  {
+    my $dir = File::Spec->catfile($class->dist_dir, 'bin');
+    return -d $dir ? ($dir) : ();
+  }
 }
 
 =head2 alien_helper
@@ -628,6 +641,44 @@ sub Inline {
   }
   
   $config;
+}
+
+=head2 runtime_prop
+
+ my $hashref = Alien::MyLibrary->runtime_prop;
+
+Returns a hash reference of the runtime properties computed by L<Alien::Build> during its
+install process.  If the L<Alien::Base> based L<Alien> was not built using L<Alien::Build>,
+then this will return undef.
+
+=cut
+
+{
+  my %alien_build_config_cache;
+
+  sub runtime_prop
+  {
+    my($class) = @_;
+  
+    return $alien_build_config_cache{$class} if
+      exists $alien_build_config_cache{$class};
+  
+    $alien_build_config_cache{$class} ||= do {
+      my $dist = ref $class ? ref $class : $class;
+      $dist =~ s/::/-/g;
+      my $dist_dir = eval { File::ShareDir::dist_dir($dist) };
+      return if $@;
+      my $alien_json = File::Spec->catfile($dist_dir, '_alien', 'alien.json');
+      return unless -r $alien_json;
+      open my $fh, '<', $alien_json;
+      my $json = do { local $/; <$fh> };
+      close $fh;
+      require JSON::PP;
+      my $config = JSON::PP::decode_json($json);
+      $config->{distdir} = $dist_dir;
+      $config;
+    };
+  }
 }
 
 1;
