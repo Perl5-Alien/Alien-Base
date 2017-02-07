@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+  - Automatically add SSL modules as prereqs if we can tell with certainity that
+    we will need to use HTTP::Tiny with SSL (plicease gh#178)
+
 0.031 2017-01-28 08:11:06 -0500
   - Production release identical to 0.030_02 release
 
