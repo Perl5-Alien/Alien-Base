@@ -75,7 +75,7 @@
 \bAlien-Base-[\d\.\_]+
 
 # Avoid the temporary directories created by Alien::Base
-\b_alien/
+^\b_alien/
 \b_share/
 
 # Avoid the temporary directory created by Inline
