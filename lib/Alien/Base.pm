@@ -751,6 +751,8 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =item Kang-min Liu (劉康民, gugod)
 
+=item Nicholas Shipp (nshp)
+
 =back
 
 Thanks also to
