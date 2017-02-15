@@ -211,6 +211,7 @@ sub new {
 
     foreach my $repo (@repos)
     {
+      next unless defined $repo;
       if(($repo->{protocol}||'') eq 'https')
       {
         $self->_add_prereq( 'build_requires', 'IO::Socket::SSL', '1.56' );
