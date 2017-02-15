@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.034 2017-02-15 04:30:35 -0500
   - Fixed regression introduced in 0.032 which broke repos as array
     reference
 
