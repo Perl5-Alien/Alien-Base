@@ -5,7 +5,7 @@ use warnings;
 
 use Alien::Base::PkgConfig;
 
-our $VERSION = '0.032';
+our $VERSION = '0.034';
 
 use Carp;
 use DynaLoader ();
