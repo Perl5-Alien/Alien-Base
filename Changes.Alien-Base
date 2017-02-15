@@ -1,11 +1,11 @@
 Revision history for Perl module Alien::Base.
 
+0.035_01 2017-02-15 04:41:31 -0500
+  - Add support for Alien::Build (plicease #181)
+
 0.034 2017-02-15 04:30:35 -0500
   - Fixed regression introduced in 0.032 which broke repos as array
     reference
-
-0.033_01 2017-02-09 13:51:43 -0500
-  - Add support for Alien::Build (plicease #181)
 
 0.032 2017-02-09 13:36:07 -0500
   - Automatically add SSL modules as prereqs if we can tell with 
