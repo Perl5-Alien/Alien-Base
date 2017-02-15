@@ -204,10 +204,17 @@ sub new {
       $self->_add_prereq( 'build_requires', $tool, $version );
     }
 
-    if(($args{alien_repository}->{protocol}||'') eq 'https')
+    my @repos = ref $args{alien_repository} eq 'ARRAY'
+      ? @{ $args{alien_repository} }
+      : ( $args{alien_repository} );
+
+    foreach my $repo (@repos)
     {
-      $self->_add_prereq( 'build_requires', 'IO::Socket::SSL', '1.56' );
-      $self->_add_prereq( 'build_requires', 'Net::SSLeay',     '1.49' );
+      if(($repo->{protocol}||'') eq 'https')
+      {
+        $self->_add_prereq( 'build_requires', 'IO::Socket::SSL', '1.56' );
+        $self->_add_prereq( 'build_requires', 'Net::SSLeay',     '1.49' );
+      }
     }
 
   }

@@ -65,6 +65,21 @@ subtest 'http + ssl' => sub {
 
 };
 
+subtest 'http + ssl + list ref' => sub {
+
+  my $builder = builder(
+    alien_repository => [ {
+      protocol => 'https',
+      location => 'src',
+      c_compiler_required => 0,
+    } ],
+  );
+
+  is $builder->build_requires->{'IO::Socket::SSL'},     '1.56', 'SSL ~ IO::Socket::SSL 1.56 or better';
+  is $builder->build_requires->{'Net::SSLeay'},         '1.49', 'SSL ~ Net::SSLeay 1.49 or better';
+
+};
+
 subtest 'default temp and share' => sub {
   rmtree [qw/_alien _share/], 0, 1;
 
