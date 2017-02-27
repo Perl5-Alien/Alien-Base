@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.036 2017-02-27 03:28:36 -0500
+  -Production release identical to 0.035_01 release
+
 0.035_01 2017-02-15 04:41:31 -0500
   - Add support for Alien::Build (plicease #181)
 
