@@ -232,12 +232,12 @@ the Perl core L<Text::ParseWords> module.
 
 sub cflags {
   my $class = shift;
-  return $class->runtime_prop ? $class->_flags('cflags') : $class->_pkgconfig_keyword('Cflags', 'static');
+  return $class->runtime_prop ? $class->_flags('cflags') : $class->_pkgconfig_keyword('Cflags');
 }
 
 sub cflags_static {
   my $class = shift;
-  return $class->runtime_prop ? $class->_flags('cflags_static') : $class->_pkgconfig_keyword('Cflags');
+  return $class->runtime_prop ? $class->_flags('cflags_static') : $class->_pkgconfig_keyword('Cflags', 'static');
 }
 
 =head2 libs
