@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.037_01 2017-03-03 05:29:54 +1100
   - cflags and cflags_static were flipped in 0.035_01 is now fixed
     (should fix gh#183)
 
