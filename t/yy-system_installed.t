@@ -36,6 +36,7 @@ my $i = 1;
 while (1) {
 
   $lib = shift @installed;
+  last unless defined $lib;
 
   chomp( $cflags = `$pkg_config --cflags $lib` );
   chomp( $libs = `$pkg_config --libs $lib` );
@@ -47,15 +48,18 @@ while (1) {
     last;
   } 
 
-  if ($i++ == 3) {
-    plan skip_all => "Could not find a suitable library for testing";
-    last;
-  }
+  last if $i++ == 3;
 
   $lib    = undef;
   $cflags = undef;
   $libs   = undef;
 }
+
+plan skip_all => "Could not find a suitable library for testing" unless defined $lib;
+
+note "lib    = $lib\n";
+note "cflags = $cflags\n";
+note "libs   = $libs\n";
 
 my $builder = Alien::Base::ModuleBuild->new( 
   module_name => 'MyTest', 
@@ -76,6 +80,9 @@ $builder->depends_on('build');
 
   isa_ok($alien, 'MyTest');
   isa_ok($alien, 'Alien::Base');
+
+  note "alien->cflags = ", $alien->cflags;
+  note "alien->libs   = ", $alien->libs;
 
   is($alien->cflags, $cflags, "get cflags from system-installed library");
   is($alien->libs  , $libs  , "get libs from system-installed library"  );
