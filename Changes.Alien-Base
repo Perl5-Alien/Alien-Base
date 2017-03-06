@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+0.038 2017-03-06 00:16:18 -0500
+  - Production release identical to 0.035_01 release
+
 0.037_02 2017-03-05 03:20:00 -0500
   - Additional fixex for t/yy-system_installed.t
 
