@@ -2,10 +2,11 @@ language: perl
 
 install:
   - curl https://perl5-alien.github.io/static/travis/install-system-dontpanic.sh | bash -
+  - ./maint/install-ab-mb.sh
   - cpanm -n --installdeps .
 
   # for t/inline*.t tests
-  - ./travis/min-perl.pl 5.010 cpanm -n Inline::C Inline::CPP
+  - ./maint/min-perl.pl 5.010 cpanm -n Inline::C Inline::CPP
 
   # for tests against Acme::Ford::Prefect::FFI
   - env PERL_ALT_INSTALL=OVERWRITE cpanm Alt::Alien::FFI::System
@@ -17,7 +18,7 @@ install:
   # for Acme modules
   - cpanm -n Test::Alien
   
-  # for ./travis/test-*
+  # for ./maint/test-*
   - cpanm -n local::lib
   
   # for upgrade tests
@@ -43,22 +44,22 @@ script:
 
   # test that installing to a destdir and then moving that dir
   # to the real root works:
-  - ./travis/test-destdir.sh
+  - ./maint/test-destdir.sh
 
   # test the regression that happened between 0.019 and 0.020 caused
   # by changes to the format of the data in ConfigData.pm
-  - bash -x ./travis/test-upgrade.sh '' "d2d6e3782bfdbec14db2c78532122055d2b22401" '' "0.019"
+  - bash -x ./maint/test-upgrade.sh '' "d2d6e3782bfdbec14db2c78532122055d2b22401" '' "0.019"
   
   # test that we can move an Alien dist
-  - ./travis/install-perl.sh Acme::Alien::DontPanic /tmp/original
+  - ./maint/install-perl.sh Acme::Alien::DontPanic /tmp/original
   - mv /tmp/original /tmp/moved
-  - ./travis/install-perl.sh Acme::Ford::Prefect    /tmp/moved
+  - ./maint/install-perl.sh Acme::Ford::Prefect    /tmp/moved
   
   # test more normal installs
-  - ./travis/install-perl.sh Acme::Alien::DontPanic
-  - ./travis/install-perl.sh Acme::Ford::Prefect
-  - ./travis/install-perl.sh Acme::Ford::Prefect::FFI
-  #- ./travis/install-perl.sh Alien::Libbz2
+  - ./maint/install-perl.sh Acme::Alien::DontPanic
+  - ./maint/install-perl.sh Acme::Ford::Prefect
+  - ./maint/install-perl.sh Acme::Ford::Prefect::FFI
+  #- ./maint/install-perl.sh Alien::Libbz2
   
   # verify still works with optional modules
   - ./Build test verbose=1

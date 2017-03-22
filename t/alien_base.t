@@ -1,15 +1,16 @@
 use Test2::Bundle::Extended;
 use lib 'corpus/lib';
-use lib 't/alien_base/mb_share/lib';
-use lib 't/alien_base/mb_sys/lib';
 use Env qw( @PKG_CONFIG_PATH );
 use File::Glob qw( bsd_glob );
 use File::chdir;
 use File::Spec;
 
-unshift @PKG_CONFIG_PATH, File::Spec->rel2abs(File::Spec->catdir( qw( t alien_base pkgconfig )));
+unshift @PKG_CONFIG_PATH, File::Spec->rel2abs(File::Spec->catdir( qw( corpus pkgconfig )));
 
 subtest 'AB::MB sys install' => sub {
+
+  skip_all 'test requires Alien::Base::PkgConfig'
+    unless eval { require Alien::Base::PkgConfig; 1 };
 
   require Alien::Foo1;
 
@@ -25,6 +26,9 @@ subtest 'AB::MB sys install' => sub {
 };
 
 subtest 'AB::MB share install' => sub {
+
+  skip_all 'test requires Alien::Base::PkgConfig'
+    unless eval { require Alien::Base::PkgConfig; 1 };
 
   require Alien::Foo2;
 
@@ -204,6 +208,32 @@ subtest 'Alien::Build share' => sub {
   is( -f File::Spec->catfile(Alien::libfoo2->bin_dir,'foo-config'), T(), 'has a foo-config');
   
   is( Alien::libfoo2->runtime_prop->{arbitrary}, 'two', 'runtime_prop' );
+
+};
+
+subtest 'build flags' => sub {
+
+  my %unix_flags = (
+    q{ -L/a/b/c -lz -L/a/b/c } => [ "-L/a/b/c", "-lz", "-L/a/b/c" ],
+  );
+
+  my %win_flags = (
+    q{ -L/a/b/c -lz -L/a/b/c } => [ "-L/a/b/c", "-lz", "-L/a/b/c" ],
+    q{ -LC:/a/b/c -lz -L"C:/a/b c/d" } => [ "-LC:/a/b/c", "-lz", "-LC:/a/b c/d" ],
+    q{ -LC:\a\b\c -lz } => [ q{-LC:\a\b\c}, "-lz" ], 
+  );
+
+  subtest 'unix' => sub {
+    while ( my ($flag, $split) = each %unix_flags ) {
+      is( [ Alien::Base->split_flags_unix( $flag ) ], $split );
+    }
+  };
+
+  subtest 'windows' => sub {
+    while ( my ($flag, $split) = each %win_flags ) {
+      is( [ Alien::Base->split_flags_windows( $flag ) ], $split );
+    }
+  };
 
 };
 

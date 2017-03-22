@@ -2,6 +2,6 @@ package Alien::Foo2;
 
 use strict;
 use warnings;
-use parent qw( Alien::Base );
+use base qw( Alien::Base );
 
 1;

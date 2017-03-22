@@ -11,7 +11,6 @@ use File::Spec;
 use Scalar::Util qw/blessed/;
 use Capture::Tiny 0.17 qw/capture_merged/;
 use Text::ParseWords qw/shellwords/;
-use Perl::OSType qw/os_type/;
 
 =encoding UTF-8
 
@@ -100,6 +99,11 @@ You can even use it with L<Inline> (C and C++ languages are supported):
  ...
 
 =head1 DESCRIPTION
+
+B<NOTE>: L<Alien::Base::ModuleBuild> is no longer bundled with L<Alien::Base> and has been spun off into a separate distribution.
+L<Alien::Build::ModuleBuild> will be a prerequisite for L<Alien::Base> until October 1, 2017.  If you are using L<Alien::Base::ModuleBuild>
+you need to make sure it is declared as a C<configure_requires> in your C<Build.PL>.  You may want to also consider using L<Alien::Base> and
+L<alienfile> as a more modern alternative.
 
 L<Alien::Base> comprises base classes to help in the construction of C<Alien::> modules. Modules in the L<Alien> namespace are used to locate and install (if necessary) external libraries needed by other Perl modules.
 
@@ -429,8 +433,7 @@ sub config {
 # helper method to split flags based on the OS
 sub split_flags {
   my ($class, $line) = @_;
-  my $os = os_type();
-  if( $os eq 'Windows' ) {
+  if( $^O eq 'MSWin32' ) {
     $class->split_flags_windows($line);
   } else {
     # $os eq 'Unix'
@@ -754,7 +757,11 @@ request.
 
 =item * 
 
-L<Module::Build>
+L<Alien::Build>
+
+=item *
+
+L<alienfile>
 
 =item *
 

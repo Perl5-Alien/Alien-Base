@@ -16,34 +16,18 @@ my %build_args = (
     'Module::Build' => 0.36,
   },
   requires => {
-    'perl'             => '5.8.1',
-    'parent'           => 0,
-    'Module::Build'    => 0.36,
-    'Capture::Tiny'    => 0.17,
-    'File::chdir'      => 0.1005,
-    'Sort::Versions'   => 0,
-    'List::MoreUtils'  => 0,
-    'Perl::OSType'     => 0,
-    'URI'              => 0,
-    'File::ShareDir'   => 0,
-    'Archive::Extract' => 0,
-    'HTTP::Tiny'       => '0.044',
-    'Text::ParseWords' => '3.26',
-    'Shell::Guess'     => 0,
-    'Shell::Config::Generate' => 0,
-    'FFI::CheckLib'    => 0.11,
-    'JSON::PP'          => 0,
+    'perl'                      => '5.8.1',
+    'Capture::Tiny'             => 0.17,
+    'File::ShareDir'            => 0,
+    'Text::ParseWords'          => '3.26',
+    'FFI::CheckLib'             => 0.11,
+    'JSON::PP'                  => 0,
+    'Alien::Base::ModuleBuild' => '0.038',
   },
   test_requires => {
     'Test2::Suite'     => '0.000060',
     'Test::More'       => 0.94,
-    'Cwd'              => 0,
-    'FindBin'          => 0,
-    'File::Spec'       => 0,
-    'File::Temp'       => 0,
-  },
-  recommends => {
-    'HTML::LinkExtor' => 0,
+    'File::chdir'      => 0.1005,
   },
   meta_merge => {
     resources  => {
@@ -58,6 +42,11 @@ my %build_args = (
     },
   },
 );
+
+if($ENV{ALIEN_BASE_NO_ABMB})
+{
+  delete $build_args{requires}->{'Alien::Base::ModuleBuild'};
+}
 
 unless (`pkg-config --version` && $? == 0) {
   $build_args{'requires'}->{'PkgConfig'} = '0.07520';

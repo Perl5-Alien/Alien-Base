@@ -7,8 +7,9 @@ use List::Util qw/shuffle/;
 BEGIN { $ENV{ALIEN_FORCE} = 0; delete $ENV{ALIEN_INSTALL_TYPE} }
 
 use Test::More;
-use Alien::Base::ModuleBuild;
-use Alien::Base::PkgConfig;
+
+plan skip_all => 'Test requires Alien::Base::ModuleBuild and Alien::Base::PkgConfig'
+  unless eval { require Alien::Base::ModuleBuild; require Alien::Base::PkgConfig; 1 };
 
 # Since this is not a complete distribution, it complains about missing files/folders
 local $SIG{__WARN__} = sub { warn $_[0] unless $_[0] =~ /Can't (?:stat)|(?:find)/ };
@@ -16,7 +17,7 @@ local $SIG{__WARN__} = sub { warn $_[0] unless $_[0] =~ /Can't (?:stat)|(?:find)
 $ENV{ALIEN_BLIB} = 0;
 
 local $CWD;
-push @CWD, qw/t system_installed/;
+push @CWD, qw/ corpus system_installed/;
 
 my $pkg_config = Alien::Base::PkgConfig->pkg_config_command;
 

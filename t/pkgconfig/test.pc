@@ -1,9 +1,0 @@
-prefix=/home/test/path
-INTERNAL_VARIABLE=-lotherlib
-
-Name: TEST
-Description: My TEST Library
-Version: 1.01
-Libs: -L/home/test/path/lib -lsomelib ${INTERNAL_VARIABLE} -lm -lm
-Cflags: -Dfoo=bar -I/home/test/path/deeper/include
-Requires: lib1 >= 1.0.0 lib2 >= 1.2.3

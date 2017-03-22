@@ -2,8 +2,7 @@ package MyTest;
 
 use strict;
 use warnings;
-
-use parent 'Alien::Base';
+use base 'Alien::Base';
 
 1;
 
