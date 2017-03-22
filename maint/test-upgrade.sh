@@ -98,11 +98,15 @@ fi
 
 cd "$test_root/$name/$subdir"
 
-perl Build.PL
-
-./Build
-
-./Build test
+if [ -f Makefile.PL ]; then
+  perl Makefile.PL
+  make
+  make test
+else
+  perl Build.PL
+  ./Build
+  ./Build test
+fi
 
 echo "*use Alien::Base $ab_git_old_tag"
 cd "$test_root/Alien-Base"

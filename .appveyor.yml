@@ -10,7 +10,7 @@ install:
   - SET PERL_LOCAL_LIB_ROOT=C:/Perl5
   - SET PERL_MB_OPT=--install_base C:/Perl5
   - SET PERL_MM_OPT=INSTALL_BASE=C:/Perl5
-  - maint\install-ab-mb.bat
+  - ( cd \ ; maint\install-ab-mb.bat )
   - cpanm -n --installdeps .
   - cpanm -n Inline::C Inline::CPP
   - cpanm -n FFI::Platypus
@@ -20,10 +20,10 @@ install:
 build: off
 
 test_script:
-  - perl Build.PL
-  - Build
+  - perl Makefile.PL
+  - dmake
   - prove -bv t
-  - Build install
+  - dmake install
   - cpanm -v --reinstall Acme::Alien::DontPanic
   - cpanm -v --reinstall Acme::Ford::Prefect
   - cpanm -v --reinstall Acme::Ford::Prefect::FFI

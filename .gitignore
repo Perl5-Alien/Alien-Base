@@ -1,8 +1,3 @@
-/Build
-/Build.bat
-/MYMETA.*
-/META.*
-_build/
 /blib/
 *.swp
 .DS_Store
@@ -11,3 +6,6 @@ _build/
 /Alien-Base-*
 /_Inline
 *.bak
+/Makefile
+/MYMETA.*
+/pm_to_blib

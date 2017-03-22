@@ -37,10 +37,10 @@ perl:
 
 script:
   # basic test without anything optional installed
-  - perl Build.PL
-  - ./Build
-  - ./Build test verbose=1
-  - ./Build install
+  - perl Makefile.PL
+  - make
+  - make test TEST_VERBOSE=1
+  - make install
 
   # test that installing to a destdir and then moving that dir
   # to the real root works:
@@ -62,7 +62,7 @@ script:
   #- ./maint/install-perl.sh Alien::Libbz2
   
   # verify still works with optional modules
-  - ./Build test verbose=1
+  - make test TEST_VERBOSE=1
 
 env:
   global:
