@@ -1,5 +1,11 @@
 Revision history for Perl module Alien::Base.
 
+  - Spin off Alien::Base::ModuleBuild into the separate distribution
+    Alien-Base-ModuleBuild
+  - Alien::Base::ModuleBuild is a prerequisite, but will be removed
+    on October 1, 2017, so you need to update your Build.PL so that
+    Alien::Base::ModuleBuild is a configure requires.
+
 0.038 2017-03-06 00:16:18 -0500
   - Production release identical to 0.035_01 release
 
