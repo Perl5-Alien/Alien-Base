@@ -1,0 +1,25 @@
+=head1 NAME
+
+Alien::Base::FAQ - Frequently asked questions
+
+=head1 SYNOPSIS
+
+ % perldoc Alien::Build::Manual::FAQ
+ % perldoc Alien::Base::ModuleBuild::FAQ
+
+=head1 DESCRIPTION
+
+This used to answer FAQs regarding the only way to author an L<Alien::Build>
+distribution, which was with L<Aien::Base::ModuleBuild>.  You should now
+seriously consider using the newer more reliable method which is via
+L<Alien::Build> and L<alienfile>.
+
+=over 4
+
+=item L<Alien::Build::Manual::FAQ>
+
+=item L<Alien::Base::ModuleBuild::FAQ>
+
+=back
+
+=cut

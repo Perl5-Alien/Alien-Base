@@ -1,0 +1,24 @@
+=head1 NAME
+
+Alien::Base::Authoring - Authoring an Alien distribution using Alien::Base
+
+=head1 SYNOPSIS
+
+ % perldoc Alien::Build::Manual::AlienAuthor
+ % perldoc Alien::Base::ModuleBuild::Authoring
+
+=head1 DESCRIPTION
+
+This used to document the only way to author an L<Alien> distribution, which
+was with L<Aien::Base::ModuleBuild>.  You should now seriously consider using
+the newer more reliable method which is via L<Alien::Build> and L<alienfile>.
+
+=over 4
+
+=item L<Alien::Build::Manual::AlienAuthor>
+
+=item L<Alien::Base::ModuleBuild::Authoring>
+
+=back
+
+=cut
