@@ -29,8 +29,9 @@ Alien::Base - Base classes for Alien:: modules
 
  1;
 
-(For a synopsis of the C<Build.PL> that comes with your
-C<Alien::MyLibrary> see L<Alien::Base::ModuleBuild>)
+(for details on the C<Makefile.PL> or C<Build.PL> and L<alienfile>
+that should be bundled with your L<Alien::Base> subclass, please see
+L<Alien::Base::Authoring>).
 
 Then a C<MyLibrary::XS> can use C<Alien::MyLibrary> in its C<Build.PL>:
 
@@ -50,10 +51,11 @@ Or if you prefer L<ExtUtils::MakeMaker>, in its C<Makefile.PL>:
 
  use Alien::MyLibrary
  use ExtUtils::MakeMaker;
+ use Config;
  
  WriteMakefile(
    ...
-   CCFLAGS => Alien::MyLibrary->cflags,
+   CCFLAGS => Alien::MyLibrary->cflags . " $Config{ccflags}",
    LIBS   => ALien::MyLibrary->libs,
    ...
  );
@@ -410,6 +412,9 @@ Returns the configuration data as determined during the install
 of L<Alien::MyLibrary>.  For the appropriate config keys, see 
 L<Alien::Base::ModuleBuild::API#CONFIG-DATA>.
 
+This is not typically used by L<Alien::Base> and L<alienfile>,
+but a compatible interface will be provided.
+
 =cut
 
 # helper method to call Alien::MyLib::ConfigData->config(@_)
@@ -553,17 +558,13 @@ will be interpolated into the command before execution.  The default
 implementation returns an empty hash reference, and you are expected
 to override the method to create your own helpers.
 
-For compatability with the C<Alien::Base::ModuleBuild> attribute C<alien_helper>,
-helpers may also be specified as Perl strings that will be evaluated
-and executed at command time.  This is necessary because of limitations
-with C<Module::Build>, and you are strongly encouraged to use code
-references when defining helpers from an Alien module.
+For use with commands specified in and L<alienfile> or in your C<Build.Pl>
+when used with L<Alien::Base::ModuleBuild>.
 
 Helpers allow users of your Alien module to use platform or environment 
-determined logic to compute command names or arguments in 
-C<alien_build_commands> or C<alien_install_commands> in their C<Build.PL>.
-Helpers allow you to do this without making your Alien module a requirement
-when a build from source code is not necessary.
+determined logic to compute command names or arguments in your installer
+logic.  Helpers allow you to do this without making your Alien module a
+requirement when a build from source code is not necessary.
 
 As a concrete example, consider L<Alien::gmake>, which provides the 
 helper C<gmake>:
@@ -586,25 +587,29 @@ helper C<gmake>:
 
 Now consider L<Alien::nasm>.  C<nasm> requires GNU Make to build from 
 source code, but if the system C<nasm> package is installed we don't 
-need it.  From the C<Build.PL> of C<Alien::nasm>:
+need it.  From the L<alienfile> of C<Alien::nasm>:
 
- # Alien::nasm Build.PL
+ use alienfile;
+ 
+ plugin 'Probe::CommandLine' => (
+   command => 'nasm',
+   args    => ['-v'],
+   match   => qr/NASM version/,
+ );
+ 
+ share {
+   ...
+   plugin 'Extract' => 'tar.gz';
+   plugin 'Build::MSYS' => ();
+   
+   build [
+     'sh configure --prefix=%{alien.install.prefix}',
+     '%{gmake}',
+     '%{gmake} install',
+   ];
+ };
  
  ...
- 
- Alien::Build::ModuleBuild->new(
-   ...
-   alien_bin_requires => {
-     'Alien::gmake' => '0.05',  # helper introduced in 0.05
-   },
-   alien_build_commands => [
-     '%c --prefix=%s',
-     '%{gmake}',
-   ],
-   alien_install_commands => [
-     '%{gmake} install',
-   ],
-   ...
 
 =cut
 
@@ -688,33 +693,6 @@ then this will return undef.
 
 __END__
 __POD__
-
-=head1 ENVIRONMENT
-
-=over 4
-
-=item B<ALIEN_VERBOSE>
-
-Enables verbose output from L<M::B::do_system|Module::Build#do_system>.
-
-=item B<ALIEN_FORCE>
-
-Skips checking for an installed version and forces reinstalling the Alien target.
-
-=item B<ALIEN_INSTALL_TYPE>
-
-Set to 'share' or 'system' to override the install type.
-
-=item B<ALIEN_ARCH>
-
-Set to a true value to install to an arch-specific directory.
-
-=item B<ALIEN_${MODULENAME}_REPO_${PROTOCOL}_${KEY}>
-
-Overrides $KEY in the given module's repository configuration matching $PROTOCOL.
-For example, C<ALIEN_OPENSSL_REPO_FTP_HOST=ftp.example.com>.
-
-=back
 
 =head1 SUPPORT AND CONTRIBUTING
 
