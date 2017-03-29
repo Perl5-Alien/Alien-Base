@@ -4,10 +4,12 @@ use Config;
 use ExtUtils::MakeMaker;
 
 my %make_args = (
-  NAME     => 'Alien::Base',
-  DISTNAME => 'Alien-Base',
-  LICENSE  => 'perl',
-  AUTHOR   => [
+  NAME             => 'Alien::Base',
+  DISTNAME         => 'Alien-Base',
+  LICENSE          => 'perl',
+  MIN_PERL_VERSION => '5.008001',
+  VERSION_FROM     => 'lib/Alien/Base.pm',
+  AUTHOR           => [
     'Graham Ollis <plicease@cpan.org>',
     'Joel A. Berger <joel.a.berger@gmail.com>',
   ],
@@ -16,14 +18,13 @@ my %make_args = (
     'ExtUtils::MakeMaker' => 0,
   },
   PREREQ_PM => {
-    'perl'                      => '5.8.1',
     'Capture::Tiny'             => 0.17,
     'File::ShareDir'            => 0,
     'Text::ParseWords'          => '3.26',
     'FFI::CheckLib'             => 0.11,
     'JSON::PP'                  => 0,
     'Alien::Base::ModuleBuild'  => '0.038',
-  },  
+  },
   BUILD_REQUIRES => {},
   TEST_REQUIRES => {
     'Test2::Suite'              => '0.000060',
