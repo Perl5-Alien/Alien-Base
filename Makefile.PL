@@ -23,7 +23,7 @@ my %make_args = (
     'Text::ParseWords'          => '3.26',
     'FFI::CheckLib'             => 0.11,
     'JSON::PP'                  => 0,
-    'Alien::Base::ModuleBuild'  => '0.038',
+    'Alien::Base::ModuleBuild'  => '0.040',
   },
   BUILD_REQUIRES => {},
   TEST_REQUIRES => {
