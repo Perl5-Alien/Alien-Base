@@ -43,7 +43,7 @@ my %make_args = (
       bugtracker => {
         web => "http://github.com/Perl5-Alien/Alien-Base/issues",
       },
-      homepage => "https://metacpan.org/pod/PkgConfig-LibPkgConf",
+      homepage => "https://metacpan.org/pod/Alien::Base",
       x_MailingList => "https://groups.google.com/forum/#!forum/perl5-alien",
       x_IRC => "irc://irc.perl.org/#native",
     },
