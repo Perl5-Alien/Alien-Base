@@ -1,5 +1,10 @@
 Revision history for Perl module Alien::Base.
 
+0.041 2017-04-02 18:00:52 -0400
+  - Fix some minor metadata
+  - Require Alien-Base-ModuleBuild 0.040 to ensure the separated
+    version.
+
 0.040 2017-03-29 01:30:46 -0400
   - Spin off Alien::Base::ModuleBuild into the separate distribution
     Alien-Base-ModuleBuild
