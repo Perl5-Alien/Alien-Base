@@ -47,6 +47,12 @@ my %make_args = (
       x_MailingList => "https://groups.google.com/forum/#!forum/perl5-alien",
       x_IRC => "irc://irc.perl.org/#native",
     },
+    no_index => {
+      directory => [
+        "corpus",
+        "maint",
+      ],
+    },
     dynamic_config => 1,
   },
 
