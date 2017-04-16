@@ -100,6 +100,14 @@ You can even use it with L<Inline> (C and C++ languages are supported):
  use Inline 0.56 with => 'Alien::MyLibrary';
  ...
 
+You can even use it with L<Inline> (C and C++ languages are supported):
+
+ package MyLibrary::Inline;
+ 
+ use Alien::MyLibrary;
+ use Inline with => 'Alien::MyLibrary';
+ ...
+
 =head1 DESCRIPTION
 
 B<NOTE>: L<Alien::Base::ModuleBuild> is no longer bundled with L<Alien::Base> and has been spun off into a separate distribution.
