@@ -13,6 +13,11 @@ To install Alien::Base, use cpanminus:
 
  cpanm Alien::Base
  
+If you have downloaded this from GitHub or locally, do
+
+ cpanm --installdeps .
+ cpanm .
+
 Once installed you can read the project documentation using the perldoc 
 command, or via the metacpan.org website.  If you are an Alien 
 developer, see the authoring documentation:
