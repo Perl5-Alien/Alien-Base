@@ -22,8 +22,14 @@ Once installed you can read the project documentation using the perldoc
 command, or via the metacpan.org website.  If you are an Alien 
 developer, see the authoring documentation:
 
- perldoc Alien::Base::Authoring
- http://metacpan.org/pod/Alien::Base::Authoring
+ perldoc Alien::Base::ModuleBuild::Authoring
+ perldoc Alien::Build::Manual::AlienAuthor
+
+(this one installed in a separate module)
+
+ http://metacpan.org/pod/Alien::Base::ModuleBuild::Authoring
+ http://metacpan.org/pod/Alien::Build::Manual::AlienAuthor
+ 
 
 The FAQ also contains hints on dealing with specific challenges, like 
 dealing with specific tools:
