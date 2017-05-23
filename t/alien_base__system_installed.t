@@ -8,6 +8,19 @@ BEGIN { $ENV{ALIEN_FORCE} = 0; delete $ENV{ALIEN_INSTALL_TYPE} }
 
 use Test::More;
 
+eval {
+  use File::Temp qw( tempfile );
+  use File::Spec;
+  my($fh, $filename) = tempfile();
+  close $fh;
+  unlink $filename;
+};
+
+if(my $error = $@)
+{
+  BAIL_OUT "tempfile failed: $error";
+}
+
 plan skip_all => 'Test requires Alien::Base::ModuleBuild and Alien::Base::PkgConfig'
   unless eval { require Alien::Base::ModuleBuild; require Alien::Base::PkgConfig; 1 };
 

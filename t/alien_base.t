@@ -5,6 +5,19 @@ use File::Glob qw( bsd_glob );
 use File::chdir;
 use File::Spec;
 
+eval {
+  use File::Temp qw( tempfile );
+  use File::Spec;
+  my($fh, $filename) = tempfile();
+  close $fh;
+  unlink $filename;
+};
+
+if(my $error = $@)
+{
+  bail_out "tempfile failed: $error";
+}
+
 unshift @PKG_CONFIG_PATH, File::Spec->rel2abs(File::Spec->catdir( qw( corpus pkgconfig )));
 
 subtest 'AB::MB sys install' => sub {
