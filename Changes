@@ -1,5 +1,9 @@
 Revision history for Perl module Alien::Base.
 
+  - Add diagnostics for when temp directory is not writable
+    This manifests itself on Windows sometimes
+  - Configure step will fail if temp directory is not writable
+
 0.041 2017-04-02 18:00:52 -0400
   - Fix some minor metadata
   - Require Alien-Base-ModuleBuild 0.040 to ensure the separated

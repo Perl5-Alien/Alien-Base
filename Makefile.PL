@@ -3,6 +3,23 @@ use warnings;
 use Config;
 use ExtUtils::MakeMaker;
 
+eval {
+  use File::Temp qw( tempfile );
+  use File::Spec;
+  my($fh, $filename) = tempfile();
+  close $fh;
+  unlink $filename;
+};
+
+if(my $error = $@)
+{
+  print "unable to create a tempfile, which is required properly test and use Alien::Base\n";
+  print "File::Spec->tmpdir returns @{[ File::Spec->tmpdir ]}\n";
+  print "diagnostic: $error\n";
+  print "There is likely something wrong with your environment\n";
+  exit;
+}
+
 my %make_args = (
   NAME             => 'Alien::Base',
   DISTNAME         => 'Alien-Base',
