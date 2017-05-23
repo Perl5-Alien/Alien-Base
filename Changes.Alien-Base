@@ -1,5 +1,6 @@
 Revision history for Perl module Alien::Base.
 
+0.042 2017-05-23 14:40:02 -0400
   - Add diagnostics for when temp directory is not writable
     This manifests itself on Windows sometimes
   - Configure step will fail if temp directory is not writable
