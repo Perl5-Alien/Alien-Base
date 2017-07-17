@@ -4,19 +4,6 @@ use List::Util qw/shuffle/;
 
 BEGIN { $ENV{ALIEN_FORCE} = 0; delete $ENV{ALIEN_INSTALL_TYPE} }
 
-eval {
-  use File::Temp qw( tempfile );
-  use File::Spec;
-  my($fh, $filename) = tempfile();
-  close $fh;
-  unlink $filename;
-};
-
-if(my $error = $@)
-{
-  bail_out "tempfile failed: $error";
-}
-
 skip_all 'Test requires Alien::Base::ModuleBuild and Alien::Base::PkgConfig'
   unless eval { require Alien::Base::ModuleBuild; require Alien::Base::PkgConfig; 1 };
 
