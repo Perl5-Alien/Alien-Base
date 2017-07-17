@@ -1,12 +1,8 @@
-use strict;
-use warnings;
-
+use Test2::V0;
 use File::chdir;
 use List::Util qw/shuffle/;
 
 BEGIN { $ENV{ALIEN_FORCE} = 0; delete $ENV{ALIEN_INSTALL_TYPE} }
-
-use Test::More;
 
 eval {
   use File::Temp qw( tempfile );
@@ -18,10 +14,10 @@ eval {
 
 if(my $error = $@)
 {
-  BAIL_OUT "tempfile failed: $error";
+  bail_out "tempfile failed: $error";
 }
 
-plan skip_all => 'Test requires Alien::Base::ModuleBuild and Alien::Base::PkgConfig'
+skip_all 'Test requires Alien::Base::ModuleBuild and Alien::Base::PkgConfig'
   unless eval { require Alien::Base::ModuleBuild; require Alien::Base::PkgConfig; 1 };
 
 # Since this is not a complete distribution, it complains about missing files/folders
@@ -37,11 +33,11 @@ my $pkg_config = Alien::Base::PkgConfig->pkg_config_command;
 my $skip;
 system( "$pkg_config --version" );
 if ( $? ) {
-  plan skip_all => "Cannot use pkg-config: $?";
+  skip_all "Cannot use pkg-config: $?";
 }
 
 my @installed = shuffle map { /^(\S+)/ ? $1 : () } `$pkg_config --list-all`;
-plan skip_all => "Could not find any library for testing" unless @installed;
+skip_all "Could not find any library for testing" unless @installed;
 
 my ($lib, $cflags, $libs);
 
@@ -69,7 +65,7 @@ while (1) {
   $libs   = undef;
 }
 
-plan skip_all => "Could not find a suitable library for testing" unless defined $lib;
+skip_all "Could not find a suitable library for testing" unless defined $lib;
 
 note "lib    = $lib\n";
 note "cflags = $cflags\n";
