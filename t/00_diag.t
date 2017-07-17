@@ -1,6 +1,6 @@
-use strict;
-use warnings;
-use Test::More tests => 1;
+use Test2::V0;
+
+eval q{ use Test::Builder };
 
 # please keep in alpha order
 my @mods = qw(
@@ -44,3 +44,5 @@ foreach my $mod (@mods) {
   $version = 'undefined' unless defined $version;
   diag sprintf "%25s %s", $mod, $version;
 }
+
+done_testing;

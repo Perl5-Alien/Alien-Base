@@ -44,6 +44,7 @@ my %make_args = (
   },
   BUILD_REQUIRES => {},
   TEST_REQUIRES => {
+    'Test2::V0'                 => 0,
     'Test2::Suite'              => '0.000060',
     'Test::More'                => 0.94,
     'File::chdir'               => 0.1005,

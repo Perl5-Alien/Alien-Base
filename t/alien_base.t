@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use lib 'corpus/lib';
 use Env qw( @PKG_CONFIG_PATH );
 use File::Glob qw( bsd_glob );
