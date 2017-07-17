@@ -3,7 +3,8 @@ package Alien::Base;
 use strict;
 use warnings;
 
-our $VERSION = '0.042';
+our $VERSION = '0.043_01';
+$VERSION = eval $VERSION;
 
 use Carp;
 use File::ShareDir ();
