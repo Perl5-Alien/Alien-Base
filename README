@@ -1,3 +1,6 @@
+Alien::Base is now distributed as part of Alien-Base.  Please see
+https://github.com/Perl5-Alien/Alien-Build for details.
+
 Alien::Base is a base class and framework for creating Alien 
 distributions.  The goal of the project is to make things as simple and 
 easy as possible for both developers and users of Alien modules.

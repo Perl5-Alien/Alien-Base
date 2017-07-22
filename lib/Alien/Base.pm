@@ -21,6 +21,8 @@ Alien::Base - Base classes for Alien:: modules
 
 =head1 SYNOPSIS
 
+B<NOTE>: this distribution has been ended.  L<Alien::Base> and the other modules that used to be distributed with this distribution can now be found as part of the C<Alien-Build> distribution.
+
  package Alien::MyLibrary;
 
  use strict;
